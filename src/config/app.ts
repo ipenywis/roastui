@@ -1,4 +1,5 @@
-export default {
+const appConfig = {
+  APP_URL: process.env.APP_URL,
   navigationMenu: [
     {
       item: 'Home',
@@ -104,3 +105,5 @@ export default {
     githubProfile: 'https://github.com/ipenywis',
   },
 };
+
+export default appConfig;

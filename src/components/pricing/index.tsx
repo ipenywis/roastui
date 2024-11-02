@@ -7,12 +7,19 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { ShowcaseSection } from '../showcaseSection';
+import { CheckIcon } from '../icons/checkIcon';
+import { useSession } from 'next-auth/react';
+import { redirect, usePathname } from 'next/navigation';
+import paymentService from '@/services/paymentService';
+import { useRouter } from 'next/navigation';
+import { Subscription } from '@prisma/client';
 
 export interface PricingTierFrequency {
   id: string;
   value: string;
   label: string;
   priceSuffix: string;
+  plan: string;
 }
 
 export interface PricingTier {
@@ -28,11 +35,24 @@ export interface PricingTier {
   cta: string;
   soldOut?: boolean;
   comingSoon?: boolean;
+  tier: string;
 }
 
 export const frequencies: PricingTierFrequency[] = [
-  { id: '1', value: '1', label: 'Monthly', priceSuffix: '/month' },
-  { id: '2', value: '2', label: 'Annually', priceSuffix: '/year' },
+  {
+    id: '1',
+    value: '1',
+    label: 'Monthly',
+    priceSuffix: '/month',
+    plan: 'monthly',
+  },
+  {
+    id: '2',
+    value: '2',
+    label: 'Annually',
+    priceSuffix: '/year',
+    plan: 'yearly',
+  },
 ];
 
 export const tiers: PricingTier[] = [
@@ -53,6 +73,7 @@ export const tiers: PricingTier[] = [
     highlighted: true,
     soldOut: false,
     cta: `Sign up`,
+    tier: 'starter',
   },
   {
     name: 'Pro',
@@ -71,30 +92,29 @@ export const tiers: PricingTier[] = [
     soldOut: false,
     cta: `Get started`,
     comingSoon: true,
+    tier: 'pro',
   },
 ];
 
-const CheckIcon = ({ className }: { className?: string }) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={cn('w-6 h-6', className)}
-    >
-      <path
-        fillRule="evenodd"
-        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-};
+interface PricingProps {
+  className?: string;
+  mode: 'integrated' | 'standalone';
+  subscription?: Subscription;
+}
 
-export function Pricing() {
+export function Pricing(props: PricingProps) {
+  const { className, mode = 'integrated', subscription } = props;
   const [frequency, setFrequency] = useState(frequencies[0]);
 
-  const bannerText = 'Save 25% Now!';
+  const session = useSession();
+
+  const router = useRouter();
+
+  if (mode === 'standalone' && session.status === 'unauthenticated')
+    return redirect('/login');
+
+  if (mode === 'standalone' && subscription?.isActive)
+    return redirect('/dashboard');
 
   const buttonText = (tier: PricingTier) => {
     if (tier.soldOut) return 'Sold out';
@@ -102,10 +122,30 @@ export function Pricing() {
     else return tier.cta;
   };
 
+  const getCheckoutUrl = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    tier: PricingTier
+  ) => {
+    e.preventDefault();
+
+    if (session.status === 'unauthenticated')
+      return router.push(`/login?tier=${tier.tier}&plan=${frequency.plan}`);
+
+    if (subscription?.isActive) return router.push('/dashboard');
+
+    const checkout = await paymentService.getCheckoutUrl(
+      tier.tier,
+      frequency.plan
+    );
+
+    window.location.href = checkout.checkoutUrl;
+  };
+
   return (
     <ShowcaseSection
       title="Get Started Now"
       description="Save hours of moving buttons around and quickly find what’s wrong with your designs with RoastUI"
+      className={className}
     >
       <div
         className={cn(
@@ -156,7 +196,7 @@ export function Pricing() {
 
             <div
               className={cn(
-                'isolate mx-auto mt-4 mb-28 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none',
+                'isolate mx-auto mt-4 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none',
                 tiers.length === 2 ? 'lg:grid-cols-2' : '',
                 tiers.length === 3 ? 'lg:grid-cols-3' : ''
               )}
@@ -260,6 +300,7 @@ export function Pricing() {
                           : 'hover:opacity-80 transition-opacity'
                       )}
                       variant={tier.highlighted ? 'default' : 'outline'}
+                      onClick={(e) => getCheckoutUrl(e, tier)}
                     >
                       {buttonText(tier)}
                     </Button>

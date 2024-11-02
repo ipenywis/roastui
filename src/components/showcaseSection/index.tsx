@@ -1,9 +1,11 @@
+import { cn } from '@/lib/utils';
 import { cva } from 'class-variance-authority';
 
 interface ShowcaseSectionProps {
   children: any | any[];
   title: string;
   description: string | React.ReactNode;
+  className?: string;
 }
 
 const container = cva(
@@ -21,10 +23,10 @@ const sectionDescription = cva(
 const content = cva('flex flex-col mt-20 w-full items-center');
 
 export function ShowcaseSection(props: ShowcaseSectionProps) {
-  const { children, title, description } = props;
+  const { children, title, description, className } = props;
 
   return (
-    <div className={container()}>
+    <div className={cn(container(), className)}>
       <h2 className={h2Title()}>{title}</h2>
       <p className={sectionDescription()}>{description}</p>
       <div className={content()}>{children}</div>

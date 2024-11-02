@@ -3,7 +3,8 @@ import { Faq } from '@/components/faq';
 import { Footer } from '@/components/footer';
 import { GoodVsBadUI } from '@/components/goodVsBadUI';
 import { Hero } from '@/components/hero';
-import { Pricing } from '@/components/pricing';
+import { HomePagePricing } from '@/components/homePagePricing';
+import { Suspense } from 'react';
 
 export default function Home() {
   return (
@@ -12,7 +13,9 @@ export default function Home() {
       <div className="flex flex-col items-center w-full">
         <GoodVsBadUI />
         <ImproveUIDesign />
-        <Pricing />
+        <Suspense fallback={<div>Loading...</div>}>
+          <HomePagePricing />
+        </Suspense>
         <Faq />
       </div>
       <Footer />

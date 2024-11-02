@@ -43,7 +43,7 @@
     background-color: rgb(0 0 0 / var(--tw-bg-opacity)); */
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: #09090B;
     --card-foreground: 210 40% 98%;
 
     --popover: 222.2 84% 4.9%;

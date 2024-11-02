@@ -1,5 +1,19 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        hostname: 'placehold.co',
+      },
+      {
+        hostname: 'picsum.photos',
+      },
+      {
+        hostname: 'roast-ui.islemmaboud.com',
+      },
+    ],
+  },
+};
 
 import { createVanillaExtractPlugin } from '@vanilla-extract/next-plugin';
 const withVanillaExtract = createVanillaExtractPlugin();
