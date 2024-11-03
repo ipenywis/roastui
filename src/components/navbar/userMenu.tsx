@@ -24,9 +24,9 @@ export async function UserMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar className="outline-none">
-          <AvatarImage src={session?.user?.image} />
+          <AvatarImage src={session?.user?.image || undefined} />
           <AvatarFallback>
-            {session?.user?.name.slice(0, 2).toUpperCase()}
+            {session?.user?.name?.slice(0, 2).toUpperCase() || ''}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

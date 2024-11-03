@@ -14,6 +14,8 @@ import { FcGoogle } from 'react-icons/fc';
 import { signIn } from '@/auth';
 import { FaGithub } from 'react-icons/fa';
 
+export const revalidate = 86400;
+
 export default function SignupPage() {
   async function signupWithGoogle() {
     'use server';

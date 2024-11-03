@@ -45,7 +45,7 @@ export function Faq() {
         <Accordion type="single" collapsible className="w-full">
           {app.faq.map((question, idx) => (
             <AccordionItem
-              value={idx + 1}
+              value={String(idx + 1)}
               key={idx}
               className="w-full border-b-0"
             >

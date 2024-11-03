@@ -6,6 +6,10 @@ import { Hero } from '@/components/hero';
 import { HomePagePricing } from '@/components/homePagePricing';
 import { Suspense } from 'react';
 
+export const revalidate = 86400;
+
+// export const dynamic = 'force-static';
+
 export default function Home() {
   return (
     <main className="flex flex-col">

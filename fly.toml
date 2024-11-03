@@ -1,0 +1,26 @@
+# fly.toml app configuration file generated for roast-ui on 2024-11-02T14:55:55+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'roast-ui'
+primary_region = 'mad'
+
+[build]
+
+[[mounts]]
+  source = 'litefs_roastui'
+  destination = '/var/lib/litefs'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'off'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

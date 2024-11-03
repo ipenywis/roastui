@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="w-full">
       <body className={cn(inter.className, 'bg-black relative w-full')}>
-        <ThemeProvider defaultTheme="light">
+        <ThemeProvider defaultTheme="dark">
           <SessionProvider>{children}</SessionProvider>
         </ThemeProvider>
       </body>

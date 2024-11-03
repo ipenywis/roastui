@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 export default async function BillingPage() {
   const session = await auth();
 
-  if (!session?.user) {
+  if (!session?.user || !session?.user?.email) {
     redirect('/login');
   }
 
