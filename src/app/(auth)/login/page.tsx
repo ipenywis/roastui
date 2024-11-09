@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -11,29 +9,31 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
 import { FcGoogle } from 'react-icons/fc';
-import { signIn } from 'next-auth/react';
 import { FaGithub } from 'react-icons/fa';
-import { useSearchParams } from 'next/navigation';
+import { signIn } from '@/auth';
 
-export default function LoginPage() {
-  const searchParams = useSearchParams();
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: { plan: string; tier: string };
+}) {
+  const { plan, tier } = searchParams;
 
   const redirectUrl =
-    searchParams.get('tier') && searchParams.get('plan')
-      ? `/subscribe?tier=${searchParams.get('tier')}&plan=${searchParams.get(
-          'plan'
-        )}`
-      : '/subscribe';
+    tier && plan ? `/subscribe?tier=${tier}&plan=${plan}` : '/subscribe';
+
+  console.log('URL: ', redirectUrl);
 
   async function loginWithGoogle() {
+    'use server';
     await signIn('google', {
       redirectTo: redirectUrl,
     });
   }
 
   async function loginWithGithub() {
+    'use server';
     await signIn('github', { redirectTo: redirectUrl });
   }
 
@@ -46,12 +46,16 @@ export default function LoginPage() {
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardFooter className="flex flex-col gap-5">
-          <Button size="xl" className="w-full" onClick={loginWithGoogle}>
-            <FcGoogle className="mr-2 text-xl" /> Continue with Google
-          </Button>
-          <Button size="xl" className="w-full" onClick={loginWithGithub}>
-            <FaGithub className="mr-2 text-xl" /> Continue with Github
-          </Button>
+          <form action={loginWithGoogle}>
+            <Button size="xl" className="w-full" type="submit">
+              <FcGoogle className="mr-2 text-xl" /> Continue with Google
+            </Button>
+          </form>
+          <form action={loginWithGithub}>
+            <Button size="xl" className="w-full" type="submit">
+              <FaGithub className="mr-2 text-xl" /> Continue with Github
+            </Button>
+          </form>
         </CardFooter>
       </Card>
     </div>

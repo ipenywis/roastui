@@ -30,8 +30,8 @@ export function DesignImprovementsPreview({
   improvements,
   whatsWrong,
 }: DesignImprovementsPreviewProps) {
-  const [isWhatsWrongOpen, setIsWhatsWrongOpen] = useState(false);
-  const [isImprovementsOpen, setIsImprovementsOpen] = useState(false);
+  const [isWhatsWrongOpen, setIsWhatsWrongOpen] = useState(true);
+  const [isImprovementsOpen, setIsImprovementsOpen] = useState(true);
 
   return (
     <div className={container()}>

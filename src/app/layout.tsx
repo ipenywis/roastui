@@ -5,6 +5,7 @@ import { Navbar } from '@/components/navbar';
 import { ThemeProvider } from 'next-themes';
 import { cn } from '@/lib/utils';
 import { SessionProvider } from 'next-auth/react';
+import { SandPackCSS } from '@/components/sandPackStyles';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,8 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="w-full">
-      <body className={cn(inter.className, 'bg-black relative w-full')}>
+    <html lang="en" className="w-full min-h-full scroll-smooth">
+      <head>
+        <SandPackCSS />
+      </head>
+      <body className={cn(inter.className, 'bg-black relative size-full')}>
         <ThemeProvider defaultTheme="dark">
           <SessionProvider>{children}</SessionProvider>
         </ThemeProvider>

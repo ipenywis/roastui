@@ -1,3 +1,4 @@
+import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
 
 export default function PlaygroundLayout({
@@ -6,9 +7,10 @@ export default function PlaygroundLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="flex flex-col size-full">
+    <main className="flex flex-col size-full relative">
       <Navbar />
-      <div className="flex flex-col size-full pt-12">{children}</div>
+      <div className="flex flex-col pt-12 h-full">{children}</div>
+      <Footer />
     </main>
   );
 }

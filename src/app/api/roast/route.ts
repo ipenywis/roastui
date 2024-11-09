@@ -48,6 +48,8 @@ export const POST = auth(async (request) => {
       improvements.improvements
     );
 
+    console.log(newDesign.react);
+
     const originalImageUrl = await imageService.uploadImage(
       auth?.user,
       compressedImage
@@ -59,6 +61,7 @@ export const POST = auth(async (request) => {
         userId: auth.user.id,
         originalImageUrl,
         improvedHtml: newDesign.html,
+        improvedReact: newDesign.react,
         improvements: JSON.stringify(improvements.improvements),
         whatsWrong: JSON.stringify(improvements.whatsWrong),
       },

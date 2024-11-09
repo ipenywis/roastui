@@ -143,6 +143,7 @@ export function Pricing(props: PricingProps) {
 
   return (
     <ShowcaseSection
+      id="pricing"
       title="Get Started Now"
       description="Save hours of moving buttons around and quickly find what’s wrong with your designs with RoastUI"
       className={className}

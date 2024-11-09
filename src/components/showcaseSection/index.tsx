@@ -6,6 +6,7 @@ interface ShowcaseSectionProps {
   title: string;
   description: string | React.ReactNode;
   className?: string;
+  id?: string;
 }
 
 const container = cva(
@@ -23,10 +24,10 @@ const sectionDescription = cva(
 const content = cva('flex flex-col mt-20 w-full items-center');
 
 export function ShowcaseSection(props: ShowcaseSectionProps) {
-  const { children, title, description, className } = props;
+  const { children, title, description, className, id } = props;
 
   return (
-    <div className={cn(container(), className)}>
+    <div className={cn(container(), className)} id={id}>
       <h2 className={h2Title()}>{title}</h2>
       <p className={sectionDescription()}>{description}</p>
       <div className={content()}>{children}</div>

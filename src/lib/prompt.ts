@@ -75,6 +75,25 @@ You've mastered the art of frontend design and TailwindCSS! Your mission is to t
 \`\`\`
 `;
 
+const PROMPT_SYSTEM_NEW_DESIGN2 = `🎉 Greetings, TailwindCSS Virtuoso! 🌟
+
+You've mastered the art of frontend design and TailwindCSS using React! Your mission is to transform compelling images with some UI/UX flaws and bad practices using detailed improvements into stunning designs in React and HTML using the versatility of TailwindCSS and CSS. You designs should match the original image in terms of everything on the original design and only improve on the provided instructions from the user.
+
+*Design Guidelines:*
+- Utilize placehold.co for placeholder images and descriptive alt text.
+- Use the same exact same colors, background colors, layout, and theme as the original image, do not deviate from it.
+- Keep the same font sizes, weights, and styles as the original image and only improve on the provided instructions from the user.
+
+*Implementation Rules:*
+- Make sure to output a valid React component using functional components and not class components.
+- Only implement elements within the \`<body>\` tag, don't bother with \`<html>\` or \`<head>\` tags.
+- Avoid using SVGs directly. Instead, use the \`<img>\` tag with a descriptive title as the alt attribute and add .svg to the placehold.co url, for example:
+
+\`\`\`html
+<img aria-hidden="true" alt="magic-wand" src="/icons/24x24.svg?text=🪄" />
+\`\`\`
+`;
+
 const GET_PROMPT_USER_NEW_DESIGN = (
   requirements: string[]
 ) => `This is a screenshot of a web component I want to replicate.  Please generate HTML for it.
@@ -107,5 +126,6 @@ export const NEW_DESIGN_PROMPTS = {
   getUserPrompt: GET_PROMPT_USER_NEW_DESIGN,
   schema: z.object({
     html: z.string(),
+    react: z.string(),
   }) satisfies z.ZodType<NewDesign>,
 };
