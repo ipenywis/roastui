@@ -89,6 +89,7 @@ model RoastedDesigns {
   improvedReact    String
   improvements     String    @default("[]")
   whatsWrong       String    @default("[]")
+  uiHighlights     String    @default("[]")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

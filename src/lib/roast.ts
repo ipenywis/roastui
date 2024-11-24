@@ -31,6 +31,8 @@ export async function getDesignImprovements(
     ],
   });
 
+  console.log("What's wrong: ", result.object.whatsWrong);
+
   return result.object;
 }
 

@@ -1,17 +1,47 @@
-import { getWrappedDesignCode } from '@/lib/html-server';
+'use client';
+
 import { cva } from 'class-variance-authority';
-import DOMPurify from 'isomorphic-dompurify';
 import { TabsContent } from '../ui/tabs';
+import { UiHighlights } from '@/types/newDesign';
+import IFrame from '../iframe';
 
 const iframeContainer = cva('w-full h-full');
 
-export function ImprovedDesignTab({ HTML }: { HTML: string }) {
+interface ImprovedDesignTabProps {
+  designId: string;
+}
+
+function LoadingPlaceholder() {
+  return (
+    <div className="flex items-center justify-center w-full h-full text-lg">
+      Loading Design...
+    </div>
+  );
+}
+
+function ErrorPlaceholder() {
+  return (
+    <div className="flex items-center justify-center w-full h-full text-lg">
+      Error Loading Design! Please refresh the page.
+    </div>
+  );
+}
+
+export function ImprovedDesignTab(props: ImprovedDesignTabProps) {
+  const { designId } = props;
+
+  if (!designId) {
+    return <ErrorPlaceholder />;
+  }
+
   return (
     <TabsContent value="improvedDesign" className="w-full h-full mt-0">
-      <iframe
-        srcDoc={getWrappedDesignCode(DOMPurify.sanitize(HTML), 'html')}
+      <IFrame
+        src={`/preview/${designId}`}
         className={iframeContainer()}
-      ></iframe>
+        loading="eager"
+        fallback={<LoadingPlaceholder />}
+      />
     </TabsContent>
   );
 }

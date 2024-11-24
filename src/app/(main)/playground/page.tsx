@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 
 export default async function DesignPlayground() {
+  console.log('Here!');
+
   const session = await auth();
 
   const user = await prisma.user.findUnique({

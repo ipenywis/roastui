@@ -48,12 +48,22 @@ export const POST = auth(async (request) => {
       improvements.improvements
     );
 
-    console.log(newDesign.react);
+    console.log('New Design: ', newDesign);
 
     const originalImageUrl = await imageService.uploadImage(
       auth?.user,
       compressedImage
     );
+
+    const uiHighlights = {
+      improvements: newDesign.dataElements?.map((element) => {
+        return {
+          improvement: element.improvement,
+          element: element.element,
+        };
+      }),
+      //TODO: Add what's wrong data elements here same as improvements
+    };
 
     const newRoastedDesign = await prisma.roastedDesigns.create({
       data: {
@@ -64,6 +74,7 @@ export const POST = auth(async (request) => {
         improvedReact: newDesign.react,
         improvements: JSON.stringify(improvements.improvements),
         whatsWrong: JSON.stringify(improvements.whatsWrong),
+        uiHighlights: JSON.stringify(uiHighlights),
       },
     });
 

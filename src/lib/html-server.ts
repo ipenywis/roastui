@@ -14,3 +14,10 @@ export function getWrappedDesignCode(code: string, framework: string) {
   }
   return code;
 }
+
+export async function precompileReactComponent(component: React.ReactNode) {
+  const ReactDOMServer = (await import('react-dom/server')).default;
+  const staticMarkup = ReactDOMServer.renderToStaticMarkup(component);
+  // const staticMarkup = ReactDOMServer.renderToString(component);
+  return staticMarkup;
+}

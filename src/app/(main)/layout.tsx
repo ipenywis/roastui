@@ -24,7 +24,7 @@ export default function RootLayout({
       <head>
         <SandPackCSS />
       </head>
-      <body className={cn(inter.className, 'bg-black relative size-full')}>
+      <body className={cn(inter.className, 'bg-black relative size-full dark')}>
         <ThemeProvider defaultTheme="dark">
           <SessionProvider>{children}</SessionProvider>
         </ThemeProvider>

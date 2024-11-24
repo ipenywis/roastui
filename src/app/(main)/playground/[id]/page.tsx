@@ -7,7 +7,6 @@ import { RoastResponse } from '@/types/roastResponse';
 import { RoastedDesigns } from '@prisma/client';
 import { cva } from 'class-variance-authority';
 import { notFound } from 'next/navigation';
-import { useEffect } from 'react';
 
 const container = cva(
   'size-full flex flex-col p-8 items-center relative pb-12 max-h-full'
@@ -40,9 +39,11 @@ export default async function SingleDesignPlayground({
         <h1 className={title()}>Design: {roastedDesign.name}</h1>
         {/* <NewDesignForm onSubmit={onSubmit} /> */}
         <DesignPreview
+          designId={params.id}
           HTML={roastedDesign?.improvedHtml}
           react={roastedDesign?.improvedReact}
           originalImageUrl={roastedDesign?.originalImageUrl}
+          uiHighlights={JSON.parse(roastedDesign.uiHighlights)}
         />
         {roastedDesign && (
           <DesignImprovementsPreview
