@@ -21,7 +21,6 @@ export interface PreviewHighlightCoordinates {
 export function getHighlightedPreviewElements(
   highlightElements: UiHighlights['improvements']
 ): PreviewHighlightElement[] {
-  console.log('Window: ', window);
   if (!document) return [];
 
   const foundElements = highlightElements
@@ -48,20 +47,39 @@ export function getCoordinatesFromElements(
     const isLeft = index % 2 === 0;
     const elementWidth = element.offsetWidth;
 
-    return {
+    const coordinates = {
       description,
       start: {
         x: isLeft
           ? element.offsetLeft - 100
           : element.offsetLeft + elementWidth + 100,
-        y: element.offsetTop + element.offsetHeight / 2,
+        y: element.offsetTop + element.offsetHeight / 5,
       },
       end: {
         x: isLeft
           ? element.offsetLeft - 10
           : element.offsetLeft + elementWidth + 10,
-        y: element.offsetTop + element.offsetHeight / 2,
+        y: element.offsetTop + element.offsetHeight / 5,
       },
     };
+
+    console.log('Coordinates: ', coordinates);
+
+    return coordinates;
   });
+}
+
+export function getCoordinatesSide(
+  coordinates: PreviewHighlightCoordinates
+): 'left' | 'right' {
+  const startIsLeft = coordinates.start.x < 0;
+  const endIsLeft = coordinates.end.x < 0;
+
+  // If both points are on the same side, use that side
+  if (startIsLeft === endIsLeft) {
+    return startIsLeft ? 'left' : 'right';
+  }
+
+  // If points are on different sides, use the start point's side
+  return startIsLeft ? 'left' : 'right';
 }

@@ -38,6 +38,7 @@
     "@tsparticles/slim": "^3.4.0",
     "@vanilla-extract/css": "^1.15.2",
     "@vanilla-extract/next-plugin": "^2.4.1",
+    "@xyflow/react": "^12.3.5",
     "ai": "^3.4.18",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

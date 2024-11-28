@@ -21,7 +21,7 @@ export function UiHighlightsControls() {
   };
 
   return (
-    <div className="absolute bottom-5 right-4">
+    <div className="absolute bottom-5 right-4 z-20">
       <div className="bg-black text-white rounded-lg py-3 px-5 shadow-md flex items-center gap-2">
         <div className={checkboxItem()}>
           <Checkbox

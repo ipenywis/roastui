@@ -7,6 +7,8 @@ type IFrameProps = React.ComponentPropsWithRef<'iframe'> & {
 export function IFrame(props: IFrameProps) {
   const { fallback, ...rest } = props;
 
+  return <iframe {...rest} />;
+
   return (
     <Suspense fallback={fallback || 'loading...'}>
       <IFrameImplementation {...rest} />
@@ -22,7 +24,6 @@ function IFrameImplementation(props: React.ComponentPropsWithRef<'iframe'>) {
   }>(null);
   const [_, triggerLoad] = useState(false);
   if (awaiter.current?.promise) {
-    console.log('suspend');
     throw awaiter.current.promise;
   }
   useLayoutEffect(() => {
