@@ -7,7 +7,17 @@ export enum FlowNodeTypes {
   ArrowNode = 'arrowNode',
 }
 
-function getArrowsEdges(arrowsCoordinates: PreviewHighlightCoordinates[]) {
+export interface PreviewFlowOptions {
+  enableImprovementsHighlight: boolean;
+}
+
+const defaultPreviewFlowOptions: PreviewFlowOptions = {
+  enableImprovementsHighlight: false,
+};
+
+function getImprovementsHighlightArrowsEdges(
+  arrowsCoordinates: PreviewHighlightCoordinates[]
+) {
   return arrowsCoordinates.map(
     (_, idx) =>
       ({
@@ -74,16 +84,29 @@ function getArrowNodes(arrowsCoordinates: PreviewHighlightCoordinates[]) {
 
 export function getAllNodes(
   roastedDesign: RoastedDesigns,
-  arrowsCoordinates?: PreviewHighlightCoordinates[]
+  arrowsCoordinates?: PreviewHighlightCoordinates[],
+  options: PreviewFlowOptions = defaultPreviewFlowOptions
 ) {
   if (!arrowsCoordinates) return [];
 
   const mainDesignNode = getMainDesignNode(roastedDesign);
+
+  if (!options.enableImprovementsHighlight) {
+    return [mainDesignNode];
+  }
+
   const arrowNodes = getArrowNodes(arrowsCoordinates);
 
   return [...arrowNodes, mainDesignNode];
 }
 
-export function getAllEdges(arrowsCoordinates: PreviewHighlightCoordinates[]) {
-  return getArrowsEdges(arrowsCoordinates);
+export function getAllEdges(
+  arrowsCoordinates: PreviewHighlightCoordinates[],
+  options: PreviewFlowOptions = defaultPreviewFlowOptions
+) {
+  if (options.enableImprovementsHighlight) {
+    return getImprovementsHighlightArrowsEdges(arrowsCoordinates);
+  }
+
+  return [];
 }

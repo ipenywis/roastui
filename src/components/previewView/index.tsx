@@ -2,7 +2,7 @@
 
 import { DesignPreviewStoreProvider } from '@/lib/providers/designPreviewStoreProvider';
 import { RoastedDesigns } from '@prisma/client';
-import { ImprovementsHighlights, UiHighlightsControls } from '../uiHighlights';
+import { UiHighlightsControls } from '../uiHighlights';
 import { useEffect, useState } from 'react';
 
 import '@xyflow/react/dist/style.css';
@@ -36,9 +36,6 @@ export function PreviewView(props: DesignPreviewPlaygroundProps) {
     <DesignPreviewStoreProvider>
       <div style={{ width: '100vw', height: '100vh' }}>
         <UiHighlightsControls />
-        <ImprovementsHighlights
-          improvements={JSON.parse(roastedDesign.uiHighlights).improvements}
-        />
         <PreviewFlow
           roastedDesign={roastedDesign}
           arrowsCoordinates={coordinates}

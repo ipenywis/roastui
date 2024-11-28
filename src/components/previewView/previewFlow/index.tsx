@@ -4,6 +4,8 @@ import { ArrowNode } from './arrowNode';
 import { MainDesignNode } from './mainDesignNode';
 import { RoastedDesigns } from '@prisma/client';
 import { PreviewHighlightCoordinates } from '@/lib/preview';
+import { useMemo } from 'react';
+import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
 
 const nodeTypes = {
   [FlowNodeTypes.MainDesignNode]: MainDesignNode,
@@ -17,8 +19,25 @@ interface PreviewFlowProps {
 
 export function PreviewFlow(props: PreviewFlowProps) {
   const { roastedDesign, arrowsCoordinates } = props;
-  const nodes = getAllNodes(roastedDesign, arrowsCoordinates);
-  const edges = getAllEdges(arrowsCoordinates);
+
+  const isImprovementsHighlightActive = useDesignPreviewStore(
+    (state) => state.isImprovementsHighlightActive
+  );
+
+  const nodes = useMemo(
+    () =>
+      getAllNodes(roastedDesign, arrowsCoordinates, {
+        enableImprovementsHighlight: isImprovementsHighlightActive,
+      }),
+    [roastedDesign, arrowsCoordinates, isImprovementsHighlightActive]
+  );
+  const edges = useMemo(
+    () =>
+      getAllEdges(arrowsCoordinates, {
+        enableImprovementsHighlight: isImprovementsHighlightActive,
+      }),
+    [arrowsCoordinates, isImprovementsHighlightActive]
+  );
 
   return (
     <ReactFlow
@@ -26,6 +45,7 @@ export function PreviewFlow(props: PreviewFlowProps) {
       edges={edges}
       nodeTypes={nodeTypes}
       proOptions={{ hideAttribution: true }}
+      defaultEdgeOptions={{ type: 'smoothstep' }}
       maxZoom={4}
       minZoom={0.5}
       fitView
