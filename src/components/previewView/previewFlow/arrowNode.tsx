@@ -18,6 +18,8 @@ export function ArrowNode(props: ArrowNodeProps) {
 
   const elementSide = getCoordinatesSide(arrowCoordinate);
 
+  console.log('Coordinates', arrowCoordinate, label, elementSide);
+
   return (
     <div className="flex flex-col items-center justify-center h-4 relative border border-transparent">
       <Handle

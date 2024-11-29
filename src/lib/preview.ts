@@ -63,8 +63,6 @@ export function getCoordinatesFromElements(
       },
     };
 
-    console.log('Coordinates: ', coordinates);
-
     return coordinates;
   });
 }
@@ -73,13 +71,11 @@ export function getCoordinatesSide(
   coordinates: PreviewHighlightCoordinates
 ): 'left' | 'right' {
   const startIsLeft = coordinates.start.x < 0;
-  const endIsLeft = coordinates.end.x < 0;
 
-  // If both points are on the same side, use that side
-  if (startIsLeft === endIsLeft) {
-    return startIsLeft ? 'left' : 'right';
+  //Force left to avoid weird behaviors
+  if (coordinates.start.x < coordinates.end.x) {
+    return 'left';
   }
 
-  // If points are on different sides, use the start point's side
   return startIsLeft ? 'left' : 'right';
 }
