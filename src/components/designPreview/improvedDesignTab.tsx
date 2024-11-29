@@ -2,7 +2,6 @@
 
 import { cva } from 'class-variance-authority';
 import { TabsContent } from '../ui/tabs';
-import { UiHighlights } from '@/types/newDesign';
 import IFrame from '../iframe';
 
 const iframeContainer = cva('w-full h-full');
@@ -30,12 +29,18 @@ function ErrorPlaceholder() {
 export function ImprovedDesignTab(props: ImprovedDesignTabProps) {
   const { designId } = props;
 
+  console.log('Design Id: ', designId);
+
   if (!designId) {
     return <ErrorPlaceholder />;
   }
 
   return (
-    <TabsContent value="improvedDesign" className="w-full h-full mt-0">
+    <TabsContent
+      value="improvedDesign"
+      className="w-full h-full mt-0 data-[state=inactive]:hidden"
+      forceMount
+    >
       <IFrame
         src={`/preview/${designId}`}
         className={iframeContainer()}

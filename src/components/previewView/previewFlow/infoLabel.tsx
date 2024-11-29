@@ -11,7 +11,7 @@ export function InfoLabel(props: InfoLabelProps) {
   return (
     <div
       className={cn(
-        'absolute rounded-lg px-3 py-2 bg-[#e5e7eb] border border-slate-300 group cursor-text',
+        'absolute z-10 rounded-lg px-3 py-2 bg-[#e5e7eb] border border-slate-300 group hover:z-50 hover:bg-[#d9dce0]',
         elementSide === 'left' ? 'right-2' : 'left-2'
       )}
     >

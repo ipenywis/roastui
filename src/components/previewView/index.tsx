@@ -25,11 +25,14 @@ export function PreviewView(props: DesignPreviewPlaygroundProps) {
   );
 
   useEffect(() => {
-    const elements = getHighlightedPreviewElements(
-      JSON.parse(roastedDesign.uiHighlights).improvements
-    );
-    const newCoordinates = getCoordinatesFromElements(elements);
-    setCoordinates(newCoordinates);
+    //Timeout is needed to allow html to paint before getting coordinates
+    setTimeout(() => {
+      const elements = getHighlightedPreviewElements(
+        JSON.parse(roastedDesign.uiHighlights).improvements
+      );
+      const newCoordinates = getCoordinatesFromElements(elements);
+      setCoordinates(newCoordinates);
+    }, 200);
   }, [roastedDesign.uiHighlights]);
 
   return (

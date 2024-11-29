@@ -71,6 +71,7 @@ function IFrameImplementation(props: React.ComponentPropsWithRef<'iframe'>) {
     [onErrorProp]
   );
 
+  //This is hack to make onLoad and onError work on iframe
   useEffect(() => {
     const currentIframeRef = iframeRef.current;
     if (currentIframeRef && src) {

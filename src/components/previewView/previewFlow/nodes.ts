@@ -5,6 +5,7 @@ import { Edge, MarkerType, Node } from '@xyflow/react';
 export enum FlowNodeTypes {
   MainDesignNode = 'mainDesignNode',
   ArrowNode = 'arrowNode',
+  TestNode = 'testNode',
 }
 
 export interface PreviewFlowOptions {
@@ -45,39 +46,44 @@ function getMainDesignNode(roastedDesign: RoastedDesigns) {
     position: { x: 0, y: 0 },
     data: { roastedDesign: roastedDesign },
     type: FlowNodeTypes.MainDesignNode,
-    style: {
-      zIndex: -1,
-    },
-    selectable: false,
+    selectable: true,
     draggable: false,
     zIndex: -1,
   } satisfies Node;
 }
 
 function getArrowNodes(arrowsCoordinates: PreviewHighlightCoordinates[]) {
-  const startArrowNodes = arrowsCoordinates?.map((arrowCoordinate, idx) => ({
-    id: `arrow-start-${idx}`,
-    position: { x: arrowCoordinate.start.x, y: arrowCoordinate.start.y },
-    data: {
-      arrowCoordinate,
-      label: arrowCoordinate.description,
-      isStart: true,
-    },
-    type: FlowNodeTypes.ArrowNode,
-    label: `Start-${idx}`,
-  }));
+  const startArrowNodes = arrowsCoordinates?.map(
+    (arrowCoordinate, idx) =>
+      ({
+        id: `arrow-start-${idx}`,
+        position: { x: arrowCoordinate.start.x, y: arrowCoordinate.start.y },
+        data: {
+          arrowCoordinate,
+          label: arrowCoordinate.description,
+          isStart: true,
+        },
+        type: FlowNodeTypes.ArrowNode,
+        draggable: true,
+        selectable: true,
+      } satisfies Node)
+  );
 
-  const endArrowNodes = arrowsCoordinates?.map((arrowCoordinate, idx) => ({
-    id: `arrow-end-${idx}`,
-    position: { x: arrowCoordinate.end.x, y: arrowCoordinate.end.y },
-    data: {
-      arrowCoordinate,
-      label: arrowCoordinate.description,
-      isStart: false,
-    },
-    type: FlowNodeTypes.ArrowNode,
-    label: `End-${idx}`,
-  }));
+  const endArrowNodes = arrowsCoordinates?.map(
+    (arrowCoordinate, idx) =>
+      ({
+        id: `arrow-end-${idx}`,
+        position: { x: arrowCoordinate.end.x, y: arrowCoordinate.end.y },
+        data: {
+          arrowCoordinate,
+          label: arrowCoordinate.description,
+          isStart: false,
+        },
+        type: FlowNodeTypes.ArrowNode,
+        draggable: true,
+        selectable: true,
+      } satisfies Node)
+  );
 
   return [...startArrowNodes, ...endArrowNodes];
 }

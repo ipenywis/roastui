@@ -1,10 +1,10 @@
 import { compressImage, MAX_IMAGE_UPLOAD_SIZE } from '@/lib/image';
 import { getDesignImprovements, getNewDesign } from '@/lib/roast';
 import imageService from '@/services/imageService';
-import { RoastResponse } from '@/types/roastResponse';
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { preprocessUiHtml } from '@/lib/preprocessing/uiHtml';
 
 export const POST = auth(async (request) => {
   const { auth } = request;
@@ -48,7 +48,7 @@ export const POST = auth(async (request) => {
       improvements.improvements
     );
 
-    console.log('New Design: ', newDesign);
+    const preprocessedImprovedHtml = preprocessUiHtml(newDesign.html);
 
     const originalImageUrl = await imageService.uploadImage(
       auth?.user,
@@ -70,7 +70,7 @@ export const POST = auth(async (request) => {
         name: name.toString(),
         userId: auth.user.id,
         originalImageUrl,
-        improvedHtml: newDesign.html,
+        improvedHtml: preprocessedImprovedHtml,
         improvedReact: newDesign.react,
         improvements: JSON.stringify(improvements.improvements),
         whatsWrong: JSON.stringify(improvements.whatsWrong),

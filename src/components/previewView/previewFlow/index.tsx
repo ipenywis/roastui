@@ -1,4 +1,10 @@
-import { Background, Controls, ReactFlow } from '@xyflow/react';
+import {
+  Background,
+  Controls,
+  Handle,
+  Position,
+  ReactFlow,
+} from '@xyflow/react';
 import { FlowNodeTypes, getAllEdges, getAllNodes } from './nodes';
 import { ArrowNode } from './arrowNode';
 import { MainDesignNode } from './mainDesignNode';
@@ -6,6 +12,7 @@ import { RoastedDesigns } from '@prisma/client';
 import { PreviewHighlightCoordinates } from '@/lib/preview';
 import { useMemo } from 'react';
 import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
+import { useFlowNodes } from './useFlowNodes';
 
 const nodeTypes = {
   [FlowNodeTypes.MainDesignNode]: MainDesignNode,
@@ -24,13 +31,12 @@ export function PreviewFlow(props: PreviewFlowProps) {
     (state) => state.isImprovementsHighlightActive
   );
 
-  const nodes = useMemo(
-    () =>
-      getAllNodes(roastedDesign, arrowsCoordinates, {
-        enableImprovementsHighlight: isImprovementsHighlightActive,
-      }),
-    [roastedDesign, arrowsCoordinates, isImprovementsHighlightActive]
+  const { nodes, updateNodes } = useFlowNodes(
+    roastedDesign,
+    arrowsCoordinates,
+    { enableImprovementsHighlight: isImprovementsHighlightActive }
   );
+
   const edges = useMemo(
     () =>
       getAllEdges(arrowsCoordinates, {
@@ -46,6 +52,7 @@ export function PreviewFlow(props: PreviewFlowProps) {
       nodeTypes={nodeTypes}
       proOptions={{ hideAttribution: true }}
       defaultEdgeOptions={{ type: 'smoothstep' }}
+      onNodesChange={updateNodes}
       maxZoom={4}
       minZoom={0.5}
       fitView

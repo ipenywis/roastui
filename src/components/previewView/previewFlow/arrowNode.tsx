@@ -23,11 +23,7 @@ export function ArrowNode(props: ArrowNodeProps) {
       <Handle
         type={elementSide === 'left' ? 'source' : 'target'}
         position={Position.Right}
-        style={{
-          backgroundColor: 'transparent',
-          stroke: 'transparent',
-          borderColor: 'transparent',
-        }}
+        className="bg-transparent stroke-transparent text-transparent border-transparent"
         isConnectable={false}
         isConnectableEnd={false}
         isConnectableStart={false}
@@ -36,11 +32,7 @@ export function ArrowNode(props: ArrowNodeProps) {
       <Handle
         type={elementSide === 'left' ? 'target' : 'source'}
         position={Position.Left}
-        style={{
-          backgroundColor: 'transparent',
-          stroke: 'transparent',
-          borderColor: 'transparent',
-        }}
+        className="bg-transparent stroke-transparent text-transparent border-transparent"
         isConnectable={false}
         isConnectableEnd={false}
         isConnectableStart={false}

@@ -3,9 +3,7 @@
 import { DesignImprovementsPreview } from '@/components/designImprovementsPreview';
 import { DesignPreview } from '@/components/designPreview';
 import { FormValues, NewDesignForm } from '@/components/newDesignForm';
-import { renderReactToHtml } from '@/lib/html';
 import roastService from '@/services/roastService';
-import { RoastResponse } from '@/types/roastResponse';
 import { RoastedDesigns } from '@prisma/client';
 import { cva } from 'class-variance-authority';
 import { useState } from 'react';
@@ -41,10 +39,13 @@ export default function Playground() {
             whatsWrong={JSON.parse(roastResponse.whatsWrong)}
           />
         )}
-        <DesignPreview
-          HTML={roastResponse?.improvedHtml}
-          originalImageUrl={roastResponse?.originalImageUrl}
-        />
+        {roastResponse && (
+          <DesignPreview
+            HTML={roastResponse.improvedHtml}
+            originalImageUrl={roastResponse.originalImageUrl}
+            designId={roastResponse.id}
+          />
+        )}
       </div>
     </div>
   );

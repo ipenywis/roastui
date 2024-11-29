@@ -20,7 +20,8 @@ export function ImprovedHtmlSandpackTab({
   return (
     <TabsContent
       value="improvedHtml"
-      className="w-full h-full overflow-auto mt-0 relative"
+      className="w-full h-full overflow-auto mt-0 relative data-[state=inactive]:hidden"
+      forceMount
     >
       <SandpackProvider
         files={{
