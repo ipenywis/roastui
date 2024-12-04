@@ -7,11 +7,11 @@ import { ImprovedHtmlSandpackTab } from './improvedHtmlSandpackTab';
 import { UiHighlights } from '@/types/newDesign';
 
 const container = cva(
-  'flex flex-col justify-center items-center mt-10 relative border border-gray-600 rounded-lg overflow-hidden'
+  'flex w-[1000px] h-[800px] flex-col justify-center items-center mt-10 relative border border-gray-600 rounded-lg overflow-hidden'
 );
 
 const innerContainer = cva(
-  'flex flex-col relative w-[1000px] h-[800px] overflow-hidden border'
+  'flex flex-col relative size-full min-w-full min-h-full overflow-hidden border'
 );
 
 interface DesignPreviewProps {
@@ -26,14 +26,13 @@ export function DesignPreview({
   HTML,
   react,
   originalImageUrl,
-  uiHighlights,
   designId,
 }: DesignPreviewProps) {
   if (!HTML) return null;
 
   return (
-    <div className={container()}>
-      <Tabs defaultValue="improvedDesign">
+    <Tabs defaultValue="improvedDesign">
+      <div className={container()}>
         <div className={innerContainer()}>
           <Tools />
           <ImprovedDesignTab designId={designId} />
@@ -42,7 +41,7 @@ export function DesignPreview({
             <OriginalDesignTab originalImageUrl={originalImageUrl} />
           )}
         </div>
-      </Tabs>
-    </div>
+      </div>
+    </Tabs>
   );
 }

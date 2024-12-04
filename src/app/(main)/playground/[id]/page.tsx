@@ -1,10 +1,6 @@
 import { DesignImprovementsPreview } from '@/components/designImprovementsPreview';
 import { DesignPreview } from '@/components/designPreview';
-import { FormValues, NewDesignForm } from '@/components/newDesignForm';
 import { prisma } from '@/lib/prisma';
-import roastService from '@/services/roastService';
-import { RoastResponse } from '@/types/roastResponse';
-import { RoastedDesigns } from '@prisma/client';
 import { cva } from 'class-variance-authority';
 import { notFound } from 'next/navigation';
 

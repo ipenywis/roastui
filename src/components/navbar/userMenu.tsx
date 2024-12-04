@@ -21,7 +21,7 @@ export async function UserMenu() {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger>
         <Avatar className="outline-none">
           <AvatarImage src={session?.user?.image || undefined} />
@@ -31,6 +31,10 @@ export async function UserMenu() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+        <DropdownMenuItem>
+          <Link href="/playground">New Roast ⚡️</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link href="/dashboard">Dashboard</Link>
         </DropdownMenuItem>

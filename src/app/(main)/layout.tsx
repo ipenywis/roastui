@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { Navbar } from '@/components/navbar';
 import { ThemeProvider } from 'next-themes';
 import { cn } from '@/lib/utils';
 import { SessionProvider } from 'next-auth/react';
@@ -20,11 +19,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="w-full min-h-full scroll-smooth">
+    <html lang="en" className="flex w-full h-full min-h-full overflow-auto">
       <head>
         <SandPackCSS />
       </head>
-      <body className={cn(inter.className, 'bg-black relative size-full dark')}>
+      <body
+        className={cn(
+          inter.className,
+          'flex bg-black size-full min-h-full dark scroll-smooth overflow-auto'
+        )}
+      >
         <ThemeProvider defaultTheme="dark">
           <SessionProvider>{children}</SessionProvider>
         </ThemeProvider>

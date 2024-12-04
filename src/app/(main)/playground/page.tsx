@@ -19,5 +19,9 @@ export default async function DesignPlayground() {
 
   if (!isActive) return redirect('/subscribe');
 
-  return <Playground />;
+  return (
+    <div className="size-full">
+      <Playground />
+    </div>
+  );
 }

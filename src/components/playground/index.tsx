@@ -34,16 +34,16 @@ export default function Playground() {
         <h1 className={title()}>Roast New Design</h1>
         <NewDesignForm onSubmit={onSubmit} />
         {roastResponse && (
-          <DesignImprovementsPreview
-            improvements={JSON.parse(roastResponse.improvements)}
-            whatsWrong={JSON.parse(roastResponse.whatsWrong)}
-          />
-        )}
-        {roastResponse && (
           <DesignPreview
             HTML={roastResponse.improvedHtml}
             originalImageUrl={roastResponse.originalImageUrl}
             designId={roastResponse.id}
+          />
+        )}
+        {roastResponse && (
+          <DesignImprovementsPreview
+            improvements={JSON.parse(roastResponse.improvements)}
+            whatsWrong={JSON.parse(roastResponse.whatsWrong)}
           />
         )}
       </div>
