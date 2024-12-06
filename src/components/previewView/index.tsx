@@ -1,6 +1,5 @@
 'use client';
 
-import { DesignPreviewStoreProvider } from '@/lib/providers/designPreviewStoreProvider';
 import { RoastedDesigns } from '@prisma/client';
 import { UiHighlightsControls } from '../uiHighlights';
 import { useEffect, useState } from 'react';
@@ -12,6 +11,8 @@ import {
   PreviewHighlightCoordinates,
 } from '@/lib/preview';
 import { PreviewFlow } from './previewFlow';
+import { DesignPreviewStoreProvider } from '@/lib/providers/designPreviewStoreProvider';
+import { usePreviewFullScreenMode } from '@/hooks/usePreviewFullScreenMode';
 
 interface DesignPreviewPlaygroundProps {
   roastedDesign: RoastedDesigns;
@@ -24,6 +25,8 @@ export function PreviewView(props: DesignPreviewPlaygroundProps) {
     []
   );
 
+  const { isPreviewFullScreenMode } = usePreviewFullScreenMode();
+
   useEffect(() => {
     //Timeout is needed to allow html to paint before getting coordinates
     setTimeout(() => {
@@ -32,8 +35,8 @@ export function PreviewView(props: DesignPreviewPlaygroundProps) {
       );
       const newCoordinates = getCoordinatesFromElements(elements);
       setCoordinates(newCoordinates);
-    }, 200);
-  }, [roastedDesign.uiHighlights]);
+    }, 100);
+  }, [roastedDesign.uiHighlights, isPreviewFullScreenMode]);
 
   return (
     <DesignPreviewStoreProvider>

@@ -1,11 +1,5 @@
-import {
-  Background,
-  Controls,
-  Handle,
-  Position,
-  ReactFlow,
-} from '@xyflow/react';
-import { FlowNodeTypes, getAllEdges, getAllNodes } from './nodes';
+import { Background, Controls, ReactFlow } from '@xyflow/react';
+import { FlowNodeTypes, getAllEdges } from './nodes';
 import { ArrowNode } from './arrowNode';
 import { MainDesignNode } from './mainDesignNode';
 import { RoastedDesigns } from '@prisma/client';

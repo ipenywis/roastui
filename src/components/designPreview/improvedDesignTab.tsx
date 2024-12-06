@@ -29,8 +29,6 @@ function ErrorPlaceholder() {
 export function ImprovedDesignTab(props: ImprovedDesignTabProps) {
   const { designId } = props;
 
-  console.log('Design Id: ', designId);
-
   if (!designId) {
     return <ErrorPlaceholder />;
   }

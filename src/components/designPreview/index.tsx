@@ -1,3 +1,5 @@
+'use client';
+
 import { cva } from 'class-variance-authority';
 import { Tools } from './tools';
 import { Tabs } from '../ui/tabs';
@@ -5,9 +7,23 @@ import { ImprovedDesignTab } from './improvedDesignTab';
 import { OriginalDesignTab } from './originalDesignTab';
 import { ImprovedHtmlSandpackTab } from './improvedHtmlSandpackTab';
 import { UiHighlights } from '@/types/newDesign';
+import useLocalStorageState from 'use-local-storage-state';
+import { useEffect, useRef } from 'react';
+import { usePreviewFullScreenMode } from '@/hooks/usePreviewFullScreenMode';
 
 const container = cva(
-  'flex w-[1000px] h-[800px] flex-col justify-center items-center mt-10 relative border border-gray-600 rounded-lg overflow-hidden'
+  'flex flex-col justify-center items-center mt-10 relative border border-gray-600 rounded-lg overflow-hidden',
+  {
+    variants: {
+      fullScreen: {
+        true: 'w-full h-full !mt-0 p-0',
+        false: 'w-[1000px] h-[800px]',
+      },
+    },
+    defaultVariants: {
+      fullScreen: false,
+    },
+  }
 );
 
 const innerContainer = cva(
@@ -28,20 +44,35 @@ export function DesignPreview({
   originalImageUrl,
   designId,
 }: DesignPreviewProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const { isPreviewFullScreenMode, handleToggleFullScreenMode } =
+    usePreviewFullScreenMode();
+
+  useEffect(() => {
+    handleToggleFullScreenMode(containerRef.current);
+  }, [handleToggleFullScreenMode]);
+
   if (!HTML) return null;
 
   return (
-    <Tabs defaultValue="improvedDesign">
-      <div className={container()}>
-        <div className={innerContainer()}>
-          <Tools />
-          <ImprovedDesignTab designId={designId} />
-          <ImprovedHtmlSandpackTab HTML={HTML} react={react} />
-          {originalImageUrl && (
-            <OriginalDesignTab originalImageUrl={originalImageUrl} />
-          )}
-        </div>
+    <div
+      id="full-screen-preview-container"
+      ref={containerRef}
+      className="w-full h-full"
+    >
+      <div className={container({ fullScreen: isPreviewFullScreenMode })}>
+        <Tabs defaultValue="improvedDesign" className="w-full h-full">
+          <div className={innerContainer()}>
+            <Tools />
+            <ImprovedDesignTab designId={designId} />
+            <ImprovedHtmlSandpackTab HTML={HTML} react={react} />
+            {originalImageUrl && (
+              <OriginalDesignTab originalImageUrl={originalImageUrl} />
+            )}
+          </div>
+        </Tabs>
       </div>
-    </Tabs>
+    </div>
   );
 }

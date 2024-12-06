@@ -1,6 +1,7 @@
 import { DesignImprovementsPreview } from '@/components/designImprovementsPreview';
 import { DesignPreview } from '@/components/designPreview';
 import { prisma } from '@/lib/prisma';
+import { DesignPreviewStoreProvider } from '@/lib/providers/designPreviewStoreProvider';
 import { cva } from 'class-variance-authority';
 import { notFound } from 'next/navigation';
 
@@ -30,24 +31,26 @@ export default async function SingleDesignPlayground({
   }
 
   return (
-    <div className={container()}>
-      <div className={innerContainer()}>
-        <h1 className={title()}>Design: {roastedDesign.name}</h1>
-        {/* <NewDesignForm onSubmit={onSubmit} /> */}
-        <DesignPreview
-          designId={params.id}
-          HTML={roastedDesign?.improvedHtml}
-          react={roastedDesign?.improvedReact}
-          originalImageUrl={roastedDesign?.originalImageUrl}
-          uiHighlights={JSON.parse(roastedDesign.uiHighlights)}
-        />
-        {roastedDesign && (
-          <DesignImprovementsPreview
-            improvements={JSON.parse(roastedDesign.improvements)}
-            whatsWrong={JSON.parse(roastedDesign.whatsWrong)}
+    <DesignPreviewStoreProvider>
+      <div className={container()}>
+        <div className={innerContainer()}>
+          <h1 className={title()}>Design: {roastedDesign.name}</h1>
+          {/* <NewDesignForm onSubmit={onSubmit} /> */}
+          <DesignPreview
+            designId={params.id}
+            HTML={roastedDesign?.improvedHtml}
+            react={roastedDesign?.improvedReact}
+            originalImageUrl={roastedDesign?.originalImageUrl}
+            uiHighlights={JSON.parse(roastedDesign.uiHighlights)}
           />
-        )}
+          {roastedDesign && (
+            <DesignImprovementsPreview
+              improvements={JSON.parse(roastedDesign.improvements)}
+              whatsWrong={JSON.parse(roastedDesign.whatsWrong)}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </DesignPreviewStoreProvider>
   );
 }
