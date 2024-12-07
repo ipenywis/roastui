@@ -6,7 +6,7 @@ import { DesignImprovements } from '@/types/designImprovements';
 import { NewDesign } from '@/types/newDesign';
 
 export async function getDesignImprovements(
-  image: File
+  image: File,
 ): Promise<DesignImprovements> {
   const imageBase64 = await getImageBase64(image);
 
@@ -31,14 +31,12 @@ export async function getDesignImprovements(
     ],
   });
 
-  console.log("What's wrong: ", result.object.whatsWrong);
-
   return result.object;
 }
 
 export async function getNewDesign(
   image: File,
-  improvements: DesignImprovements['improvements']
+  improvements: DesignImprovements['improvements'],
 ): Promise<NewDesign> {
   const base64Image = await getImageBase64(image);
 
@@ -56,7 +54,7 @@ export async function getNewDesign(
           {
             type: 'text',
             text: NEW_DESIGN_PROMPTS.getUserPrompt(
-              improvements.map((i) => `${i.category}: ${i.description}`)
+              improvements.map((i) => `${i.category}: ${i.description}`),
             ),
           },
           {

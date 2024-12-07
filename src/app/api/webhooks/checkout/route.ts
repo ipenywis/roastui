@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
 
   try {
     event = stripe.webhooks.constructEvent(body, signature, endpointSecret);
-    console.log('Received webhook request', endpointSecret);
 
     switch (event.type) {
       case 'checkout.session.completed':
@@ -54,6 +53,7 @@ export async function POST(request: NextRequest) {
           },
         });
 
+        //eslint-disable-next-line no-console
         console.log('Subscription created and user updated', subscription);
 
         return NextResponse.json({ message: 'Session checkout completed' });
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
         const subscriptionDeleted = event.data.object as Stripe.Subscription;
 
         const customer = (await stripe.customers.retrieve(
-          subscriptionDeleted.customer as string
+          subscriptionDeleted.customer as string,
         )) as Stripe.Customer;
 
         if (!customer?.email)
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
       default:
         return NextResponse.json(
           { message: 'Unknown event type' },
-          { status: 404 }
+          { status: 404 },
         );
     }
   } catch (err) {

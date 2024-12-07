@@ -12,7 +12,5 @@ export function renderReactToHtml(react: string) {
 
   const html = div.innerHTML;
 
-  console.log('Div: ', div);
-
   return html;
 }

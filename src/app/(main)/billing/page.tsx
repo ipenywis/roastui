@@ -26,13 +26,12 @@ export default async function BillingPage() {
       return <div>Something went wrong! Please try again.</div>;
     }
 
-    console.log('billingPortalSession.url', billingPortalSession.url);
     redirectUrl = billingPortalSession.url;
   } catch (err) {
+    //eslint-disable-next-line no-console
     console.error('Error:', err);
     return <div>Something went wrong! Please try again.</div>;
   } finally {
-    console.log('finally');
     return redirect(redirectUrl);
   }
 }

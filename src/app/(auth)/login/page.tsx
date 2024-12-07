@@ -23,8 +23,6 @@ export default function LoginPage({
   const redirectUrl =
     tier && plan ? `/subscribe?tier=${tier}&plan=${plan}` : '/subscribe';
 
-  console.log('URL: ', redirectUrl);
-
   async function loginWithGoogle() {
     'use server';
     await signIn('google', {

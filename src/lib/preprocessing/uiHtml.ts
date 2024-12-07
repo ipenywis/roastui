@@ -10,10 +10,19 @@ function preprocessForms(root: HTMLElement) {
   return root;
 }
 
+function preprocessInternalDataElementsAttributes(root: HTMLElement) {
+  const internalDataElements = root.querySelectorAll('[data-element]');
+
+  internalDataElements.forEach((element) => {
+    element.removeAttribute('data-element');
+  });
+}
+
 export function preprocessUiHtml(html: string) {
   const root = parse(html);
 
-  const processedRoot = preprocessForms(root);
+  preprocessForms(root);
+  preprocessInternalDataElementsAttributes(root);
 
-  return processedRoot.toString();
+  return root.toString();
 }

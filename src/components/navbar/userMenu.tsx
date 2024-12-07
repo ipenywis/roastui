@@ -5,18 +5,15 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { Button } from '../ui/button';
 
 export async function UserMenu() {
   const session = await auth();
 
   const handleLogout = async () => {
     'use server';
-    console.log('Logging out');
     await signOut();
   };
 
