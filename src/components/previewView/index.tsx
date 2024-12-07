@@ -3,8 +3,6 @@
 import { RoastedDesigns } from '@prisma/client';
 import { UiHighlightsControls } from '../uiHighlights';
 import { useEffect, useState } from 'react';
-
-import '@xyflow/react/dist/style.css';
 import {
   getCoordinatesFromElements,
   getHighlightedPreviewElements,
@@ -13,6 +11,7 @@ import {
 import { PreviewFlow } from './previewFlow';
 import { DesignPreviewStoreProvider } from '@/lib/providers/designPreviewStoreProvider';
 import { usePreviewFullScreenMode } from '@/hooks/usePreviewFullScreenMode';
+import '@xyflow/react/dist/style.css';
 
 interface DesignPreviewPlaygroundProps {
   roastedDesign: RoastedDesigns;
@@ -22,7 +21,7 @@ export function PreviewView(props: DesignPreviewPlaygroundProps) {
   const { roastedDesign } = props;
 
   const [coordinates, setCoordinates] = useState<PreviewHighlightCoordinates[]>(
-    []
+    [],
   );
 
   const { isPreviewFullScreenMode } = usePreviewFullScreenMode();
@@ -31,11 +30,11 @@ export function PreviewView(props: DesignPreviewPlaygroundProps) {
     //Timeout is needed to allow html to paint before getting coordinates
     setTimeout(() => {
       const elements = getHighlightedPreviewElements(
-        JSON.parse(roastedDesign.uiHighlights).improvements
+        JSON.parse(roastedDesign.uiHighlights).improvements,
       );
       const newCoordinates = getCoordinatesFromElements(elements);
       setCoordinates(newCoordinates);
-    }, 100);
+    }, 200);
   }, [roastedDesign.uiHighlights, isPreviewFullScreenMode]);
 
   return (

@@ -4,7 +4,10 @@ import imageService from '@/services/imageService';
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
-import { preprocessUiHtml } from '@/lib/preprocessing/uiHtml';
+import {
+  preprocessUiHtml,
+  preprocessUiHtmlInternal,
+} from '@/lib/preprocessing/uiHtml';
 
 export const POST = auth(async (request) => {
   const { auth } = request;
@@ -49,6 +52,9 @@ export const POST = auth(async (request) => {
     );
 
     const preprocessedImprovedHtml = preprocessUiHtml(newDesign.html);
+    const preprocessedInternalImprovedHtml = preprocessUiHtmlInternal(
+      newDesign.html,
+    );
 
     const originalImageUrl = await imageService.uploadImage(
       auth?.user,
@@ -71,6 +77,7 @@ export const POST = auth(async (request) => {
         userId: auth.user.id,
         originalImageUrl,
         improvedHtml: preprocessedImprovedHtml,
+        internalImprovedHtml: preprocessedInternalImprovedHtml,
         improvedReact: newDesign.react,
         improvements: JSON.stringify(improvements.improvements),
         whatsWrong: JSON.stringify(improvements.whatsWrong),

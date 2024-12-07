@@ -10,7 +10,7 @@ export function MainDesignNode({
     <div
       id="html-container"
       dangerouslySetInnerHTML={{
-        __html: DOMPurify.sanitize(data.roastedDesign.improvedHtml),
+        __html: DOMPurify.sanitize(data.roastedDesign.internalImprovedHtml),
       }}
     />
   );

@@ -1,6 +1,6 @@
 import { roastModel } from './ai';
 import { getImageBase64 } from './image';
-import { generateObject, generateText } from 'ai';
+import { generateObject } from 'ai';
 import { IMPROVEMENTS_PROMPTS, NEW_DESIGN_PROMPTS } from './prompt';
 import { DesignImprovements } from '@/types/designImprovements';
 import { NewDesign } from '@/types/newDesign';

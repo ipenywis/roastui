@@ -9,18 +9,18 @@ import { cva } from 'class-variance-authority';
 import { useState } from 'react';
 
 const container = cva(
-  'size-full flex flex-col p-8 items-center relative pb-12'
+  'size-full flex flex-col p-8 items-center relative pb-12',
 );
 
 const innerContainer = cva(
-  'size-full flex flex-col gap-4 max-w-screen-lg items-center'
+  'size-full flex flex-col gap-4 max-w-screen-lg items-center',
 );
 
 const title = cva('text-3xl font-bold');
 
 export default function Playground() {
   const [roastResponse, setRoastResponse] = useState<RoastedDesigns | null>(
-    null
+    null,
   );
 
   const onSubmit = async (values: FormValues) => {
@@ -36,6 +36,7 @@ export default function Playground() {
         {roastResponse && (
           <DesignPreview
             HTML={roastResponse.improvedHtml}
+            react={roastResponse.improvedReact}
             originalImageUrl={roastResponse.originalImageUrl}
             designId={roastResponse.id}
           />

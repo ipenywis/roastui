@@ -28,16 +28,16 @@ export async function UserMenu() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>
-          <Link href="/playground">New Roast ⚡️</Link>
-        </DropdownMenuItem>
+        <Link href="/playground" prefetch>
+          <DropdownMenuItem>New Roast ⚡️</DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link href="/dashboard">Dashboard</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href="/billing">Billing</Link>
-        </DropdownMenuItem>
+        <Link href="/dashboard" prefetch>
+          <DropdownMenuItem>Dashboard</DropdownMenuItem>
+        </Link>
+        <Link href="/billing" prefetch>
+          <DropdownMenuItem>Billing</DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
         <form action={handleLogout}>
           <button className="w-full cursor-pointer">
