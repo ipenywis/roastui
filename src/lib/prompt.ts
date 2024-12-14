@@ -111,7 +111,7 @@ You've mastered the art of frontend design and TailwindCSS using React! Your mis
 `;
 
 const GET_PROMPT_USER_NEW_DESIGN = (
-  requirements: string[]
+  requirements: string[],
 ) => `This is a screenshot of a web component I want to replicate.  Please generate HTML for it.
 
 The following are some special requirements to enhance the design:
@@ -126,13 +126,13 @@ export const IMPROVEMENTS_PROMPTS = {
       z.object({
         category: z.string(),
         description: z.string(),
-      })
+      }),
     ),
     improvements: z.array(
       z.object({
         category: z.string(),
         description: z.string(),
-      })
+      }),
     ),
   }) satisfies z.ZodType<DesignImprovements>,
 };
@@ -148,7 +148,7 @@ export const NEW_DESIGN_PROMPTS = {
         z.object({
           improvement: z.string(),
           element: z.string(),
-        })
+        }),
       )
       .optional(),
   }) satisfies z.ZodType<NewDesign>,

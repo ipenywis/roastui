@@ -1,4 +1,8 @@
-import { compressImage, MAX_IMAGE_UPLOAD_SIZE } from '@/lib/image';
+import {
+  compressImage,
+  getImageBase64,
+  MAX_IMAGE_UPLOAD_SIZE,
+} from '@/lib/image';
 import { getDesignImprovements, getNewDesign } from '@/lib/roast';
 import imageService from '@/services/imageService';
 import { NextResponse } from 'next/server';
@@ -8,6 +12,7 @@ import {
   preprocessUiHtml,
   preprocessUiHtmlInternal,
 } from '@/lib/preprocessing/uiHtml';
+import { DesignImprovements } from '@/types/designImprovements';
 
 export const POST = auth(async (request) => {
   const { auth } = request;
@@ -44,10 +49,14 @@ export const POST = auth(async (request) => {
 
     const compressedImage = await compressImage(image);
 
-    const improvements = await getDesignImprovements(compressedImage);
+    const base64Image = await getImageBase64(compressedImage);
+
+    const improvements = (await getDesignImprovements(
+      base64Image,
+    )) as DesignImprovements;
 
     const newDesign = await getNewDesign(
-      compressedImage,
+      base64Image,
       improvements.improvements,
     );
 

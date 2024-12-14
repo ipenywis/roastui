@@ -5,6 +5,7 @@ import { ThemeProvider } from 'next-themes';
 import { cn } from '@/lib/utils';
 import { SessionProvider } from 'next-auth/react';
 import { SandPackCSS } from '@/components/sandPackStyles';
+import { SWRProvider } from '@/lib/providers/swrProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,11 +27,13 @@ export default function RootLayout({
       <body
         className={cn(
           inter.className,
-          'bg-black size-full min-h-full dark scroll-smooth overflow-auto'
+          'bg-black size-full min-h-full dark scroll-smooth overflow-auto',
         )}
       >
         <ThemeProvider defaultTheme="dark">
-          <SessionProvider>{children}</SessionProvider>
+          <SWRProvider>
+            <SessionProvider>{children}</SessionProvider>
+          </SWRProvider>
         </ThemeProvider>
       </body>
     </html>

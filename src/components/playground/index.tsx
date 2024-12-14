@@ -5,34 +5,49 @@ import { DesignPreview } from '@/components/designPreview';
 import { FormValues, NewDesignForm } from '@/components/newDesignForm';
 import roastService from '@/services/roastService';
 import { RoastedDesigns } from '@prisma/client';
-import { cva } from 'class-variance-authority';
 import { useState } from 'react';
-
-const container = cva(
-  'size-full flex flex-col p-8 items-center relative pb-12',
-);
-
-const innerContainer = cva(
-  'size-full flex flex-col gap-4 max-w-screen-lg items-center',
-);
-
-const title = cva('text-3xl font-bold');
+import { StreamableRoastedDesignsSchema } from '@/types/roastedDesign';
+import { useObject } from '@/hooks/useObject';
+import { container, innerContainer, title } from './common';
+import { StreamingPlayground } from './streamingPlayground';
 
 export default function Playground() {
   const [roastResponse, setRoastResponse] = useState<RoastedDesigns | null>(
     null,
   );
 
-  const onSubmit = async (values: FormValues) => {
-    const response = await roastService.roastUI(values.name, values.images[0]);
-    setRoastResponse(response);
+  const { object, isLoading, submit, error } = useObject({
+    api: '/api/roastStreaming',
+    schema: StreamableRoastedDesignsSchema,
+    fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
+      const body = init?.body as FormData;
+      const response = await roastService.roastUIFormData(body);
+      return response;
+    },
+  });
+
+  // const onSubmit = async (values: FormValues) => {
+  //   const response = await roastService.roastUI(values.name, values.images[0]);
+  //   setRoastResponse(response);
+  // };
+
+  const handleSubmit = async (values: FormValues) => {
+    const formData = new FormData();
+    formData.append('name', values.name);
+    formData.append('image', values.images[0]);
+
+    await submit(formData);
   };
+
+  if (object) {
+    return <StreamingPlayground streamableRoastedDesign={object} />;
+  }
 
   return (
     <div className={container()}>
       <div className={innerContainer()}>
         <h1 className={title()}>Roast New Design</h1>
-        <NewDesignForm onSubmit={onSubmit} />
+        <NewDesignForm onSubmit={handleSubmit} />
         {roastResponse && (
           <DesignPreview
             HTML={roastResponse.improvedHtml}

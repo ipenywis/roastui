@@ -8,7 +8,7 @@ import { OriginalDesignTab } from './originalDesignTab';
 import { ImprovedHtmlSandpackTab } from './improvedHtmlSandpackTab';
 import { UiHighlights } from '@/types/newDesign';
 import useLocalStorageState from 'use-local-storage-state';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePreviewFullScreenMode } from '@/hooks/usePreviewFullScreenMode';
 
 const container = cva(
@@ -23,15 +23,15 @@ const container = cva(
     defaultVariants: {
       fullScreen: false,
     },
-  }
+  },
 );
 
 const innerContainer = cva(
-  'flex flex-col relative size-full min-w-full min-h-full overflow-hidden border'
+  'flex flex-col relative size-full min-w-full min-h-full overflow-hidden border',
 );
 
 interface DesignPreviewProps {
-  designId: string;
+  designId?: string;
   HTML?: string;
   react?: string;
   originalImageUrl?: string;
@@ -45,6 +45,7 @@ export function DesignPreview({
   designId,
 }: DesignPreviewProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [activeTab, setActiveTab] = useState<string>('improvedDesign');
 
   const { isPreviewFullScreenMode, handleToggleFullScreenMode } =
     usePreviewFullScreenMode();
@@ -52,6 +53,11 @@ export function DesignPreview({
   useEffect(() => {
     handleToggleFullScreenMode(containerRef.current);
   }, [handleToggleFullScreenMode]);
+
+  useEffect(() => {
+    if (designId) setActiveTab('improvedDesign');
+    else if (HTML) setActiveTab('improvedHtml');
+  }, [designId, HTML, originalImageUrl]);
 
   if (!HTML) return null;
 
@@ -62,10 +68,17 @@ export function DesignPreview({
       className="w-full h-full"
     >
       <div className={container({ fullScreen: isPreviewFullScreenMode })}>
-        <Tabs defaultValue="improvedDesign" className="w-full h-full">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="w-full h-full"
+        >
           <div className={innerContainer()}>
-            <Tools />
-            <ImprovedDesignTab designId={designId} />
+            <Tools
+              isImprovedDesignDisabled={!designId}
+              isOriginalDesignDisabled={!originalImageUrl}
+            />
+            {designId && <ImprovedDesignTab designId={designId} />}
             <ImprovedHtmlSandpackTab HTML={HTML} react={react} />
             {originalImageUrl && (
               <OriginalDesignTab originalImageUrl={originalImageUrl} />

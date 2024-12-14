@@ -5,18 +5,33 @@ import { Button } from '../ui/button';
 import { cva } from 'class-variance-authority';
 
 const tabItem = cva(
-  'flex items-center justify-center data-[state=active]:bg-black'
+  'flex items-center justify-center data-[state=active]:bg-black',
 );
 
-export function Tools() {
+interface ToolsProps {
+  isImprovedDesignDisabled?: boolean;
+  isOriginalDesignDisabled?: boolean;
+}
+
+export function Tools({
+  isImprovedDesignDisabled,
+  isOriginalDesignDisabled,
+}: ToolsProps) {
   return (
-    <div className="w-full flex justify-end gap-1 p-2 border-b">
+    <div className="w-full flex justify-start gap-1 p-2 border-b">
       <TabsList className="grid grid-cols-3">
-        <TabsTrigger value="improvedDesign" className={tabItem()}>
+        <TabsTrigger
+          value="improvedDesign"
+          className={tabItem()}
+          disabled={isImprovedDesignDisabled}
+        >
           Improved ⚡️
         </TabsTrigger>
-        <TabsTrigger value="originalDesign" className={tabItem()}>
-          {/* <MdImage className="size-5 cursor-pointer" /> */}
+        <TabsTrigger
+          value="originalDesign"
+          className={tabItem()}
+          disabled={isOriginalDesignDisabled}
+        >
           Original 📸
         </TabsTrigger>
         <TabsTrigger value="improvedHtml" className={tabItem()}>

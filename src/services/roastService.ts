@@ -18,6 +18,19 @@ const roastService = {
     const data = await response.json();
     return data;
   },
+
+  async roastUIFormData(formData: FormData): Promise<Response> {
+    const response = await fetch('/api/roastStreaming', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload');
+    }
+
+    return response;
+  },
 };
 
 export default roastService;
