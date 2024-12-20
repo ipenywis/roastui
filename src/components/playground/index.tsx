@@ -4,17 +4,18 @@ import { DesignImprovementsPreview } from '@/components/designImprovementsPrevie
 import { DesignPreview } from '@/components/designPreview';
 import { FormValues, NewDesignForm } from '@/components/newDesignForm';
 import roastService from '@/services/roastService';
-import { RoastedDesigns } from '@prisma/client';
 import { useState } from 'react';
-import { StreamableRoastedDesignsSchema } from '@/types/roastedDesign';
+import {
+  StreamableRoastedDesign,
+  StreamableRoastedDesignsSchema,
+} from '@/types/roastedDesign';
 import { useObject } from '@/hooks/useObject';
 import { container, innerContainer, title } from './common';
 import { StreamingPlayground } from './streamingPlayground';
 
 export default function Playground() {
-  const [roastResponse, setRoastResponse] = useState<RoastedDesigns | null>(
-    null,
-  );
+  const [roastResponse, setRoastResponse] =
+    useState<StreamableRoastedDesign | null>(null);
 
   const { object, isLoading, submit, error } = useObject({
     api: '/api/roastStreaming',
@@ -24,12 +25,12 @@ export default function Playground() {
       const response = await roastService.roastUIFormData(body);
       return response;
     },
+    onFinish: ({ object }) => {
+      if (object) {
+        setRoastResponse(object);
+      }
+    },
   });
-
-  // const onSubmit = async (values: FormValues) => {
-  //   const response = await roastService.roastUI(values.name, values.images[0]);
-  //   setRoastResponse(response);
-  // };
 
   const handleSubmit = async (values: FormValues) => {
     const formData = new FormData();
@@ -39,7 +40,7 @@ export default function Playground() {
     await submit(formData);
   };
 
-  if (object) {
+  if (object && isLoading) {
     return <StreamingPlayground streamableRoastedDesign={object} />;
   }
 
@@ -56,12 +57,14 @@ export default function Playground() {
             designId={roastResponse.id}
           />
         )}
-        {roastResponse && (
-          <DesignImprovementsPreview
-            improvements={JSON.parse(roastResponse.improvements)}
-            whatsWrong={JSON.parse(roastResponse.whatsWrong)}
-          />
-        )}
+        {roastResponse &&
+          roastResponse.improvements &&
+          roastResponse.whatsWrong && (
+            <DesignImprovementsPreview
+              improvements={JSON.parse(roastResponse.improvements)}
+              whatsWrong={JSON.parse(roastResponse.whatsWrong)}
+            />
+          )}
       </div>
     </div>
   );
