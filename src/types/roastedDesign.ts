@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const StreamableRoastedDesignsSchema = z.object({
   id: z.string().optional(),
+  name: z.string().optional(),
   improvements: z.string().optional(),
   whatsWrong: z.string().optional(),
   improvedHtml: z.string().optional(),

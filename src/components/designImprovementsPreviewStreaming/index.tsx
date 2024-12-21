@@ -49,14 +49,16 @@ export function DesignImprovementsPreviewStreaming({
     <div className={container()}>
       <div className="flex flex-col">
         <Collapsible open={isWhatsWrongOpen} onOpenChange={setIsWhatsWrongOpen}>
-          <CollapsibleTrigger className={trigger()}>
-            What’s wrong with the design?{' '}
-            {isWhatsWrongOpen ? (
-              <LuChevronUp className={collapsibleIcon()} />
-            ) : (
-              <LuChevronDown className={collapsibleIcon()} />
-            )}
-          </CollapsibleTrigger>
+          {whatsWrongToShow.length > 0 && (
+            <CollapsibleTrigger className={trigger()}>
+              What’s wrong with the design?{' '}
+              {isWhatsWrongOpen ? (
+                <LuChevronUp className={collapsibleIcon()} />
+              ) : (
+                <LuChevronDown className={collapsibleIcon()} />
+              )}
+            </CollapsibleTrigger>
+          )}
           <CollapsibleContent className={content()}>
             <ol className={orderedList()}>
               <TypewriterQueue chunks={whatsWrongToShow} speed={20}>
@@ -75,14 +77,16 @@ export function DesignImprovementsPreviewStreaming({
           open={isImprovementsOpen}
           onOpenChange={setIsImprovementsOpen}
         >
-          <CollapsibleTrigger className={trigger()}>
-            Recommendations for improving the design{' '}
-            {isImprovementsOpen ? (
-              <LuChevronUp className={collapsibleIcon()} />
-            ) : (
-              <LuChevronDown className={collapsibleIcon()} />
-            )}
-          </CollapsibleTrigger>
+          {improvementsToShow.length > 0 && (
+            <CollapsibleTrigger className={trigger()}>
+              Recommendations for improving the design{' '}
+              {isImprovementsOpen ? (
+                <LuChevronUp className={collapsibleIcon()} />
+              ) : (
+                <LuChevronDown className={collapsibleIcon()} />
+              )}
+            </CollapsibleTrigger>
+          )}
           <CollapsibleContent className={content()}>
             <ol className={orderedList()}>
               <TypewriterQueue chunks={improvementsToShow} speed={20}>

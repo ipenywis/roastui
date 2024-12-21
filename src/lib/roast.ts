@@ -40,6 +40,7 @@ export async function getDesignImprovements(
 }
 
 export function getDesignImprovementsStreaming(
+  designName: string,
   imageBase64: string,
   asyncStream: AsyncStream<StreamableRoastedDesign>,
 ) {
@@ -71,6 +72,7 @@ export function getDesignImprovementsStreaming(
 
     for await (const chunk of streamResult.partialObjectStream) {
       const streamableRoastedDesign: StreamableRoastedDesign = {
+        name: designName,
         improvements: JSON.stringify(chunk.improvements),
         whatsWrong: JSON.stringify(chunk.whatsWrong),
         chunkType: 'IMPROVEMENTS',

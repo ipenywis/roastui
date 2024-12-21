@@ -20,8 +20,21 @@ const roastService = {
   },
 
   async roastUIFormData(formData: FormData): Promise<Response> {
-    const response = await fetch('/api/roastStreaming', {
+    const response = await fetch('/api/roast-streaming', {
       method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload');
+    }
+
+    return response;
+  },
+
+  async updateRoastUI(formData: FormData): Promise<Response> {
+    const response = await fetch('/api/roast-streaming', {
+      method: 'PUT',
       body: formData,
     });
 

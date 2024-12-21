@@ -100,6 +100,11 @@ export type Experimental_UseObjectHelpers<RESULT, INPUT> = {
    * Abort the current request immediately, keep the current partial object if any.
    */
   stop: () => void;
+
+  /**
+   * Clear the current object and error.
+   */
+  clear: () => void;
 };
 
 export function useObject<RESULT, INPUT extends BodyInit = any>({
@@ -141,6 +146,12 @@ export function useObject<RESULT, INPUT extends BodyInit = any>({
       abortControllerRef.current = null;
     }
   }, []);
+
+  const clear = useCallback(() => {
+    mutate(undefined);
+    setIsLoading(false);
+    setError(undefined);
+  }, [mutate, setIsLoading, setError]);
 
   const submit = async (input: INPUT, fetchOptions?: RequestInit) => {
     try {
@@ -227,6 +238,7 @@ export function useObject<RESULT, INPUT extends BodyInit = any>({
     error,
     isLoading,
     stop,
+    clear,
   };
 }
 
