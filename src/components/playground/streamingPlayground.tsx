@@ -15,6 +15,7 @@ import { useObject } from '@/hooks/useObject';
 import roastService from '@/services/roastService';
 import { DesignForm } from './designForm';
 import { useRoastDesign } from '@/hooks/useRoastDesign';
+import { PlaygroundError } from './playgroundError';
 
 // interface StreamingPlaygroundProps {
 //   streamableRoastedDesign?: DeepPartial<StreamableRoastedDesign>;
@@ -42,6 +43,8 @@ export function StreamingPlayground() {
     lastCreatedDesignFormValues,
     clearCreatedRoastedDesign,
     clearUpdatedRoastedDesign,
+    genericError,
+    clearGenericError,
   } = useRoastDesign({
     onCreationFinish: (object) => {
       setRoastResponse(object);
@@ -88,11 +91,15 @@ export function StreamingPlayground() {
   }, []);
 
   const handleRoastAgain = useCallback(() => {
+    clearGenericError();
+    clearCachedImprovements();
     if (lastCreatedDesignFormValues && roastResponse?.id) {
       setIsUpdateMode(true);
       clearUpdatedRoastedDesign();
-      clearCachedImprovements();
       roastUpdateDesign(roastResponse.id, lastCreatedDesignFormValues);
+    } else if (!roastResponse?.id && lastCreatedDesignFormValues) {
+      clearCreatedRoastedDesign();
+      roastNewDesign(lastCreatedDesignFormValues);
     }
   }, [
     lastCreatedDesignFormValues,
@@ -101,6 +108,9 @@ export function StreamingPlayground() {
     clearUpdatedRoastedDesign,
     setIsUpdateMode,
     clearCachedImprovements,
+    roastNewDesign,
+    clearCreatedRoastedDesign,
+    clearGenericError,
   ]);
 
   return (
@@ -117,6 +127,7 @@ export function StreamingPlayground() {
           isStreamingComplete={!!streamableRoastedDesign && !isLoading}
           onRoastAgain={handleRoastAgain}
         />
+        <PlaygroundError error={genericError || updateError || creationError} />
         {streamableRoastedDesign?.improvedHtml && (
           <DesignPreview
             HTML={streamableRoastedDesign.improvedHtml}

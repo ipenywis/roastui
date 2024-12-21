@@ -18,6 +18,8 @@ interface UseRoastDesignReturn {
   createdRoastedDesign: DeepPartial<StreamableRoastedDesign> | null;
   updatedRoastedDesign: DeepPartial<StreamableRoastedDesign> | null;
   lastCreatedDesignFormValues: CreateFormValues | null;
+  genericError: Error | null;
+  clearGenericError: () => void;
   clearCreatedRoastedDesign: () => void;
   clearUpdatedRoastedDesign: () => void;
 }
@@ -31,6 +33,21 @@ export function useRoastDesign({
 }): UseRoastDesignReturn {
   const [lastCreatedDesignFormValues, setLastCreatedDesignFormValues] =
     useState<CreateFormValues | null>(null);
+
+  const [genericError, setGenericError] = useState<Error | null>(null);
+
+  const checkForGenericError = useCallback(
+    (object: StreamableRoastedDesign) => {
+      if (!object.id || object.chunkStatus !== 'COMPLETED') {
+        setGenericError(
+          new Error(
+            'Streaming roasted design cut mid-way, please check your internet connection and try again!',
+          ),
+        );
+      }
+    },
+    [],
+  );
 
   const {
     object: createdRoastedDesign,
@@ -48,6 +65,7 @@ export function useRoastDesign({
     },
     onFinish: ({ object }) => {
       if (object) {
+        checkForGenericError(object);
         onCreationFinish?.(object);
       }
     },
@@ -69,6 +87,7 @@ export function useRoastDesign({
     },
     onFinish: ({ object }) => {
       if (object) {
+        checkForGenericError(object);
         onUpdateFinish?.(object);
       }
     },
@@ -98,6 +117,10 @@ export function useRoastDesign({
     [roastNewDesign],
   );
 
+  const clearGenericError = useCallback(() => {
+    setGenericError(null);
+  }, []);
+
   return {
     roastNewDesign: handleRoastNewDesign,
     roastUpdateDesign: handleRoastUpdateDesign,
@@ -110,5 +133,7 @@ export function useRoastDesign({
     lastCreatedDesignFormValues,
     clearCreatedRoastedDesign,
     clearUpdatedRoastedDesign,
+    genericError,
+    clearGenericError,
   };
 }

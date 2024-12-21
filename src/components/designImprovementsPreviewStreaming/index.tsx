@@ -7,9 +7,8 @@ import {
   CollapsibleTrigger,
 } from '../ui/collapsible';
 import { DesignImprovements } from '@/types/designImprovements';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useState } from 'react';
 import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
-import { TypewriterQueue } from '../ui/typewriter-queue';
 import { Typewriter } from '../ui/typewriter';
 import { TypewriterSequence } from '../ui/typewriter-sequence';
 
@@ -19,7 +18,9 @@ const trigger = cva(
   'flex items-center gap-1 text-xl font-semibold text-gray-300',
 );
 
-const content = cva('text-gray-400 font-normal pl-12');
+const content = cva(
+  'text-gray-400 font-normal pl-12 data-[state=closed]:hidden max-w-4xl',
+);
 
 const orderedList = cva('list-decimal');
 
@@ -37,13 +38,6 @@ export function DesignImprovementsPreviewStreaming({
   const [isWhatsWrongOpen, setIsWhatsWrongOpen] = useState(true);
   const [isImprovementsOpen, setIsImprovementsOpen] = useState(true);
 
-  // const whatsWrongToShow = whatsWrong
-  //   ? whatsWrong.map((item) => `${item.category}: ${item.description}`)
-  //   : [];
-  // const improvementsToShow = improvements
-  //   ? improvements.map((item) => `${item.category}: ${item.description}`)
-  //   : [];
-
   return (
     <div className={container()}>
       <div className="flex flex-col">
@@ -58,7 +52,7 @@ export function DesignImprovementsPreviewStreaming({
               )}
             </CollapsibleTrigger>
           )}
-          <CollapsibleContent className={content()}>
+          <CollapsibleContent className={content()} forceMount>
             <ol className={orderedList()}>
               {whatsWrong && whatsWrong.length > 0 && (
                 <TypewriterSequence>
@@ -94,7 +88,7 @@ export function DesignImprovementsPreviewStreaming({
               )}
             </CollapsibleTrigger>
           )}
-          <CollapsibleContent className={content()}>
+          <CollapsibleContent className={content()} forceMount>
             <ol className={orderedList()}>
               {improvements && improvements.length > 0 && (
                 <TypewriterSequence>
