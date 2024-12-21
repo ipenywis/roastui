@@ -11,6 +11,7 @@ interface DesignFormProps {
   isStreamingComplete?: boolean;
   isLoading?: boolean;
   onRoastAgain: () => void;
+  isUpdateMode?: boolean;
 }
 
 export function DesignForm({
@@ -19,6 +20,7 @@ export function DesignForm({
   isStreamingComplete,
   onRoastAgain,
   isLoading,
+  isUpdateMode,
 }: DesignFormProps) {
   const [isShowForm, setIsShowForm] = useState(true);
 
@@ -53,7 +55,12 @@ export function DesignForm({
         </div>
       )}
       <div className="flex justify-center gap-2 w-full">
-        {isShowForm && <NewDesignForm onSubmit={onSubmit} />}
+        {isShowForm && (
+          <NewDesignForm
+            onSubmit={onSubmit}
+            mode={isUpdateMode ? 'update' : 'create'}
+          />
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Typewriter } from './typewriter';
 
 interface TypewriterQueueProps {
@@ -17,19 +17,13 @@ export function TypewriterQueue({
   const [queue, setQueue] = useState<string[]>([]);
   const [currentChunk, setCurrentChunk] = useState<string>('');
   const [completedChunks, setCompletedChunks] = useState<string[]>([]);
-  const currentChunksLengthRef = useRef(0);
 
   useEffect(() => {
-    if (currentChunksLengthRef.current === chunks.length) return;
+    if (currentChunk !== '') return;
 
     // Add new chunks to the queue
-    setQueue((prev) => [
-      ...prev,
-      ...chunks.filter((chunk) => !prev.includes(chunk)),
-    ]);
-
-    currentChunksLengthRef.current = chunks.length;
-  }, [chunks]);
+    setQueue((prev) => chunks.filter((chunk) => !prev.includes(chunk)));
+  }, [chunks, currentChunk]);
 
   useEffect(() => {
     if (queue.length > 0 && !currentChunk) {
@@ -41,7 +35,6 @@ export function TypewriterQueue({
   const handleChunkComplete = () => {
     setCompletedChunks((prev) => [...prev, currentChunk]);
     setCurrentChunk('');
-    currentChunksLengthRef.current = 0;
   };
 
   return (

@@ -4,7 +4,7 @@ import {
 } from '@/types/roastedDesign';
 import { container, innerContainer } from './common';
 import { DesignPreview } from '../designPreview';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { DesignImprovementsPreviewStreaming } from '../designImprovementsPreviewStreaming';
 import { parsePartialJson } from '@ai-sdk/ui-utils';
 import { DesignImprovements } from '@/types/designImprovements';
@@ -25,25 +25,10 @@ export function StreamingPlayground() {
   const [roastResponse, setRoastResponse] =
     useState<StreamableRoastedDesign | null>(null);
 
-  // const {
-  //   object: streamableRoastedDesign,
-  //   isLoading,
-  //   submit,
-  //   error,
-  // } = useObject({
-  //   api: '/api/roastStreaming',
-  //   schema: StreamableRoastedDesignsSchema,
-  //   fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
-  //     const body = init?.body as FormData;
-  //     const response = await roastService.roastUIFormData(body);
-  //     return response;
-  //   },
-  //   onFinish: ({ object }) => {
-  //     if (object) {
-  //       setRoastResponse(object);
-  //     }
-  //   },
-  // });
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
+
+  const cachedImprovements = useRef<DesignImprovements['improvements']>([]);
+  const cachedWhatIsWrong = useRef<DesignImprovements['whatsWrong']>([]);
 
   const {
     roastNewDesign,
@@ -66,43 +51,56 @@ export function StreamingPlayground() {
     },
   });
 
-  const streamableRoastedDesign = updatedRoastedDesign ?? createdRoastedDesign;
+  const streamableRoastedDesign = isUpdateMode
+    ? updatedRoastedDesign
+    : createdRoastedDesign;
 
-  const isLoading = isCreationLoading || isUpdateLoading;
+  const isLoading = isUpdateMode ? isUpdateLoading : isCreationLoading;
 
   const handleSubmit = async (values: FormValues) => {
     await roastNewDesign(values);
   };
 
   const parsedWhatIsWrong = useMemo(() => {
-    if (!streamableRoastedDesign?.whatsWrong) return [];
+    if (!streamableRoastedDesign?.whatsWrong) return cachedWhatIsWrong.current;
 
     const { value } = parsePartialJson(streamableRoastedDesign.whatsWrong);
+    cachedWhatIsWrong.current = value
+      ? (value as DesignImprovements['whatsWrong'])
+      : [];
     return value ? (value as DesignImprovements['whatsWrong']) : [];
   }, [streamableRoastedDesign?.whatsWrong]);
 
   const parsedImprovements = useMemo(() => {
-    if (!streamableRoastedDesign?.improvements) return [];
+    if (!streamableRoastedDesign?.improvements)
+      return cachedImprovements.current;
 
     const { value } = parsePartialJson(streamableRoastedDesign.improvements);
+    cachedImprovements.current = value
+      ? (value as DesignImprovements['improvements'])
+      : [];
     return value ? (value as DesignImprovements['improvements']) : [];
   }, [streamableRoastedDesign?.improvements]);
 
+  const clearCachedImprovements = useCallback(() => {
+    cachedImprovements.current = [];
+    cachedWhatIsWrong.current = [];
+  }, []);
+
   const handleRoastAgain = useCallback(() => {
-    if (lastCreatedDesignFormValues && streamableRoastedDesign?.id) {
-      clearCreatedRoastedDesign();
+    if (lastCreatedDesignFormValues && roastResponse?.id) {
+      setIsUpdateMode(true);
       clearUpdatedRoastedDesign();
-      roastUpdateDesign(
-        streamableRoastedDesign.id,
-        lastCreatedDesignFormValues,
-      );
+      clearCachedImprovements();
+      roastUpdateDesign(roastResponse.id, lastCreatedDesignFormValues);
     }
   }, [
     lastCreatedDesignFormValues,
-    streamableRoastedDesign?.id,
+    roastResponse?.id,
     roastUpdateDesign,
-    clearCreatedRoastedDesign,
     clearUpdatedRoastedDesign,
+    setIsUpdateMode,
+    clearCachedImprovements,
   ]);
 
   return (

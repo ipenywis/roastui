@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-interface TypewriterProps {
+export interface TypewriterProps {
   text: string;
   speed?: number;
   onComplete?: () => void;

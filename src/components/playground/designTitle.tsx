@@ -20,7 +20,7 @@ export function StreamingDesignTitle({
   if (disableStreaming)
     return (
       <Typography variant="h2" as="h1">
-        Design: {name}
+        Design name: {name}
       </Typography>
     );
 

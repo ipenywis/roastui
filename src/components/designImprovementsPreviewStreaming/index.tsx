@@ -7,9 +7,11 @@ import {
   CollapsibleTrigger,
 } from '../ui/collapsible';
 import { DesignImprovements } from '@/types/designImprovements';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 import { TypewriterQueue } from '../ui/typewriter-queue';
+import { Typewriter } from '../ui/typewriter';
+import { TypewriterSequence } from '../ui/typewriter-sequence';
 
 const container = cva('flex flex-col w-full gap-8 mt-20');
 
@@ -35,21 +37,18 @@ export function DesignImprovementsPreviewStreaming({
   const [isWhatsWrongOpen, setIsWhatsWrongOpen] = useState(true);
   const [isImprovementsOpen, setIsImprovementsOpen] = useState(true);
 
-  const improvementsToShow = useMemo(() => {
-    return improvements?.map((improvement) => improvement.description) ?? [];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [improvements?.length]);
-
-  const whatsWrongToShow = useMemo(() => {
-    return whatsWrong?.map((item) => item.description) ?? [];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [whatsWrong?.length]);
+  // const whatsWrongToShow = whatsWrong
+  //   ? whatsWrong.map((item) => `${item.category}: ${item.description}`)
+  //   : [];
+  // const improvementsToShow = improvements
+  //   ? improvements.map((item) => `${item.category}: ${item.description}`)
+  //   : [];
 
   return (
     <div className={container()}>
       <div className="flex flex-col">
         <Collapsible open={isWhatsWrongOpen} onOpenChange={setIsWhatsWrongOpen}>
-          {whatsWrongToShow.length > 0 && (
+          {whatsWrong && whatsWrong.length > 0 && (
             <CollapsibleTrigger className={trigger()}>
               What’s wrong with the design?{' '}
               {isWhatsWrongOpen ? (
@@ -61,13 +60,21 @@ export function DesignImprovementsPreviewStreaming({
           )}
           <CollapsibleContent className={content()}>
             <ol className={orderedList()}>
-              <TypewriterQueue chunks={whatsWrongToShow} speed={20}>
-                {(chunk) => (
-                  <li key={chunk} className={listItem()}>
-                    {chunk}
-                  </li>
-                )}
-              </TypewriterQueue>
+              {whatsWrong && whatsWrong.length > 0 && (
+                <TypewriterSequence>
+                  {whatsWrong
+                    .map((item) => `${item.category}: ${item.description}`)
+                    .map((item) => (
+                      <Typewriter key={item} text={item} speed={20}>
+                        {(chunk) => (
+                          <li key={chunk} className={listItem()}>
+                            {chunk}
+                          </li>
+                        )}
+                      </Typewriter>
+                    ))}
+                </TypewriterSequence>
+              )}
             </ol>
           </CollapsibleContent>
         </Collapsible>
@@ -77,7 +84,7 @@ export function DesignImprovementsPreviewStreaming({
           open={isImprovementsOpen}
           onOpenChange={setIsImprovementsOpen}
         >
-          {improvementsToShow.length > 0 && (
+          {improvements && improvements.length > 0 && (
             <CollapsibleTrigger className={trigger()}>
               Recommendations for improving the design{' '}
               {isImprovementsOpen ? (
@@ -89,13 +96,21 @@ export function DesignImprovementsPreviewStreaming({
           )}
           <CollapsibleContent className={content()}>
             <ol className={orderedList()}>
-              <TypewriterQueue chunks={improvementsToShow} speed={20}>
-                {(chunk) => (
-                  <li key={chunk} className={listItem()}>
-                    {chunk}
-                  </li>
-                )}
-              </TypewriterQueue>
+              {improvements && improvements.length > 0 && (
+                <TypewriterSequence>
+                  {improvements
+                    ?.map((item) => `${item.category}: ${item.description}`)
+                    .map((item) => (
+                      <Typewriter key={item} text={item} speed={20}>
+                        {(chunk) => (
+                          <li key={chunk} className={listItem()}>
+                            {chunk}
+                          </li>
+                        )}
+                      </Typewriter>
+                    ))}
+                </TypewriterSequence>
+              )}
             </ol>
           </CollapsibleContent>
         </Collapsible>

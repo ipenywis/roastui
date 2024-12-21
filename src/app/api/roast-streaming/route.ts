@@ -27,6 +27,7 @@ import { StreamableRoastedDesign } from '@/types/roastedDesign';
 import { isValidAndNotEmptyString } from '@/lib/string';
 import { isValidAndNotEmptyArray } from '@/lib/array';
 import { RoastedDesigns } from '@prisma/client';
+import { getStreamingHeaders } from '@/lib/headers';
 
 export const POST = auth(async (request) => {
   const { auth } = request;
@@ -131,7 +132,9 @@ export const POST = auth(async (request) => {
       onError: handleError,
     });
 
-    return new Response(roastedDesignStream);
+    return new Response(roastedDesignStream, {
+      headers: getStreamingHeaders(),
+    });
   } catch (error) {
     //TODO: Handle errors properly - Prob add logging
     //eslint-disable-next-line no-console
@@ -268,7 +271,9 @@ export const PUT = auth(async (request) => {
       onError: handleError,
     });
 
-    return new Response(roastedDesignStream);
+    return new Response(roastedDesignStream, {
+      headers: getStreamingHeaders(),
+    });
   } catch (error) {
     //TODO: Handle errors properly - Prob add logging
     //eslint-disable-next-line no-console
