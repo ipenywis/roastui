@@ -30,7 +30,7 @@ export function TypewriterSequence({ children }: TypewriterSequenceProps) {
       {completedElements.map((element, index) => (
         <div key={index}>
           {/* Clone element but remove the animation by setting speed to 0 */}
-          {cloneElement(element, { speed: 0 })}
+          {cloneElement(element, { disableTypewriter: true })}
         </div>
       ))}
 
