@@ -113,8 +113,6 @@ export function FileUploader(props: FileUploaderProps) {
     ...dropzoneProps
   } = props;
 
-  const dropZoneRef = React.useRef<any>(null);
-
   const [files, setFiles] = useControllableState({
     prop: valueProp,
     onChange: onValueChange,
@@ -208,12 +206,9 @@ export function FileUploader(props: FileUploaderProps) {
   );
 
   React.useEffect(() => {
-    const dropZone = dropZoneRef.current;
-    if (!dropZone) return;
-
-    dropZone.addEventListener('paste', onPaste);
+    document.addEventListener('paste', onPaste as any);
     return () => {
-      dropZone.removeEventListener('paste', onPaste);
+      document.removeEventListener('paste', onPaste as any);
     };
   }, [onPaste]);
 
@@ -237,7 +232,6 @@ export function FileUploader(props: FileUploaderProps) {
               isDisabled && 'pointer-events-none opacity-60',
               className,
             )}
-            ref={dropZoneRef}
             {...dropzoneProps}
           >
             <input {...getInputProps()} />
