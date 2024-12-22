@@ -15,7 +15,7 @@ export function OriginalDesignTab({
       forceMount
     >
       <div className="flex flex-col items-center justify-center w-full h-full relative">
-        <div className="relative h-[80%] w-full">
+        <div className="relative h-[80%] w-full border border-gray-700">
           <Image
             src={originalImageUrl}
             alt="Original Design"
