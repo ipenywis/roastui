@@ -25,7 +25,7 @@ export function StreamingDesignTitle({
     );
 
   return (
-    <Typewriter text={`Design: ${name}`}>
+    <Typewriter text={`Design name: ${name}`}>
       {(chunk) => (
         <Typography variant="h2" as="h1">
           {chunk}

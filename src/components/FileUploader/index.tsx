@@ -113,6 +113,8 @@ export function FileUploader(props: FileUploaderProps) {
     ...dropzoneProps
   } = props;
 
+  const dropZoneRef = React.useRef<any>(null);
+
   const [files, setFiles] = useControllableState({
     prop: valueProp,
     onChange: onValueChange,
@@ -190,6 +192,31 @@ export function FileUploader(props: FileUploaderProps) {
 
   const isDisabled = disabled || (files?.length ?? 0) >= maxFileCount;
 
+  const onPaste = React.useCallback(
+    (event: React.ClipboardEvent<HTMLDivElement>) => {
+      const items = event.clipboardData?.items;
+
+      if (!items) return;
+
+      const files = Array.from(items)
+        .map((item) => item.getAsFile())
+        .filter((file): file is File => file !== null);
+
+      onDrop(files, []);
+    },
+    [onDrop],
+  );
+
+  React.useEffect(() => {
+    const dropZone = dropZoneRef.current;
+    if (!dropZone) return;
+
+    dropZone.addEventListener('paste', onPaste);
+    return () => {
+      dropZone.removeEventListener('paste', onPaste);
+    };
+  }, [onPaste]);
+
   return (
     <div className="relative flex flex-col gap-6 overflow-hidden">
       <Dropzone
@@ -210,6 +237,7 @@ export function FileUploader(props: FileUploaderProps) {
               isDisabled && 'pointer-events-none opacity-60',
               className,
             )}
+            ref={dropZoneRef}
             {...dropzoneProps}
           >
             <input {...getInputProps()} />

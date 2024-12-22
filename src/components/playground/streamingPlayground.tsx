@@ -117,7 +117,10 @@ export function StreamingPlayground() {
     <div className={container()}>
       <div className={innerContainer()}>
         <div className="flex items-center flex-col gap-5">
-          <StreamingDesignTitle name={streamableRoastedDesign?.name} />
+          <StreamingDesignTitle
+            name={streamableRoastedDesign?.name}
+            disableStreaming={!isLoading}
+          />
           {isLoading && <StreamingLoading />}
         </div>
         <DesignForm
