@@ -119,11 +119,20 @@ export function getElementComputedStyle(element: HTMLElement) {
   };
 }
 
+function getElementPreferedSide(element: HTMLElement) {
+  const boundingRect = element.getBoundingClientRect();
+  return boundingRect.left < window.innerWidth / 2 ? 'left' : 'right';
+}
+
 export function getCoordinatesFromElements(
   elements: PreviewHighlightElement[],
 ): PreviewHighlightCoordinates[] {
-  return elements.map(({ element, description }, index) => {
-    const isLeft = index % 2 === 0;
+  return elements.map(({ element, description }) => {
+    //Check if the new way of determining the side is better
+    // const isLeft = index % 2 === 0;
+    const preferedSide = getElementPreferedSide(element);
+    const isLeft = preferedSide === 'left';
+
     const rootHtmlElement = getRootHtmlElement();
     const boundingRect = element.getBoundingClientRect();
 

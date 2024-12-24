@@ -134,6 +134,7 @@ export function StreamingPlayground() {
         {streamableRoastedDesign?.improvedHtml && (
           <DesignPreview
             HTML={streamableRoastedDesign.improvedHtml}
+            react={streamableRoastedDesign.improvedReact}
             designId={streamableRoastedDesign.id}
             originalImageUrl={streamableRoastedDesign.originalImageUrl}
           />
