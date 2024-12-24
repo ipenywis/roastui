@@ -11,7 +11,7 @@ interface UseFlowNodesOptions {
 export function useFlowNodes(
   roastedDesign: RoastedDesigns,
   arrowsCoordinates: PreviewHighlightCoordinates[],
-  options: UseFlowNodesOptions
+  options: UseFlowNodesOptions,
 ) {
   const [nodes, setNodes] = useState<Node[]>([]);
 
@@ -20,7 +20,7 @@ export function useFlowNodes(
       getAllNodes(roastedDesign, arrowsCoordinates, {
         enableImprovementsHighlight: options.enableImprovementsHighlight,
       }),
-    [roastedDesign, arrowsCoordinates, options.enableImprovementsHighlight]
+    [roastedDesign, arrowsCoordinates, options.enableImprovementsHighlight],
   );
 
   // Initialize nodes on first render

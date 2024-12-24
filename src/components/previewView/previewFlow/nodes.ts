@@ -6,6 +6,8 @@ export enum FlowNodeTypes {
   MainDesignNode = 'mainDesignNode',
   ArrowNode = 'arrowNode',
   TestNode = 'testNode',
+  XAxisDebugNode = 'xAxisDebugNode',
+  YAxisDebugNode = 'yAxisDebugNode',
 }
 
 export interface PreviewFlowOptions {
@@ -17,7 +19,7 @@ const defaultPreviewFlowOptions: PreviewFlowOptions = {
 };
 
 function getImprovementsHighlightArrowsEdges(
-  arrowsCoordinates: PreviewHighlightCoordinates[]
+  arrowsCoordinates: PreviewHighlightCoordinates[],
 ) {
   return arrowsCoordinates.map(
     (_, idx) =>
@@ -36,7 +38,7 @@ function getImprovementsHighlightArrowsEdges(
           // stroke: '#FF0072',
         },
         zIndex: 20,
-      } satisfies Edge)
+      }) satisfies Edge,
   );
 }
 
@@ -50,6 +52,23 @@ function getMainDesignNode(roastedDesign: RoastedDesigns) {
     draggable: false,
     zIndex: -1,
   } satisfies Node;
+}
+
+function getAxisDebugNodes() {
+  return [
+    {
+      id: 'axis-debug',
+      position: { x: 0, y: 0 },
+      type: FlowNodeTypes.XAxisDebugNode,
+      data: {},
+    },
+    {
+      id: 'y-axis-debug',
+      position: { x: 0, y: 0 },
+      type: FlowNodeTypes.YAxisDebugNode,
+      data: {},
+    },
+  ] satisfies Node[];
 }
 
 function getArrowNodes(arrowsCoordinates: PreviewHighlightCoordinates[]) {
@@ -66,7 +85,7 @@ function getArrowNodes(arrowsCoordinates: PreviewHighlightCoordinates[]) {
         type: FlowNodeTypes.ArrowNode,
         draggable: true,
         selectable: true,
-      } satisfies Node)
+      }) satisfies Node,
   );
 
   const endArrowNodes = arrowsCoordinates?.map(
@@ -82,7 +101,7 @@ function getArrowNodes(arrowsCoordinates: PreviewHighlightCoordinates[]) {
         type: FlowNodeTypes.ArrowNode,
         draggable: true,
         selectable: true,
-      } satisfies Node)
+      }) satisfies Node,
   );
 
   return [...startArrowNodes, ...endArrowNodes];
@@ -91,11 +110,13 @@ function getArrowNodes(arrowsCoordinates: PreviewHighlightCoordinates[]) {
 export function getAllNodes(
   roastedDesign: RoastedDesigns,
   arrowsCoordinates?: PreviewHighlightCoordinates[],
-  options: PreviewFlowOptions = defaultPreviewFlowOptions
+  options: PreviewFlowOptions = defaultPreviewFlowOptions,
 ) {
   if (!arrowsCoordinates) return [];
 
   const mainDesignNode = getMainDesignNode(roastedDesign);
+
+  // const axisDebugNodes = getAxisDebugNodes();
 
   if (!options.enableImprovementsHighlight) {
     return [mainDesignNode];
@@ -103,12 +124,12 @@ export function getAllNodes(
 
   const arrowNodes = getArrowNodes(arrowsCoordinates);
 
-  return [...arrowNodes, mainDesignNode];
+  return [mainDesignNode, ...arrowNodes];
 }
 
 export function getAllEdges(
   arrowsCoordinates: PreviewHighlightCoordinates[],
-  options: PreviewFlowOptions = defaultPreviewFlowOptions
+  options: PreviewFlowOptions = defaultPreviewFlowOptions,
 ) {
   if (options.enableImprovementsHighlight) {
     return getImprovementsHighlightArrowsEdges(arrowsCoordinates);

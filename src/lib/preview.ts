@@ -71,16 +71,71 @@ export function getRootHtmlElement(): HTMLDivElement {
   return document.querySelector('#html-container') as HTMLDivElement;
 }
 
+function getOffsetRelativeToParent(element: HTMLElement, parent: HTMLElement) {
+  let offsetTop = 0;
+  let currentElement: HTMLElement | null = element;
+
+  while (currentElement && currentElement !== parent) {
+    offsetTop += currentElement.offsetTop;
+    // const computedStyle = getComputedStyle(currentElement);
+    // offsetTop += Number(computedStyle.marginTop.replace('px', '')) || 0;
+    currentElement = currentElement.offsetParent as HTMLElement | null;
+  }
+
+  // If we exit the loop and the currentElement is the parent, return the offset
+  if (currentElement === parent) {
+    return offsetTop;
+  }
+
+  // Fallback: traverse directly up the DOM if offsetParent fails
+  offsetTop = 0; // Reset
+  currentElement = element;
+
+  while (currentElement && currentElement !== document.body) {
+    offsetTop += currentElement.offsetTop;
+
+    if (currentElement === parent) {
+      return offsetTop;
+    }
+
+    currentElement = currentElement.parentElement; // Fallback to parent traversal
+  }
+
+  return null;
+}
+
+export function getElementComputedStyle(element: HTMLElement) {
+  const computedStyle = getComputedStyle(element);
+  return {
+    height: Number(computedStyle.height.replace('px', '')) ?? 0,
+    width: Number(computedStyle.width.replace('px', '')) ?? 0,
+    borderTop: Number(computedStyle.borderTopWidth.replace('px', '')) ?? 0,
+    borderBottom:
+      Number(computedStyle.borderBottomWidth.replace('px', '')) ?? 0,
+    paddingTop: Number(computedStyle.paddingTop.replace('px', '')) ?? 0,
+    paddingBottom: Number(computedStyle.paddingBottom.replace('px', '')) ?? 0,
+    marginTop: Number(computedStyle.marginTop.replace('px', '')) ?? 0,
+    marginBottom: Number(computedStyle.marginBottom.replace('px', '')) ?? 0,
+  };
+}
+
 export function getCoordinatesFromElements(
   elements: PreviewHighlightElement[],
 ): PreviewHighlightCoordinates[] {
   return elements.map(({ element, description }, index) => {
     const isLeft = index % 2 === 0;
-
-    const elementBoundingRect = element.getBoundingClientRect();
     const rootHtmlElement = getRootHtmlElement();
+    const boundingRect = element.getBoundingClientRect();
 
-    const centerY = elementBoundingRect.top + elementBoundingRect.height / 2;
+    const offsetRelativeToParent = getOffsetRelativeToParent(
+      element,
+      rootHtmlElement,
+    );
+
+    const elementHeight = boundingRect.height / 3;
+
+    const centerY =
+      (offsetRelativeToParent ?? boundingRect.top) + elementHeight;
 
     const startEdgeOffset = isLeft ? -100 : 100;
     const endEdgeOffset = isLeft ? -4 : 4;

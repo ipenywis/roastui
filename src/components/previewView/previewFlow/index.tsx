@@ -7,10 +7,14 @@ import { PreviewHighlightCoordinates } from '@/lib/preview';
 import { useMemo } from 'react';
 import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
 import { useFlowNodes } from './useFlowNodes';
+import DevTools from '@/components/xyflowDevTools';
+import { XAxisDebugNode, YAxisDebugNode } from './axisDebugNode';
 
 const nodeTypes = {
   [FlowNodeTypes.MainDesignNode]: MainDesignNode,
   [FlowNodeTypes.ArrowNode]: ArrowNode,
+  [FlowNodeTypes.XAxisDebugNode]: XAxisDebugNode,
+  [FlowNodeTypes.YAxisDebugNode]: YAxisDebugNode,
 };
 
 interface PreviewFlowProps {
@@ -22,13 +26,13 @@ export function PreviewFlow(props: PreviewFlowProps) {
   const { roastedDesign, arrowsCoordinates } = props;
 
   const isImprovementsHighlightActive = useDesignPreviewStore(
-    (state) => state.isImprovementsHighlightActive
+    (state) => state.isImprovementsHighlightActive,
   );
 
   const { nodes, updateNodes } = useFlowNodes(
     roastedDesign,
     arrowsCoordinates,
-    { enableImprovementsHighlight: isImprovementsHighlightActive }
+    { enableImprovementsHighlight: isImprovementsHighlightActive },
   );
 
   const edges = useMemo(
@@ -36,7 +40,7 @@ export function PreviewFlow(props: PreviewFlowProps) {
       getAllEdges(arrowsCoordinates, {
         enableImprovementsHighlight: isImprovementsHighlightActive,
       }),
-    [arrowsCoordinates, isImprovementsHighlightActive]
+    [arrowsCoordinates, isImprovementsHighlightActive],
   );
 
   return (

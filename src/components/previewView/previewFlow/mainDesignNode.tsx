@@ -9,6 +9,7 @@ export function MainDesignNode({
   return (
     <div
       id="html-container"
+      className="relative"
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(data.roastedDesign.internalImprovedHtml),
       }}
