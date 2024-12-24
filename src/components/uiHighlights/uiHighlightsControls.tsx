@@ -4,21 +4,20 @@ import { cva } from 'class-variance-authority';
 import { Checkbox } from '../ui/checkbox';
 import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
 import { Separator } from '../ui/separator';
-import useLocalStorageState from 'use-local-storage-state';
 import { usePreviewFullScreenMode } from '@/hooks/usePreviewFullScreenMode';
 
 const checkboxItem = cva(
-  'flex items-center gap-2 cursor-pointer select-none py-3 h-full'
+  'flex items-center gap-2 cursor-pointer select-none py-3 h-full',
 );
 
 const checkboxLabel = cva('text-sm font-medium');
 
 export function UiHighlightsControls() {
   const isImprovementsHighlightActive = useDesignPreviewStore(
-    (state) => state.isImprovementsHighlightActive
+    (state) => state.isImprovementsHighlightActive,
   );
   const setIsImprovementsHighlightActive = useDesignPreviewStore(
-    (state) => state.setIsImprovementsHighlightActive
+    (state) => state.setIsImprovementsHighlightActive,
   );
 
   const handleImprovementsHighlightChange = (checked: boolean) => {

@@ -1,7 +1,4 @@
-import { RiCodeSSlashLine } from 'react-icons/ri';
-import { MdImage } from 'react-icons/md';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '../ui/button';
 import { cva } from 'class-variance-authority';
 
 const tabItem = cva(

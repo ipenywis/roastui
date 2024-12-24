@@ -132,7 +132,9 @@ export function getCoordinatesFromElements(
       rootHtmlElement,
     );
 
-    const elementHeight = boundingRect.height / 3;
+    const computedStyle = getElementComputedStyle(element);
+
+    const elementHeight = computedStyle.height / 2;
 
     const centerY =
       (offsetRelativeToParent ?? boundingRect.top) + elementHeight;
