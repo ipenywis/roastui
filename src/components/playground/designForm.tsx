@@ -7,7 +7,6 @@ import { useCallback, useEffect, useState } from 'react';
 
 interface DesignFormProps {
   onSubmit: (values: FormValues) => void;
-  streamableRoastedDesign?: DeepPartial<StreamableRoastedDesign>;
   isStreamingComplete?: boolean;
   isLoading?: boolean;
   onRoastAgain: () => void;
@@ -16,7 +15,6 @@ interface DesignFormProps {
 
 export function DesignForm({
   onSubmit,
-  streamableRoastedDesign,
   isStreamingComplete,
   onRoastAgain,
   isLoading,

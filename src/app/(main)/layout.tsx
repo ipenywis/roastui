@@ -27,7 +27,7 @@ export default function RootLayout({
       <body
         className={cn(
           inter.className,
-          'bg-black size-full min-h-full dark scroll-smooth overflow-auto',
+          'bg-black size-full min-h-full dark scroll-smooth',
         )}
       >
         <ThemeProvider defaultTheme="dark">

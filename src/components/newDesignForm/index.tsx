@@ -29,12 +29,7 @@ const createFormSchema = z.object({
 });
 
 export const updateFormSchema = z.object({
-  name: z
-    .string()
-    .min(2, {
-      message: 'Name must be at least 2 characters.',
-    })
-    .optional(),
+  name: z.string().optional(),
   images: z.array(z.instanceof(File)),
 });
 

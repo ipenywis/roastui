@@ -17,7 +17,7 @@ export function StreamingLoading() {
         onComplete={handleTypewriterComplete}
       >
         {(text) => (
-          <Typography variant="large" color="muted">
+          <Typography variant="large" color="muted" className="font-normal">
             {text}
           </Typography>
         )}

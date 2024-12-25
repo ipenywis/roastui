@@ -60,10 +60,6 @@ export function StreamingPlayground() {
 
   const isLoading = isUpdateMode ? isUpdateLoading : isCreationLoading;
 
-  const handleSubmit = async (values: FormValues) => {
-    await roastNewDesign(values);
-  };
-
   const parsedWhatIsWrong = useMemo(() => {
     if (!streamableRoastedDesign?.whatsWrong) return cachedWhatIsWrong.current;
 
@@ -89,6 +85,31 @@ export function StreamingPlayground() {
     cachedImprovements.current = [];
     cachedWhatIsWrong.current = [];
   }, []);
+
+  const handleSubmit = useCallback(
+    async (values: FormValues) => {
+      if (!streamableRoastedDesign?.id) {
+        clearCachedImprovements();
+        clearCreatedRoastedDesign();
+        await roastNewDesign(values);
+      } else {
+        clearCachedImprovements();
+        clearCreatedRoastedDesign();
+        clearUpdatedRoastedDesign();
+        setIsUpdateMode(true);
+        await roastUpdateDesign(streamableRoastedDesign.id, values);
+      }
+    },
+    [
+      roastUpdateDesign,
+      roastNewDesign,
+      streamableRoastedDesign?.id,
+      setIsUpdateMode,
+      clearCachedImprovements,
+      clearCreatedRoastedDesign,
+      clearUpdatedRoastedDesign,
+    ],
+  );
 
   const handleRoastAgain = useCallback(() => {
     clearGenericError();
@@ -124,11 +145,11 @@ export function StreamingPlayground() {
           {isLoading && <StreamingLoading />}
         </div>
         <DesignForm
-          streamableRoastedDesign={streamableRoastedDesign ?? undefined}
           onSubmit={handleSubmit}
           isLoading={isLoading}
           isStreamingComplete={!!streamableRoastedDesign && !isLoading}
           onRoastAgain={handleRoastAgain}
+          isUpdateMode={streamableRoastedDesign?.id ? true : false}
         />
         <PlaygroundError error={genericError || updateError || creationError} />
         {streamableRoastedDesign?.improvedHtml && (

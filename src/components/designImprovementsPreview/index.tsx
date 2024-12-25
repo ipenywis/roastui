@@ -10,10 +10,10 @@ import { DesignImprovements } from '@/types/designImprovements';
 import { useState } from 'react';
 import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 
-const container = cva('flex flex-col w-full gap-8 mt-20');
+const container = cva('flex flex-col w-full gap-8 mt-10');
 
 const trigger = cva(
-  'flex items-center gap-1 text-xl font-semibold text-gray-300'
+  'flex items-center gap-1 text-xl font-semibold text-gray-300',
 );
 
 const content = cva('text-gray-400 font-normal pl-12');
