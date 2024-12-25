@@ -14,6 +14,3 @@ export const anthropicModel = createAnthropic({
 export const roastModel = openRouterModel(
   'anthropic/claude-3.5-sonnet-20240620:beta',
 );
-
-//Latest Anthropic model
-// export const roastModel = anthropicModel('claude-3-5-sonnet-20241022');
