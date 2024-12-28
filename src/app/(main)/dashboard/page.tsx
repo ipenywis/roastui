@@ -11,7 +11,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col items-center size-full py-20">
+    <div className="flex flex-col items-center w-full min-h-screen py-20">
       <Suspense fallback={<div>Loading...</div>}>
         <UserSavedDesigns />
       </Suspense>
