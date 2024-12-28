@@ -10,7 +10,10 @@ export function MainDesignNode({
 }: {
   data: { roastedDesign: RoastedDesigns };
 }) {
-  const extractedJsx = extractJsx(data.roastedDesign.improvedReact);
+  const extractedJsx = extractJsx(
+    data.roastedDesign.internalImprovedReact ??
+      data.roastedDesign.improvedReact,
+  );
 
   if (!extractedJsx) {
     return (

@@ -17,6 +17,8 @@ export function ImprovedHtmlSandpackTab({
   HTML: string;
   react?: string;
 }) {
+  const isReactAvailable = react && react.length > 0;
+
   return (
     <TabsContent
       value="improvedHtml"
@@ -25,16 +27,17 @@ export function ImprovedHtmlSandpackTab({
     >
       <SandpackProvider
         files={{
-          ...(react ? { '/React': react } : {}),
+          ...(isReactAvailable ? { '/React': react } : {}),
           '/HTML': HTML,
         }}
         options={{
-          visibleFiles: [react ? '/React' : undefined, '/HTML'].filter(
-            Boolean,
-          ) as string[],
+          visibleFiles: [
+            isReactAvailable ? '/React' : undefined,
+            '/HTML',
+          ].filter(Boolean) as string[],
         }}
         customSetup={{
-          entry: '/React',
+          entry: isReactAvailable ? '/React' : '/HTML',
         }}
         className={provider()}
         style={{ height: '100%' }}

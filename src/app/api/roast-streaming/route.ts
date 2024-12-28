@@ -28,6 +28,7 @@ import { isValidAndNotEmptyString } from '@/lib/string';
 import { isValidAndNotEmptyArray } from '@/lib/array';
 import { RoastedDesigns } from '@prisma/client';
 import { getStreamingHeaders } from '@/lib/headers';
+import { preprocessUiReact } from '@/lib/preprocessing/uiReact';
 
 export const POST = auth(async (request) => {
   const { auth } = request;
@@ -95,6 +96,10 @@ export const POST = auth(async (request) => {
         streamableRoastedDesign.improvedHtml!,
       );
 
+      const preprocessedImprovedReact = preprocessUiReact(
+        streamableRoastedDesign.improvedReact!,
+      );
+
       const uiHighlights = {
         improvements: streamableRoastedDesign?.dataElements?.map((element) => {
           return {
@@ -111,7 +116,8 @@ export const POST = auth(async (request) => {
           originalImageUrl: base64Image,
           improvedHtml: preprocessedImprovedHtml,
           internalImprovedHtml: preprocessedInternalImprovedHtml,
-          improvedReact: streamableRoastedDesign.improvedReact!,
+          internalImprovedReact: streamableRoastedDesign.improvedReact!,
+          improvedReact: preprocessedImprovedReact,
           improvements: streamableRoastedDesign.improvements!,
           whatsWrong: streamableRoastedDesign.whatsWrong!,
           uiHighlights: JSON.stringify(uiHighlights),

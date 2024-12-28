@@ -88,6 +88,7 @@ model RoastedDesigns {
   improvedHtml     String
   internalImprovedHtml String
   improvedReact    String
+  internalImprovedReact String
   improvements     String    @default("[]")
   whatsWrong       String    @default("[]")
   uiHighlights     String    @default("[]")
