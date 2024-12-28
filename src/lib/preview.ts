@@ -143,7 +143,7 @@ export function getCoordinatesFromElements(
 
     const computedStyle = getElementComputedStyle(element);
 
-    const elementHeight = computedStyle.height / 2;
+    const elementHeight = (computedStyle.height + computedStyle.paddingTop) / 4;
 
     const centerY =
       (offsetRelativeToParent ?? boundingRect.top) + elementHeight;

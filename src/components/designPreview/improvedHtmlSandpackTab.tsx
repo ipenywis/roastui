@@ -7,7 +7,7 @@ import { TabsContent } from '../ui/tabs';
 import { cva } from 'class-variance-authority';
 
 const provider = cva(
-  'w-full h-full [&_.sp-tab-container:has(button:focus)]:outline-none'
+  'w-full h-full [&_.sp-tab-container:has(button:focus)]:outline-none',
 );
 
 export function ImprovedHtmlSandpackTab({
@@ -25,16 +25,16 @@ export function ImprovedHtmlSandpackTab({
     >
       <SandpackProvider
         files={{
-          '/HTML': HTML,
           ...(react ? { '/React': react } : {}),
+          '/HTML': HTML,
         }}
         options={{
-          visibleFiles: ['/HTML', react ? '/React' : undefined].filter(
-            Boolean
+          visibleFiles: [react ? '/React' : undefined, '/HTML'].filter(
+            Boolean,
           ) as string[],
         }}
         customSetup={{
-          entry: '/HTML',
+          entry: '/React',
         }}
         className={provider()}
         style={{ height: '100%' }}
