@@ -14,12 +14,10 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import useSWR from 'swr';
 import z from 'zod';
 
-import { parse as parseJson } from 'partial-json';
-
 // use function to allow for mocking in tests:
 const getOriginalFetch = () => fetch;
 
-export type Experimental_UseObjectOptions<RESULT> = {
+export type Experimental_UseObjectOptions<RESULT, HEARTBEAT> = {
   /**
    * The API endpoint. It should stream JSON that matches the schema as chunked text.
    */
@@ -73,6 +71,11 @@ Optional error object. This is e.g. a TypeValidationError when the final object 
    * Additional HTTP headers to be included in the request.
    */
   headers?: Record<string, string> | Headers;
+
+  /**
+   * Flag that indicates whether the current object is a heartbeat.
+   */
+  isHeartbeat?: (object: DeepPartial<HEARTBEAT>) => boolean;
 };
 
 export type Experimental_UseObjectHelpers<RESULT, INPUT> = {
@@ -107,7 +110,11 @@ export type Experimental_UseObjectHelpers<RESULT, INPUT> = {
   clear: () => void;
 };
 
-export function useObject<RESULT, INPUT extends BodyInit = any>({
+export function useObject<
+  RESULT,
+  INPUT extends BodyInit = any,
+  HEARTBEAT extends {} = any,
+>({
   api,
   id,
   schema, // required, in the future we will use it for validation
@@ -116,10 +123,11 @@ export function useObject<RESULT, INPUT extends BodyInit = any>({
   onError,
   onFinish,
   headers,
-}: Experimental_UseObjectOptions<RESULT>): Experimental_UseObjectHelpers<
+  isHeartbeat,
+}: Experimental_UseObjectOptions<
   RESULT,
-  INPUT
-> {
+  HEARTBEAT
+>): Experimental_UseObjectHelpers<RESULT, INPUT> {
   // Generate an unique id if not provided.
   const hookId = useId();
   const completionId = id ?? hookId;
@@ -197,6 +205,10 @@ export function useObject<RESULT, INPUT extends BodyInit = any>({
             accumulatedText = chunk;
 
             const { value } = parsePartialJson(accumulatedText);
+
+            if (isHeartbeat && isHeartbeat(value as DeepPartial<HEARTBEAT>))
+              return;
+
             const currentObject = value as DeepPartial<RESULT>;
 
             if (!isDeepEqualData(latestObject, currentObject)) {

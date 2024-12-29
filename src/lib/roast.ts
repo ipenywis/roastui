@@ -1,15 +1,14 @@
 import { roastModel } from './ai';
-import { generateObject, pipeDataStreamToResponse, streamObject } from 'ai';
+import { generateObject, streamObject } from 'ai';
 import { IMPROVEMENTS_PROMPTS, NEW_DESIGN_PROMPTS } from './prompt';
 import { DesignImprovements } from '@/types/designImprovements';
 import { NewDesign } from '@/types/newDesign';
 import { CoreMessage } from 'ai';
-import { createStreamableValue, StreamableValue } from 'ai/rsc';
 import { RoastedDesigns } from '@prisma/client';
-import { readStreamableValue } from './readStreamableValue';
 import { AsyncStream } from './asyncStream';
 import { StreamableRoastedDesign } from '@/types/roastedDesign';
 import { parsePartialJson } from '@ai-sdk/ui-utils';
+import { waitFor } from './time';
 
 export async function getDesignImprovements(
   imageBase64: string,
@@ -320,7 +319,21 @@ export function createManagedRoastedDesignStream(
     onError?: (error: Error) => void;
   },
 ): ReadableStream<string> {
+  let heartbeatInterval: NodeJS.Timeout;
+
   const { readable, writable } = new TransformStream<string, string>({
+    start(controller) {
+      // Setup heartbeat interval
+      heartbeatInterval = setInterval(() => {
+        try {
+          // eslint-disable-next-line no-console
+          console.log('SENDING HEARTBEAT');
+          controller.enqueue(JSON.stringify({ type: 'heartbeat' }));
+        } catch (error) {
+          clearInterval(heartbeatInterval);
+        }
+      }, 2000);
+    },
     async transform(chunk: string, controller) {
       try {
         const { value: parsedChunk } = parsePartialJson(chunk);
@@ -348,7 +361,6 @@ export function createManagedRoastedDesignStream(
             chunkType: 'ROASTED_DESIGN',
             chunkStatus: 'COMPLETED',
           });
-          // controller.terminate();
         }
       } catch (error) {
         //eslint-disable-next-line no-console
@@ -356,6 +368,9 @@ export function createManagedRoastedDesignStream(
         controller.enqueue(chunk); // Pass through if parsing fails
         options?.onError?.(error as Error);
       }
+    },
+    flush() {
+      clearInterval(heartbeatInterval);
     },
   });
 

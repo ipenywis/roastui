@@ -10,6 +10,10 @@ import { useCallback, useState } from 'react';
 import { RoastedDesigns } from '@prisma/client';
 import { getImageFileFromUrl } from '@/lib/image-client';
 
+type heartbeatType = {
+  type: 'heartbeat';
+};
+
 interface UseRoastDesignReturn {
   roastNewDesign: (formData: CreateFormValues) => void;
   roastUpdateDesign: (
@@ -42,6 +46,18 @@ export function useRoastDesign({
     useState<CreateFormValues | UpdateFormValues | null>(null);
 
   const [genericError, setGenericError] = useState<Error | null>(null);
+
+  const isHeartbeat = useCallback((object: DeepPartial<heartbeatType>) => {
+    if (object && typeof object === 'object') {
+      return (
+        Object.hasOwn(object, 'type') &&
+        typeof object.type === 'string' &&
+        object.type === 'heartbeat'
+      );
+    }
+
+    return false;
+  }, []);
 
   const checkForGenericError = useCallback(
     (object: StreamableRoastedDesign | RoastedDesigns) => {
@@ -81,6 +97,7 @@ export function useRoastDesign({
         onCreationFinish?.(object as StreamableRoastedDesign);
       }
     },
+    isHeartbeat,
   });
 
   const {
@@ -104,6 +121,7 @@ export function useRoastDesign({
         onUpdateFinish?.(object as StreamableRoastedDesign);
       }
     },
+    isHeartbeat,
   });
 
   const handleRoastUpdateDesign = useCallback(
