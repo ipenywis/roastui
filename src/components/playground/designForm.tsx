@@ -11,6 +11,7 @@ interface DesignFormProps {
   isLoading?: boolean;
   onRoastAgain: () => void;
   isUpdateMode?: boolean;
+  initialIsShowForm?: boolean;
 }
 
 export function DesignForm({
@@ -19,8 +20,9 @@ export function DesignForm({
   onRoastAgain,
   isLoading,
   isUpdateMode,
+  initialIsShowForm = true,
 }: DesignFormProps) {
-  const [isShowForm, setIsShowForm] = useState(false);
+  const [isShowForm, setIsShowForm] = useState(initialIsShowForm);
 
   const handleToggleShowForm = useCallback(() => {
     setIsShowForm((prev) => !prev);

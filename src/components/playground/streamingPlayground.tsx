@@ -160,6 +160,7 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
           isStreamingComplete={!!streamableRoastedDesign && !isLoading}
           onRoastAgain={handleRoastAgain}
           isUpdateMode={streamableRoastedDesign?.id ? true : false}
+          initialIsShowForm={!isUpdateMode}
         />
         <PlaygroundError error={genericError || updateError || creationError} />
         {streamableRoastedDesign?.improvedHtml && (

@@ -12,7 +12,7 @@ const headerText = cva('text-xl font-bold');
 
 const header = cva('flex items-center gap-3 justify-between');
 
-const gridContainer = cva('grid grid-cols-4 gap-x-4 gap-y-6');
+const gridContainer = cva('grid grid-cols-4 gap-x-4 gap-y-20');
 
 export async function UserSavedDesigns() {
   const session = await auth();
@@ -20,6 +20,10 @@ export async function UserSavedDesigns() {
     where: {
       userId: session?.user?.id,
     },
+  });
+
+  const sortedDesigns = designs.sort((a, b) => {
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
   });
 
   return (
@@ -34,12 +38,13 @@ export async function UserSavedDesigns() {
         </Link>
       </div>
       <div className={gridContainer()}>
-        {designs.map((design) => (
+        {sortedDesigns.map((design) => (
           <DesignCard
             key={design.id}
             id={design.id}
             thumbnailUrl={design.originalImageUrl}
             name={design.name}
+            updatedAt={design.updatedAt}
           />
         ))}
       </div>

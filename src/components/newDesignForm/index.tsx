@@ -25,12 +25,16 @@ const createFormSchema = z.object({
   name: z.string().min(2, {
     message: 'Name must be at least 2 characters.',
   }),
-  images: z.array(z.instanceof(File)),
+  images: z.array(z.instanceof(File)).min(1, {
+    message: 'Design image is required',
+  }),
 });
 
 export const updateFormSchema = z.object({
   name: z.string().optional(),
-  images: z.array(z.instanceof(File)),
+  images: z.array(z.instanceof(File)).min(1, {
+    message: 'Design image is required',
+  }),
 });
 
 export type FormValues = z.infer<typeof createFormSchema>;
