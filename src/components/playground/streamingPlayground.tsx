@@ -12,6 +12,7 @@ import { DesignForm } from './designForm';
 import { useRoastDesign } from '@/hooks/useRoastDesign';
 import { PlaygroundError } from './playgroundError';
 import { RoastedDesigns } from '@prisma/client';
+import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
 
 interface StreamingPlaygroundProps {
   initialRoastedDesign?: RoastedDesigns;
@@ -29,6 +30,10 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
 
   const cachedImprovements = useRef<DesignImprovements['improvements']>([]);
   const cachedWhatIsWrong = useRef<DesignImprovements['whatsWrong']>([]);
+
+  const setCurrentRoastedDesign = useDesignPreviewStore(
+    (state) => state.setCurrentRoastedDesign,
+  );
 
   const {
     roastNewDesign,
@@ -48,10 +53,16 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
   } = useRoastDesign({
     initialRoastedDesign: initialRoastedDesign,
     onCreationFinish: (object) => {
-      if (object.id) setRoastResponse(object);
+      if (object.id) {
+        setRoastResponse(object);
+        setCurrentRoastedDesign(object);
+      }
     },
     onUpdateFinish: (object) => {
-      if (object.id) setRoastResponse(object);
+      if (object.id) {
+        setRoastResponse(object);
+        setCurrentRoastedDesign(object);
+      }
     },
   });
 
@@ -93,12 +104,14 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
       if (!streamableRoastedDesign?.id) {
         clearCachedImprovements();
         clearCreatedRoastedDesign();
+        setCurrentRoastedDesign(null);
         setIsUpdateMode(false);
         await roastNewDesign(values);
       } else {
         clearCachedImprovements();
         clearCreatedRoastedDesign();
         clearUpdatedRoastedDesign();
+        setCurrentRoastedDesign(null);
         setIsUpdateMode(true);
         await roastUpdateDesignWithValues(streamableRoastedDesign.id, values);
       }
@@ -112,6 +125,7 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
       clearCreatedRoastedDesign,
       clearUpdatedRoastedDesign,
       clearGenericError,
+      setCurrentRoastedDesign,
     ],
   );
 
@@ -127,6 +141,7 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
     } else if (roastResponse?.id) {
       setIsUpdateMode(true);
       clearUpdatedRoastedDesign();
+      setCurrentRoastedDesign(null);
       roastUpdateDesign(roastResponse);
     }
     // else if (!roastResponse?.id && lastCreatedDesignFormValues) {
@@ -142,6 +157,7 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
     clearGenericError,
     roastUpdateDesignWithValues,
     lastCreatedDesignFormValues,
+    setCurrentRoastedDesign,
   ]);
 
   return (

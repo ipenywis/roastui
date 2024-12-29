@@ -40,7 +40,7 @@ export function PreviewView(props: DesignPreviewPlaygroundProps) {
   return (
     <DesignPreviewStoreProvider>
       <div style={{ width: '100vw', height: '100vh' }}>
-        <UiHighlightsControls />
+        <UiHighlightsControls roastedDesign={roastedDesign} />
         <PreviewFlow
           roastedDesign={roastedDesign}
           arrowsCoordinates={coordinates}

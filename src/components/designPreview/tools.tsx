@@ -16,25 +16,27 @@ export function Tools({
 }: ToolsProps) {
   return (
     <div className="w-full flex justify-start gap-1 p-2 border-b">
-      <TabsList className="grid grid-cols-3">
-        <TabsTrigger
-          value="improvedDesign"
-          className={tabItem()}
-          disabled={isImprovedDesignDisabled}
-        >
-          Improved ⚡️
-        </TabsTrigger>
-        <TabsTrigger
-          value="originalDesign"
-          className={tabItem()}
-          disabled={isOriginalDesignDisabled}
-        >
-          Original 📸
-        </TabsTrigger>
-        <TabsTrigger value="improvedHtml" className={tabItem()}>
-          Code 💻
-        </TabsTrigger>
-      </TabsList>
+      <div className="flex w-full justify-between items-center gap-2">
+        <TabsList className="grid grid-cols-3">
+          <TabsTrigger
+            value="improvedDesign"
+            className={tabItem()}
+            disabled={isImprovedDesignDisabled}
+          >
+            Improved ⚡️
+          </TabsTrigger>
+          <TabsTrigger
+            value="originalDesign"
+            className={tabItem()}
+            disabled={isOriginalDesignDisabled}
+          >
+            Original 📸
+          </TabsTrigger>
+          <TabsTrigger value="improvedHtml" className={tabItem()}>
+            Code 💻
+          </TabsTrigger>
+        </TabsList>
+      </div>
     </div>
   );
 }

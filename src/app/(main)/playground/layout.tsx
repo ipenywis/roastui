@@ -1,5 +1,6 @@
 import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
+import { DesignPreviewStoreProvider } from '@/lib/providers/designPreviewStoreProvider';
 
 export default function PlaygroundLayout({
   children,
@@ -9,7 +10,9 @@ export default function PlaygroundLayout({
   return (
     <main className="flex flex-col size-full relative">
       <Navbar />
-      <div className="flex flex-col pt-12 grow">{children}</div>
+      <DesignPreviewStoreProvider>
+        <div className="flex flex-col pt-12 grow">{children}</div>
+      </DesignPreviewStoreProvider>
       <Footer />
     </main>
   );

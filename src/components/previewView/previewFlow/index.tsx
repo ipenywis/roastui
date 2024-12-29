@@ -7,7 +7,6 @@ import { PreviewHighlightCoordinates } from '@/lib/preview';
 import { useMemo } from 'react';
 import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
 import { useFlowNodes } from './useFlowNodes';
-import DevTools from '@/components/xyflowDevTools';
 import { XAxisDebugNode, YAxisDebugNode } from './axisDebugNode';
 
 const nodeTypes = {
