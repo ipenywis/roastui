@@ -5,9 +5,13 @@ import { TypewriterProps } from './typewriter';
 
 interface TypewriterSequenceProps {
   children: ReactElement<TypewriterProps>[];
+  disableTypewriter?: boolean;
 }
 
-export function TypewriterSequence({ children }: TypewriterSequenceProps) {
+export function TypewriterSequence({
+  children,
+  disableTypewriter,
+}: TypewriterSequenceProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [completedElements, setCompletedElements] = useState<ReactElement[]>(
     [],
@@ -21,6 +25,10 @@ export function TypewriterSequence({ children }: TypewriterSequenceProps) {
 
   const currentElement = children[currentIndex];
   const isLastElement = currentIndex >= children.length;
+
+  if (disableTypewriter) {
+    return <div>{children}</div>;
+  }
 
   if (!currentElement && !isLastElement) return null;
 

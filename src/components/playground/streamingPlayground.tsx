@@ -1,7 +1,4 @@
-import {
-  StreamableRoastedDesign,
-  StreamableRoastedDesignsSchema,
-} from '@/types/roastedDesign';
+import { StreamableRoastedDesign } from '@/types/roastedDesign';
 import { container, innerContainer } from './common';
 import { DesignPreview } from '../designPreview';
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -11,22 +8,24 @@ import { DesignImprovements } from '@/types/designImprovements';
 import { StreamingLoading } from './streamingLoading';
 import { StreamingDesignTitle } from './designTitle';
 import { FormValues } from '../newDesignForm';
-import { useObject } from '@/hooks/useObject';
-import roastService from '@/services/roastService';
 import { DesignForm } from './designForm';
 import { useRoastDesign } from '@/hooks/useRoastDesign';
 import { PlaygroundError } from './playgroundError';
+import { RoastedDesigns } from '@prisma/client';
 
-// interface StreamingPlaygroundProps {
-//   streamableRoastedDesign?: DeepPartial<StreamableRoastedDesign>;
-//   isLoading?: boolean;
-// }
+interface StreamingPlaygroundProps {
+  initialRoastedDesign?: RoastedDesigns;
+}
 
-export function StreamingPlayground() {
-  const [roastResponse, setRoastResponse] =
-    useState<StreamableRoastedDesign | null>(null);
+export function StreamingPlayground(props: StreamingPlaygroundProps) {
+  const { initialRoastedDesign } = props;
+  const [roastResponse, setRoastResponse] = useState<
+    StreamableRoastedDesign | RoastedDesigns | null
+  >(initialRoastedDesign ?? null);
 
-  const [isUpdateMode, setIsUpdateMode] = useState(false);
+  const [isUpdateMode, setIsUpdateMode] = useState(
+    initialRoastedDesign ? true : false,
+  );
 
   const cachedImprovements = useRef<DesignImprovements['improvements']>([]);
   const cachedWhatIsWrong = useRef<DesignImprovements['whatsWrong']>([]);
@@ -34,6 +33,7 @@ export function StreamingPlayground() {
   const {
     roastNewDesign,
     roastUpdateDesign,
+    roastUpdateDesignWithValues,
     isCreationLoading,
     isUpdateLoading,
     creationError,
@@ -46,11 +46,12 @@ export function StreamingPlayground() {
     genericError,
     clearGenericError,
   } = useRoastDesign({
+    initialRoastedDesign: initialRoastedDesign,
     onCreationFinish: (object) => {
-      setRoastResponse(object);
+      if (object.id) setRoastResponse(object);
     },
     onUpdateFinish: (object) => {
-      setRoastResponse(object);
+      if (object.id) setRoastResponse(object);
     },
   });
 
@@ -88,50 +89,59 @@ export function StreamingPlayground() {
 
   const handleSubmit = useCallback(
     async (values: FormValues) => {
+      clearGenericError();
       if (!streamableRoastedDesign?.id) {
         clearCachedImprovements();
         clearCreatedRoastedDesign();
+        setIsUpdateMode(false);
         await roastNewDesign(values);
       } else {
         clearCachedImprovements();
         clearCreatedRoastedDesign();
         clearUpdatedRoastedDesign();
         setIsUpdateMode(true);
-        await roastUpdateDesign(streamableRoastedDesign.id, values);
+        await roastUpdateDesignWithValues(streamableRoastedDesign.id, values);
       }
     },
     [
-      roastUpdateDesign,
+      roastUpdateDesignWithValues,
       roastNewDesign,
-      streamableRoastedDesign?.id,
+      streamableRoastedDesign,
       setIsUpdateMode,
       clearCachedImprovements,
       clearCreatedRoastedDesign,
       clearUpdatedRoastedDesign,
+      clearGenericError,
     ],
   );
 
   const handleRoastAgain = useCallback(() => {
     clearGenericError();
     clearCachedImprovements();
-    if (lastCreatedDesignFormValues && roastResponse?.id) {
+    if (roastResponse?.id && lastCreatedDesignFormValues) {
+      setIsUpdateMode(true);
+      roastUpdateDesignWithValues(
+        roastResponse?.id,
+        lastCreatedDesignFormValues,
+      );
+    } else if (roastResponse?.id) {
       setIsUpdateMode(true);
       clearUpdatedRoastedDesign();
-      roastUpdateDesign(roastResponse.id, lastCreatedDesignFormValues);
-    } else if (!roastResponse?.id && lastCreatedDesignFormValues) {
-      clearCreatedRoastedDesign();
-      roastNewDesign(lastCreatedDesignFormValues);
+      roastUpdateDesign(roastResponse);
     }
+    // else if (!roastResponse?.id && lastCreatedDesignFormValues) {
+    //   clearCreatedRoastedDesign();
+    //   roastNewDesign(lastCreatedDesignFormValues);
+    // }
   }, [
-    lastCreatedDesignFormValues,
-    roastResponse?.id,
+    roastResponse,
     roastUpdateDesign,
     clearUpdatedRoastedDesign,
     setIsUpdateMode,
     clearCachedImprovements,
-    roastNewDesign,
-    clearCreatedRoastedDesign,
     clearGenericError,
+    roastUpdateDesignWithValues,
+    lastCreatedDesignFormValues,
   ]);
 
   return (
@@ -164,6 +174,7 @@ export function StreamingPlayground() {
           <DesignImprovementsPreviewStreaming
             whatsWrong={parsedWhatIsWrong}
             improvements={parsedImprovements}
+            disableTypewriter={!isLoading}
           />
         </div>
       </div>

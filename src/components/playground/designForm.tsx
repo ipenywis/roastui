@@ -20,7 +20,7 @@ export function DesignForm({
   isLoading,
   isUpdateMode,
 }: DesignFormProps) {
-  const [isShowForm, setIsShowForm] = useState(true);
+  const [isShowForm, setIsShowForm] = useState(false);
 
   const handleToggleShowForm = useCallback(() => {
     setIsShowForm((prev) => !prev);

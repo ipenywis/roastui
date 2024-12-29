@@ -8,7 +8,6 @@ import {
   getDesignImprovementsStreaming,
   getNewDesignStreaming,
 } from '@/lib/roast';
-import imageService from '@/services/imageService';
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
@@ -16,12 +15,6 @@ import {
   preprocessUiHtml,
   preprocessUiHtmlInternal,
 } from '@/lib/preprocessing/uiHtml';
-import { DesignImprovements } from '@/types/designImprovements';
-import {
-  createDataStream,
-  createDataStreamResponse,
-  StreamObjectResult,
-} from 'ai';
 import { AsyncStream } from '@/lib/asyncStream';
 import { StreamableRoastedDesign } from '@/types/roastedDesign';
 import { isValidAndNotEmptyString } from '@/lib/string';
@@ -237,6 +230,10 @@ export const PUT = auth(async (request) => {
         streamableRoastedDesign.improvedHtml!,
       );
 
+      const preprocessedImprovedReact = preprocessUiReact(
+        streamableRoastedDesign.improvedReact!,
+      );
+
       const uiHighlights = {
         improvements: streamableRoastedDesign?.dataElements?.map((element) => {
           return {
@@ -256,7 +253,8 @@ export const PUT = auth(async (request) => {
           originalImageUrl: base64Image,
           improvedHtml: preprocessedImprovedHtml,
           internalImprovedHtml: preprocessedInternalImprovedHtml,
-          improvedReact: streamableRoastedDesign.improvedReact!,
+          improvedReact: preprocessedImprovedReact,
+          internalImprovedReact: streamableRoastedDesign.improvedReact!,
           improvements: streamableRoastedDesign.improvements!,
           whatsWrong: streamableRoastedDesign.whatsWrong!,
           uiHighlights: JSON.stringify(uiHighlights),

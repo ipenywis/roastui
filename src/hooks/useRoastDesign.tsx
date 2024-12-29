@@ -7,17 +7,22 @@ import roastService from '@/services/roastService';
 import { CreateFormValues, UpdateFormValues } from '@/components/newDesignForm';
 import { DeepPartial } from 'ai';
 import { useCallback, useState } from 'react';
+import { RoastedDesigns } from '@prisma/client';
+import { getImageFileFromUrl } from '@/lib/image-client';
 
 interface UseRoastDesignReturn {
   roastNewDesign: (formData: CreateFormValues) => void;
-  roastUpdateDesign: (id: string, formData: UpdateFormValues) => void;
+  roastUpdateDesign: (
+    roastedDesign: RoastedDesigns | StreamableRoastedDesign,
+  ) => void;
+  roastUpdateDesignWithValues: (id: string, values: UpdateFormValues) => void;
   isCreationLoading: boolean;
   isUpdateLoading: boolean;
   creationError: Error | null;
   updateError: Error | null;
   createdRoastedDesign: DeepPartial<StreamableRoastedDesign> | null;
   updatedRoastedDesign: DeepPartial<StreamableRoastedDesign> | null;
-  lastCreatedDesignFormValues: CreateFormValues | null;
+  lastCreatedDesignFormValues: CreateFormValues | UpdateFormValues | null;
   genericError: Error | null;
   clearGenericError: () => void;
   clearCreatedRoastedDesign: () => void;
@@ -27,18 +32,24 @@ interface UseRoastDesignReturn {
 export function useRoastDesign({
   onCreationFinish,
   onUpdateFinish,
+  initialRoastedDesign,
 }: {
   onCreationFinish?: (object: StreamableRoastedDesign) => void;
   onUpdateFinish?: (object: StreamableRoastedDesign) => void;
+  initialRoastedDesign?: StreamableRoastedDesign | RoastedDesigns | null;
 }): UseRoastDesignReturn {
   const [lastCreatedDesignFormValues, setLastCreatedDesignFormValues] =
-    useState<CreateFormValues | null>(null);
+    useState<CreateFormValues | UpdateFormValues | null>(null);
 
   const [genericError, setGenericError] = useState<Error | null>(null);
 
   const checkForGenericError = useCallback(
-    (object: StreamableRoastedDesign) => {
-      if (!object.id || object.chunkStatus !== 'COMPLETED') {
+    (object: StreamableRoastedDesign | RoastedDesigns) => {
+      if (
+        !object.id ||
+        (Object.hasOwn(object, 'chunkStatus') &&
+          (object as StreamableRoastedDesign).chunkStatus !== 'COMPLETED')
+      ) {
         setGenericError(
           new Error(
             'Streaming roasted design cut mid-way, please check your internet connection and try again!',
@@ -58,6 +69,7 @@ export function useRoastDesign({
   } = useObject({
     api: '/api/roast-streaming',
     schema: StreamableRoastedDesignsSchema,
+    initialValue: initialRoastedDesign,
     fetch: async (_, init?: RequestInit) => {
       const body = init?.body as FormData;
       const response = await roastService.roastUIFormData(body);
@@ -66,7 +78,7 @@ export function useRoastDesign({
     onFinish: ({ object }) => {
       if (object) {
         checkForGenericError(object);
-        onCreationFinish?.(object);
+        onCreationFinish?.(object as StreamableRoastedDesign);
       }
     },
   });
@@ -80,6 +92,7 @@ export function useRoastDesign({
   } = useObject({
     api: '/api/roast-streaming',
     schema: StreamableRoastedDesignsSchema,
+    initialValue: initialRoastedDesign,
     fetch: async (_, init?: RequestInit) => {
       const body = init?.body as FormData;
       const response = await roastService.updateRoastUI(body);
@@ -88,21 +101,38 @@ export function useRoastDesign({
     onFinish: ({ object }) => {
       if (object) {
         checkForGenericError(object);
-        onUpdateFinish?.(object);
+        onUpdateFinish?.(object as StreamableRoastedDesign);
       }
     },
   });
 
   const handleRoastUpdateDesign = useCallback(
-    (id: string, values: UpdateFormValues) => {
+    async (roastedDesign: RoastedDesigns | StreamableRoastedDesign) => {
       const formData = new FormData();
-      if (values.name) formData.append('name', values.name);
+      if (roastedDesign.name) formData.append('name', roastedDesign.name);
 
-      formData.append('id', id);
-      formData.append('image', values.images[0]);
+      const imageFile = await getImageFileFromUrl(
+        roastedDesign.originalImageUrl!,
+      );
+
+      formData.append('id', roastedDesign.id!);
+      formData.append('image', imageFile);
       return submitUpdate(formData);
     },
     [submitUpdate],
+  );
+
+  const handleRoastUpdateDesignWithValues = useCallback(
+    async (id: string, values: UpdateFormValues) => {
+      const formData = new FormData();
+      formData.append('id', id);
+      if (values.name) formData.append('name', values.name);
+      formData.append('image', values.images[0]);
+
+      setLastCreatedDesignFormValues(values);
+      return submitUpdate(formData);
+    },
+    [submitUpdate, setLastCreatedDesignFormValues],
   );
 
   const handleRoastNewDesign = useCallback(
@@ -124,6 +154,7 @@ export function useRoastDesign({
   return {
     roastNewDesign: handleRoastNewDesign,
     roastUpdateDesign: handleRoastUpdateDesign,
+    roastUpdateDesignWithValues: handleRoastUpdateDesignWithValues,
     createdRoastedDesign: createdRoastedDesign ?? null,
     updatedRoastedDesign: updatedRoastedDesign ?? null,
     isCreationLoading,

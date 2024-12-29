@@ -10,7 +10,7 @@ import {
   parsePartialJson,
   Schema,
 } from '@ai-sdk/ui-utils';
-import { useCallback, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import useSWR from 'swr';
 import z from 'zod';
 
@@ -123,13 +123,20 @@ export function useObject<RESULT, INPUT extends BodyInit = any>({
   // Generate an unique id if not provided.
   const hookId = useId();
   const completionId = id ?? hookId;
+  const isInitialDataSet = useRef(false);
 
   // Store the completion state in SWR, using the completionId as the key to share states.
-  const { data, mutate } = useSWR<DeepPartial<RESULT>>(
+  const { data, mutate } = useSWR<DeepPartial<RESULT> | undefined>(
     [api, completionId],
     null,
-    { fallbackData: initialValue },
   );
+
+  useEffect(() => {
+    if (initialValue && !isInitialDataSet.current) {
+      isInitialDataSet.current = true;
+      mutate(initialValue);
+    }
+  }, [initialValue, mutate]);
 
   const [error, setError] = useState<undefined | Error>(undefined);
   const [isLoading, setIsLoading] = useState(false);
@@ -148,7 +155,7 @@ export function useObject<RESULT, INPUT extends BodyInit = any>({
   }, []);
 
   const clear = useCallback(() => {
-    mutate(undefined);
+    mutate(undefined, false);
     setIsLoading(false);
     setError(undefined);
   }, [mutate, setIsLoading, setError]);

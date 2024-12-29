@@ -29,11 +29,14 @@ const listItem = cva('my-3 font-normal');
 const collapsibleIcon = cva('size-6 text-gray-500');
 
 interface DesignImprovementsPreviewStreamingProps
-  extends Partial<DesignImprovements> {}
+  extends Partial<DesignImprovements> {
+  disableTypewriter?: boolean;
+}
 
 export function DesignImprovementsPreviewStreaming({
   improvements,
   whatsWrong,
+  disableTypewriter,
 }: DesignImprovementsPreviewStreamingProps) {
   const [isWhatsWrongOpen, setIsWhatsWrongOpen] = useState(true);
   const [isImprovementsOpen, setIsImprovementsOpen] = useState(true);
@@ -55,11 +58,16 @@ export function DesignImprovementsPreviewStreaming({
           <CollapsibleContent className={content()} forceMount>
             <ol className={orderedList()}>
               {whatsWrong && whatsWrong.length > 0 && (
-                <TypewriterSequence>
+                <TypewriterSequence disableTypewriter={disableTypewriter}>
                   {whatsWrong
                     .map((item) => `${item.category}: ${item.description}`)
                     .map((item) => (
-                      <Typewriter key={item} text={item} speed={20}>
+                      <Typewriter
+                        key={item}
+                        text={item}
+                        speed={20}
+                        disableTypewriter={disableTypewriter}
+                      >
                         {(chunk) => (
                           <li key={chunk} className={listItem()}>
                             {chunk}
@@ -91,11 +99,16 @@ export function DesignImprovementsPreviewStreaming({
           <CollapsibleContent className={content()} forceMount>
             <ol className={orderedList()}>
               {improvements && improvements.length > 0 && (
-                <TypewriterSequence>
+                <TypewriterSequence disableTypewriter={disableTypewriter}>
                   {improvements
                     ?.map((item) => `${item.category}: ${item.description}`)
                     .map((item) => (
-                      <Typewriter key={item} text={item} speed={20}>
+                      <Typewriter
+                        key={item}
+                        text={item}
+                        speed={20}
+                        disableTypewriter={disableTypewriter}
+                      >
                         {(chunk) => (
                           <li key={chunk} className={listItem()}>
                             {chunk}

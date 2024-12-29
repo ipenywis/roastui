@@ -2,8 +2,6 @@ import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import { PreviewView } from '@/components/previewView';
-import { evaluateReactCode, testJsx, transformJsx } from '@/lib/render';
-import JsxParser from 'react-jsx-parser';
 
 export default async function IFramePreviewPage(props: {
   params: { designId: string };
@@ -25,10 +23,6 @@ export default async function IFramePreviewPage(props: {
   if (!roastedDesign) {
     return notFound();
   }
-
-  // const Component = evaluateReactCode(testJsx);
-
-  // return <Component />;
 
   return <PreviewView roastedDesign={roastedDesign} />;
 }
