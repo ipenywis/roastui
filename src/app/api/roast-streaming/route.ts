@@ -22,6 +22,7 @@ import { isValidAndNotEmptyArray } from '@/lib/array';
 import { RoastedDesigns } from '@prisma/client';
 import { getStreamingHeaders } from '@/lib/headers';
 import { preprocessUiReact } from '@/lib/preprocessing/uiReact';
+import imageService from '@/services/imageService';
 
 async function processRoastedDesign(params: {
   name: string | null;
@@ -65,10 +66,15 @@ async function processRoastedDesign(params: {
       throw new Error('RoastedDesign is not valid');
     }
 
+    const originalImageUrl = await imageService.uploadImage(
+      userId,
+      compressedImage,
+    );
+
     const data = {
       name: name?.toString() || existingDesign?.name || '',
       userId,
-      originalImageUrl: base64Image,
+      originalImageUrl,
       improvedHtml: preprocessUiHtml(streamableRoastedDesign.improvedHtml!),
       internalImprovedHtml: preprocessUiHtmlInternal(
         streamableRoastedDesign.internalImprovedHtml!,

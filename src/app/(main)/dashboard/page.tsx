@@ -1,7 +1,6 @@
 import { auth } from '@/auth';
 import { UserSavedDesigns } from '@/components/userSavedDesigns';
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -12,9 +11,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-col items-center w-full min-h-screen py-20">
-      <Suspense fallback={<div>Loading...</div>}>
-        <UserSavedDesigns />
-      </Suspense>
+      <UserSavedDesigns />
     </div>
   );
 }

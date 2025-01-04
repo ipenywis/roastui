@@ -1,11 +1,10 @@
 import imageConfig from '@/config/image';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { s3 } from '@/lib/s3';
-import { User } from 'next-auth';
 
 const imageService = {
-  async uploadImage(user: User, file: File): Promise<string> {
-    const key = `${user.id}/${new Date().toISOString()}-${file.name}`;
+  async uploadImage(userId: string, file: File): Promise<string> {
+    const key = `${userId}/${new Date().toISOString()}-${file.name}`;
 
     const fileBuffer = Buffer.from(await file.arrayBuffer());
 

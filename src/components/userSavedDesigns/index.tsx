@@ -6,13 +6,13 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 
-const container = cva('flex flex-col gap-10 w-full max-w-[820px]');
+export const container = cva('flex flex-col gap-10 w-full max-w-[920px]');
 
 const headerText = cva('text-xl font-bold');
 
 const header = cva('flex items-center gap-3 justify-between');
 
-const gridContainer = cva('grid grid-cols-4 gap-x-4 gap-y-20');
+const gridContainer = cva('grid grid-cols-4 gap-x-4 gap-y-12');
 
 export async function UserSavedDesigns() {
   const session = await auth();

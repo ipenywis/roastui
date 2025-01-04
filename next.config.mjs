@@ -11,6 +11,12 @@ const nextConfig = {
       {
         hostname: 'roast-ui.islemmaboud.com',
       },
+      {
+        hostname: 'cdn.roastui.design',
+      },
+      {
+        hostname: 'roastui.design',
+      },
     ],
   },
 };

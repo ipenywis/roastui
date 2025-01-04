@@ -13,6 +13,7 @@ import {
   preprocessUiHtmlInternal,
 } from '@/lib/preprocessing/uiHtml';
 import { DesignImprovements } from '@/types/designImprovements';
+import { preprocessUiReact } from '@/lib/preprocessing/uiReact';
 
 export const POST = auth(async (request) => {
   const { auth } = request;
@@ -65,8 +66,10 @@ export const POST = auth(async (request) => {
       newDesign.html,
     );
 
+    const internalImprovedReact = await preprocessUiReact(newDesign.react);
+
     const originalImageUrl = await imageService.uploadImage(
-      auth?.user,
+      auth.user.id,
       compressedImage,
     );
 
@@ -87,7 +90,8 @@ export const POST = auth(async (request) => {
         originalImageUrl,
         improvedHtml: preprocessedImprovedHtml,
         internalImprovedHtml: preprocessedInternalImprovedHtml,
-        improvedReact: newDesign.react,
+        improvedReact: internalImprovedReact,
+        internalImprovedReact: newDesign.react,
         improvements: JSON.stringify(improvements.improvements),
         whatsWrong: JSON.stringify(improvements.whatsWrong),
         uiHighlights: JSON.stringify(uiHighlights),
