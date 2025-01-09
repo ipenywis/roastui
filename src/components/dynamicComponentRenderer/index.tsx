@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface DynamicComponentRendererProps {
   compiledCode: string;
+  noIframe?: boolean;
 }
 
 const extractMainComponent = (code: string): { name: string; code: string } => {
@@ -40,15 +41,44 @@ const extractMainComponent = (code: string): { name: string; code: string } => {
   return { name: '', code };
 };
 
+// const html = `
+//       <!DOCTYPE html>
+//       <html>
+//         <head>
+//           <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+//           <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+//         </head>
+//         <body>
+//           <div id="root"></div>
+//           <script>
+//             try {
+// ${code}
+// ReactDOM.render(
+//   React.createElement(${name}),
+//   document.getElementById('root')
+// );
+//             } catch (error) {
+//               console.error('Render error:', error);
+//               document.getElementById('root').innerHTML =
+//                 '<div style="color: red;">Error: ' + error.message + '</div>';
+//             }
+//           </script>
+//         </body>
+//       </html>
+//     `;
+
 export function DynamicComponentRenderer({
   compiledCode,
+  noIframe = false,
 }: DynamicComponentRendererProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [htmlContent, setHtmlContent] = useState<string>('');
 
   useEffect(() => {
-    if (!iframeRef.current) return;
+    if (!iframeRef.current && !noIframe) return;
 
     const { name, code } = extractMainComponent(compiledCode);
+
     if (!name) return;
 
     const html = `
@@ -57,10 +87,11 @@ export function DynamicComponentRenderer({
         <head>
           <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
           <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+          <script src="https://cdn.tailwindcss.com"></script>
         </head>
         <body>
           <div id="root"></div>
-          <script>
+          <script type="module">
             try {
               ${code}
               ReactDOM.render(
@@ -77,22 +108,32 @@ export function DynamicComponentRenderer({
       </html>
     `;
 
+    if (noIframe) {
+      setHtmlContent(html);
+      return;
+    }
+
     const iframe = iframeRef.current;
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+    const iframeDoc =
+      iframe?.contentDocument || iframe?.contentWindow?.document;
 
     if (iframeDoc) {
       iframeDoc.open();
       iframeDoc.write(html);
       iframeDoc.close();
     }
-  }, [compiledCode]);
+  }, [compiledCode, noIframe]);
+
+  if (noIframe) {
+    return <div dangerouslySetInnerHTML={{ __html: htmlContent }} />;
+  }
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '200px' }}>
+    <div>
       <iframe
         ref={iframeRef}
         style={{
-          border: '1px solid #ccc',
+          border: 'none',
           width: '100%',
           height: '100%',
         }}

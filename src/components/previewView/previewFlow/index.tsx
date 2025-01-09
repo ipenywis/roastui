@@ -8,9 +8,11 @@ import { useMemo } from 'react';
 import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
 import { useFlowNodes } from './useFlowNodes';
 import { XAxisDebugNode, YAxisDebugNode } from './axisDebugNode';
+import { MainDesignNodeDynamic } from '@/components/previewView/previewFlow/mainDesignNodeDynamic';
 
 const nodeTypes = {
   [FlowNodeTypes.MainDesignNode]: MainDesignNode,
+  [FlowNodeTypes.MainDesignNodeDynamic]: MainDesignNodeDynamic,
   [FlowNodeTypes.ArrowNode]: ArrowNode,
   [FlowNodeTypes.XAxisDebugNode]: XAxisDebugNode,
   [FlowNodeTypes.YAxisDebugNode]: YAxisDebugNode,

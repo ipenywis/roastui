@@ -4,6 +4,7 @@ import { Edge, MarkerType, Node } from '@xyflow/react';
 
 export enum FlowNodeTypes {
   MainDesignNode = 'mainDesignNode',
+  MainDesignNodeDynamic = 'mainDesignNodeDynamic',
   ArrowNode = 'arrowNode',
   TestNode = 'testNode',
   XAxisDebugNode = 'xAxisDebugNode',
@@ -47,7 +48,7 @@ function getMainDesignNode(roastedDesign: RoastedDesigns) {
     id: 'main',
     position: { x: 0, y: 0 },
     data: { roastedDesign: roastedDesign },
-    type: FlowNodeTypes.MainDesignNode,
+    type: FlowNodeTypes.MainDesignNodeDynamic,
     selectable: true,
     draggable: false,
     zIndex: -1,

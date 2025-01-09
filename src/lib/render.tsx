@@ -1,81 +1,8 @@
-import React from 'react';
-import * as Babel from '@babel/standalone';
-// import { transform } from '@babel/core';
-
-// export const testJsx = `import { CircleAlert } from 'lucide-react';
-
-// const LoginForm = () => {
-//   return (
-//     <div className="min-h-screen bg-white flex items-center justify-center">
-//       <div className="bg-[#f0f9ff] p-8 rounded-lg w-[400px]">
-//         <h1 className="text-gray-600 text-2xl font-medium text-center mb-6">LOG IN</h1>
-//         <CircleAlert />
-//         <form className="space-y-6">
-//           <div className="space-y-2">
-//             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-//               E-mail address
-//             </label>
-//             <input
-//               type="email"
-//               id="email"
-//               className="w-full px-4 py-3 rounded border border-[#E0E0E0] placeholder-[#757575]"
-//               placeholder="Enter your email"
-//             />
-//           </div>
-
-//           <div className="space-y-2">
-//             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-//               Password
-//             </label>
-//             <input
-//               type="password"
-//               id="password"
-//               className="w-full px-4 py-3 rounded border border-[#E0E0E0] placeholder-[#757575]"
-//               placeholder="Enter your password"
-//             />
-//           </div>
-
-//           <button
-//             type="submit"
-//             className="w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition-colors"
-//           >
-//             LOG IN
-//           </button>
-
-//           <button
-//             type="button"
-//             className="w-full border border-blue-500 text-blue-500 py-3 rounded hover:bg-blue-50 transition-colors"
-//           >
-//             SIGN UP
-//           </button>
-
-//           <button
-//             type="button"
-//             className="w-full text-blue-500 py-3 rounded hover:bg-blue-50 transition-colors"
-//           >
-//             FORGOT PASSWORD?
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };`;
-
-export const testJsx = `
-    import { Home, AlertCircle } from "lucide-react";
-
-    const IconComponent = () => (
-      <div>
-        <h1>Dynamic Icons</h1>
-        <div style={{ fontSize: '24px', display: 'flex', gap: '10px' }}>
-          <Home />
-          <AlertCircle />
-        </div>
-      </div>
-    );
-
-    export { IconComponent };
-  `;
+import React, { useMemo } from 'react';
+import { RoastedDesigns } from '@prisma/client';
+import esBundle, { BundledResult, loadEsbuild } from './bundler';
+import { extractMainReactComponent } from './bundler/prepare';
+import JsxParser from 'react-jsx-parser';
 
 // Supported icon libraries
 const iconLibraries = {
@@ -125,45 +52,6 @@ export function transformJsx(rawJsx: string) {
   return rawJsx;
 }
 
-// Evaluate the transformed JSX code
-export function evaluateReactCode(rawJsx: string) {
-  const transformedJsx = transformJsx(rawJsx);
-
-  const imports = { React, iconLibraries };
-
-  const result = Babel.transform(transformedJsx, {
-    presets: ['react'],
-  });
-
-  if (!result) {
-    throw new Error('Failed to transform JSX');
-  }
-
-  const code = result.code;
-
-  const fn = new Function(
-    ...Object.keys(imports),
-    `
-    let exports = {};
-    let module = { exports };
-    ${code};
-    return module.exports.default || exports.default;
-  `,
-  );
-
-  const component = fn(...Object.values(imports));
-
-  if (!component) {
-    throw new Error('No React component found in the evaluated code');
-  }
-
-  return component;
-}
-
-export function evaluateHtmlCode(rawHtml: string) {
-  return rawHtml;
-}
-
 //Create a method that takes a React code as a string and returns only the JSX part of the code
 export function extractJsx(rawJsx: string) {
   // First, try to find the component's return statement
@@ -181,4 +69,197 @@ export function extractJsx(rawJsx: string) {
   // As a fallback, try to find any JSX-like structure
   const jsxMatch = rawJsx.match(/<[\w\s]*>[\s\S]*?<\/[\w]*>/);
   return jsxMatch ? jsxMatch[0] : null;
+}
+
+interface PreviewRendererOptions {
+  reactRenderElementId?: string;
+  esbuildWrapperElementId?: string;
+  renderingMethod?: 'auto' | 'react-esbuild' | 'react-jsx-parser' | 'html';
+}
+
+interface PreviewRenderer {
+  roastedDesign: RoastedDesigns;
+  options: PreviewRendererOptions;
+}
+
+export function createPreviewRenderer(
+  roastedDesign: RoastedDesigns,
+  options: PreviewRendererOptions = {
+    reactRenderElementId: 'html-container',
+    esbuildWrapperElementId: 'esbuild-wrapper',
+  },
+): PreviewRenderer {
+  return {
+    roastedDesign,
+    options,
+  };
+}
+
+export function preloadPreviewRenderer(): Promise<unknown> {
+  return loadEsbuild();
+}
+
+export function getReactCode(renderer: PreviewRenderer): string {
+  const reactCode =
+    renderer.roastedDesign.internalImprovedReact !== ''
+      ? renderer.roastedDesign.internalImprovedReact
+      : renderer.roastedDesign.improvedReact;
+
+  return reactCode;
+}
+
+export function getHtmlCode(renderer: PreviewRenderer): string {
+  const htmlCode =
+    renderer.roastedDesign.internalImprovedHtml !== ''
+      ? renderer.roastedDesign.internalImprovedHtml
+      : renderer.roastedDesign.improvedHtml;
+
+  return htmlCode;
+}
+
+export function injectEsbuildScript(
+  renderer: PreviewRenderer,
+  compiledCode: string,
+  onScriptError?: () => void,
+): HTMLScriptElement | null {
+  try {
+    if (document.getElementById('esbuild-script')) {
+      return document.getElementById('esbuild-script') as HTMLScriptElement;
+    }
+
+    const script = document.createElement('script');
+    const component = extractMainReactComponent(compiledCode);
+    script.setAttribute('id', 'esbuild-script');
+    script.setAttribute('type', 'module');
+
+    //Pass this down to the window object so that it can be used by the esbuild script execution scope
+    (window as any).showErrorBoundary = () => {
+      if (onScriptError) {
+        onScriptError();
+      }
+    };
+
+    script.innerHTML = `
+    // Set up global error handlers first
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+      if (window && window.showErrorBoundary) {
+        window.showErrorBoundary();
+      }
+      return false; // Let other error handlers run
+    };
+
+    window.onunhandledrejection = function(event) {
+      if (window && window.showErrorBoundary) {
+        window.showErrorBoundary();
+      }
+    };
+    
+    /*COMPILED CODE START*/
+    ${compiledCode}
+    /*COMPILED CODE END*/
+
+    try {
+        ReactDOM.render(
+          React.createElement(${component.name}),
+          document.getElementById("${renderer.options.reactRenderElementId}")
+        );
+    } catch (err) {
+      console.log('Error injecting esbuild script', err);
+      if (window && window.showErrorBoundary) {
+        window.showErrorBoundary();
+      }
+    }
+  `;
+
+    const esbuildWrapperElement = document.getElementById(
+      renderer.options.esbuildWrapperElementId!,
+    );
+
+    //This is a global error handler that will be used to catch errors in the iframe
+    //where the esbuild script is injected and executed
+    window.onerror = function () {
+      onScriptError?.();
+      return false; // Let other error handlers run
+    };
+
+    window.onunhandledrejection = function (event) {
+      onScriptError?.();
+    };
+
+    if (!esbuildWrapperElement) {
+      throw new Error(
+        `Esbuild wrapper element with id ${renderer.options.esbuildWrapperElementId} not found`,
+      );
+    }
+
+    esbuildWrapperElement.appendChild(script);
+
+    return script;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export function getEsbuildTargetRenderElement(
+  renderer: PreviewRenderer,
+): JSX.Element {
+  return (
+    <div id={renderer.options.esbuildWrapperElementId}>
+      <div id={renderer.options.reactRenderElementId}></div>
+    </div>
+  );
+}
+
+export async function compileAndInjectReactEsbuild(
+  renderer: PreviewRenderer,
+  onCompilationSuccess?: (result: BundledResult) => void,
+  onScriptError?: () => void,
+): Promise<string> {
+  try {
+    const code = getReactCode(renderer);
+    const compilationResult = await esBundle(code);
+    if (!compilationResult.output || compilationResult.error) {
+      throw new Error('Failed to compile React code');
+    }
+
+    onCompilationSuccess?.(compilationResult);
+    injectEsbuildScript(renderer, compilationResult.output, onScriptError);
+
+    return compilationResult.output;
+  } catch (err) {
+    throw err;
+  }
+}
+
+/**
+ * This is a renderer that uses the JSXParser library to render the React code.
+ * This must be called in a function react component since it uses hooks.
+ */
+export function RenderReactJsxParser({
+  renderer,
+}: {
+  renderer: PreviewRenderer;
+}): JSX.Element {
+  const code = getReactCode(renderer);
+  const jsx = useMemo(() => extractJsx(code), [code]);
+
+  if (!jsx) {
+    throw new Error('Failed to extract JSX from React code for JSXParser');
+  }
+
+  return (
+    <div id={renderer.options.reactRenderElementId}>
+      <JsxParser renderInWrapper={false} components={iconLibraries} jsx={jsx} />
+    </div>
+  );
+}
+
+export function renderHtml(renderer: PreviewRenderer): JSX.Element {
+  const htmlCode = getHtmlCode(renderer);
+  return (
+    <div
+      id={renderer.options.reactRenderElementId}
+      dangerouslySetInnerHTML={{ __html: htmlCode }}
+    ></div>
+  );
 }
