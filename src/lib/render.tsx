@@ -3,6 +3,8 @@ import { RoastedDesigns } from '@prisma/client';
 import esBundle, { BundledResult, loadEsbuild } from './bundler';
 import { extractMainReactComponent } from './bundler/prepare';
 import JsxParser from 'react-jsx-parser';
+import ReactDOM from 'react-dom';
+import DOMPurify from 'isomorphic-dompurify';
 
 // Supported icon libraries
 const iconLibraries = {
@@ -117,6 +119,15 @@ export function getHtmlCode(renderer: PreviewRenderer): string {
   return htmlCode;
 }
 
+//This should mainly be used for injecting globals to the iframe window global scope
+export function injectGlobalsToCurrentWindow() {
+  //TODO: Make sure to use React v18 for now
+  //If the app has an upgraded version, install the older version of react and react-dom
+  //Or switch to React v19+
+  window.globalThis.React = React;
+  window.globalThis.ReactDOM = ReactDOM;
+}
+
 export function injectEsbuildScript(
   renderer: PreviewRenderer,
   compiledCode: string,
@@ -139,16 +150,20 @@ export function injectEsbuildScript(
       }
     };
 
+    injectGlobalsToCurrentWindow();
+
     script.innerHTML = `
     // Set up global error handlers first
-    window.onerror = function(msg, url, lineNo, columnNo, error) {
+    window.onerror = function(message) {
+      console.log('onerror', message);
       if (window && window.showErrorBoundary) {
         window.showErrorBoundary();
       }
       return false; // Let other error handlers run
     };
 
-    window.onunhandledrejection = function(event) {
+    window.onunhandledrejection = function() {
+      console.log('onunhandledrejection');
       if (window && window.showErrorBoundary) {
         window.showErrorBoundary();
       }
@@ -159,12 +174,12 @@ export function injectEsbuildScript(
     /*COMPILED CODE END*/
 
     try {
-        ReactDOM.render(
-          React.createElement(${component.name}),
-          document.getElementById("${renderer.options.reactRenderElementId}")
-        );
+      ReactDOM.render(
+        React.createElement(${component.name}),
+        document.getElementById("${renderer.options.reactRenderElementId}")
+      );
     } catch (err) {
-      console.log('Error injecting esbuild script', err);
+      console.log('Error injecting esbuild script!!', err);
       if (window && window.showErrorBoundary) {
         window.showErrorBoundary();
       }
@@ -237,8 +252,10 @@ export async function compileAndInjectReactEsbuild(
  */
 export function RenderReactJsxParser({
   renderer,
+  onError,
 }: {
   renderer: PreviewRenderer;
+  onError: (error: Error) => void;
 }): JSX.Element {
   const code = getReactCode(renderer);
   const jsx = useMemo(() => extractJsx(code), [code]);
@@ -249,7 +266,12 @@ export function RenderReactJsxParser({
 
   return (
     <div id={renderer.options.reactRenderElementId}>
-      <JsxParser renderInWrapper={false} components={iconLibraries} jsx={jsx} />
+      <JsxParser
+        renderInWrapper={false}
+        components={iconLibraries}
+        jsx={jsx}
+        onError={onError}
+      />
     </div>
   );
 }
@@ -259,7 +281,7 @@ export function renderHtml(renderer: PreviewRenderer): JSX.Element {
   return (
     <div
       id={renderer.options.reactRenderElementId}
-      dangerouslySetInnerHTML={{ __html: htmlCode }}
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(htmlCode) }}
     ></div>
   );
 }

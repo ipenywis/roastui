@@ -1,12 +1,13 @@
 'use client';
 
+import { usePreviewViewStore } from '@/lib/providers/previewViewStoreProvider';
 import {
   compileAndInjectReactEsbuild,
   createPreviewRenderer,
   getEsbuildTargetRenderElement,
 } from '@/lib/render';
 import { RoastedDesigns } from '@prisma/client';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import { useErrorBoundary } from 'react-error-boundary';
 
@@ -17,10 +18,12 @@ interface ReactEsbuildRendererProps {
 export function ReactEsbuildRenderer({
   roastedDesign,
 }: ReactEsbuildRendererProps) {
-  const [compilationStatus, setCompilationStatus] = useState<
-    'idle' | 'pending' | 'success' | 'error'
-  >('idle');
   const { showBoundary } = useErrorBoundary();
+
+  const renderingStatus = usePreviewViewStore((store) => store.renderingStatus);
+  const setRenderingStatus = usePreviewViewStore(
+    (store) => store.setRenderingStatus,
+  );
 
   const previewRenderer = useMemo(
     () => createPreviewRenderer(roastedDesign),
@@ -28,35 +31,34 @@ export function ReactEsbuildRenderer({
   );
 
   const handleScriptError = useCallback(() => {
-    setCompilationStatus('error');
+    setRenderingStatus('error');
     showBoundary(new Error('Error injecting esbuild script'));
-  }, [showBoundary, setCompilationStatus]);
+  }, [showBoundary, setRenderingStatus]);
 
   const prepareAndCompile = useCallback(async () => {
-    if (compilationStatus === 'pending' || compilationStatus === 'success')
-      return;
+    if (renderingStatus === 'pending' || renderingStatus === 'success') return;
 
-    setCompilationStatus('pending');
+    setRenderingStatus('pending');
 
     try {
       await compileAndInjectReactEsbuild(
         previewRenderer,
-        () => {
-          setCompilationStatus('success');
-        },
+        undefined,
         handleScriptError,
       );
+
+      setRenderingStatus('success');
     } catch (err) {
-      setCompilationStatus('error');
+      setRenderingStatus('error');
       showBoundary(err);
     }
 
-    setCompilationStatus('success');
+    setRenderingStatus('success');
   }, [
     showBoundary,
     previewRenderer,
-    setCompilationStatus,
-    compilationStatus,
+    setRenderingStatus,
+    renderingStatus,
     handleScriptError,
   ]);
 

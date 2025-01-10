@@ -22,7 +22,7 @@ export const unpkgPathPlugin = () => {
         return {
           path: 'https://unpkg.com/react-dom@18/cjs/react-dom.production.min.js',
           namespace: 'app',
-          external: true,
+          external: false,
         };
       });
 

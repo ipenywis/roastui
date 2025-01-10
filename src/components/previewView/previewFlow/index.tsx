@@ -3,12 +3,18 @@ import { FlowNodeTypes, getAllEdges } from './nodes';
 import { ArrowNode } from './arrowNode';
 import { MainDesignNode } from './mainDesignNode';
 import { RoastedDesigns } from '@prisma/client';
-import { PreviewHighlightCoordinates } from '@/lib/preview';
-import { useMemo } from 'react';
+import {
+  getCoordinatesFromElements,
+  getHighlightedPreviewElements,
+  PreviewHighlightCoordinates,
+} from '@/lib/preview';
+import { useEffect, useMemo, useState } from 'react';
 import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
 import { useFlowNodes } from './useFlowNodes';
 import { XAxisDebugNode, YAxisDebugNode } from './axisDebugNode';
 import { MainDesignNodeDynamic } from '@/components/previewView/previewFlow/mainDesignNodeDynamic';
+import { usePreviewFullScreenMode } from '@/hooks/usePreviewFullScreenMode';
+import { usePreviewViewStore } from '@/lib/providers/previewViewStoreProvider';
 
 const nodeTypes = {
   [FlowNodeTypes.MainDesignNode]: MainDesignNode,
@@ -20,11 +26,14 @@ const nodeTypes = {
 
 interface PreviewFlowProps {
   roastedDesign: RoastedDesigns;
-  arrowsCoordinates: PreviewHighlightCoordinates[];
 }
 
 export function PreviewFlow(props: PreviewFlowProps) {
-  const { roastedDesign, arrowsCoordinates } = props;
+  const { roastedDesign } = props;
+
+  const [arrowsCoordinates, setArrowsCoordinates] = useState<
+    PreviewHighlightCoordinates[]
+  >([]);
 
   const isImprovementsHighlightActive = useDesignPreviewStore(
     (state) => state.isImprovementsHighlightActive,
@@ -43,6 +52,22 @@ export function PreviewFlow(props: PreviewFlowProps) {
       }),
     [arrowsCoordinates, isImprovementsHighlightActive],
   );
+
+  const { isPreviewFullScreenMode } = usePreviewFullScreenMode();
+  const renderingStatus = usePreviewViewStore((store) => store.renderingStatus);
+
+  useEffect(() => {
+    //Timeout is needed to allow html to paint before getting coordinates
+    if (renderingStatus === 'success') {
+      setTimeout(() => {
+        const elements = getHighlightedPreviewElements(
+          JSON.parse(roastedDesign.uiHighlights).improvements,
+        );
+        const newCoordinates = getCoordinatesFromElements(elements);
+        setArrowsCoordinates(newCoordinates);
+      }, 200);
+    }
+  }, [roastedDesign.uiHighlights, isPreviewFullScreenMode, renderingStatus]);
 
   return (
     <ReactFlow
