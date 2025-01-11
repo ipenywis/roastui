@@ -117,8 +117,6 @@ export function getAllNodes(
 
   const mainDesignNode = getMainDesignNode(roastedDesign);
 
-  // const axisDebugNodes = getAxisDebugNodes();
-
   if (!options.enableImprovementsHighlight) {
     return [mainDesignNode];
   }

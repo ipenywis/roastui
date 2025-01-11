@@ -10,6 +10,7 @@ import {
 } from '@/lib/providers/previewViewStoreProvider';
 import '@xyflow/react/dist/style.css';
 import { DesingPreviewLoadingOverlay } from '../designPreviewLoading';
+import './style.css';
 
 interface DesignPreviewPlaygroundProps {
   roastedDesign: RoastedDesigns;

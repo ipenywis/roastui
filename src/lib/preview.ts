@@ -71,7 +71,7 @@ export function getRootHtmlElement(): HTMLDivElement {
   return document.querySelector('#html-container') as HTMLDivElement;
 }
 
-function getOffsetRelativeToParent(element: HTMLElement, parent: HTMLElement) {
+function getYOffsetRelativeToParent(element: HTMLElement, parent: HTMLElement) {
   let offsetTop = 0;
   let currentElement: HTMLElement | null = element;
 
@@ -96,6 +96,39 @@ function getOffsetRelativeToParent(element: HTMLElement, parent: HTMLElement) {
 
     if (currentElement === parent) {
       return offsetTop;
+    }
+
+    currentElement = currentElement.parentElement; // Fallback to parent traversal
+  }
+
+  return null;
+}
+
+function getXOffsetRelativeToParent(element: HTMLElement, parent: HTMLElement) {
+  let offsetLeft = 0;
+  let currentElement: HTMLElement | null = element;
+
+  while (currentElement && currentElement !== parent) {
+    offsetLeft += currentElement.offsetLeft;
+    // const computedStyle = getComputedStyle(currentElement);
+    // offsetLeft += Number(computedStyle.marginLeft.replace('px', '')) || 0;
+    currentElement = currentElement.offsetParent as HTMLElement | null;
+  }
+
+  // If we exit the loop and the currentElement is the parent, return the offset
+  if (currentElement === parent) {
+    return offsetLeft;
+  }
+
+  // Fallback: traverse directly up the DOM if offsetParent fails
+  offsetLeft = 0; // Reset
+  currentElement = element;
+
+  while (currentElement && currentElement !== document.body) {
+    offsetLeft += currentElement.offsetLeft;
+
+    if (currentElement === parent) {
+      return offsetLeft;
     }
 
     currentElement = currentElement.parentElement; // Fallback to parent traversal
@@ -130,16 +163,19 @@ export function getCoordinatesFromElements(
   return elements.map(({ element, description }) => {
     //Check if the new way of determining the side is better
     // const isLeft = index % 2 === 0;
-    const preferedSide = getElementPreferedSide(element);
-    const isLeft = preferedSide === 'left';
+    const preferredSide = getElementPreferedSide(element);
+    const isLeft = preferredSide === 'left';
 
     const rootHtmlElement = getRootHtmlElement();
     const boundingRect = element.getBoundingClientRect();
 
-    const offsetRelativeToParent = getOffsetRelativeToParent(
+    const offsetRelativeToParent = getYOffsetRelativeToParent(
       element,
       rootHtmlElement,
     );
+    const xOffsetRelativeToParent =
+      getXOffsetRelativeToParent(element, rootHtmlElement) ??
+      element.offsetLeft;
 
     const computedStyle = getElementComputedStyle(element);
 
@@ -163,8 +199,8 @@ export function getCoordinatesFromElements(
       },
       end: {
         x: isLeft
-          ? element.offsetLeft + endEdgeOffset
-          : element.offsetLeft + element.offsetWidth + endEdgeOffset,
+          ? xOffsetRelativeToParent + endEdgeOffset
+          : xOffsetRelativeToParent + element.offsetWidth + endEdgeOffset,
         y: centerY,
       },
     };
