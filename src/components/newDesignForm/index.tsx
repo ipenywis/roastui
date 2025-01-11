@@ -32,9 +32,7 @@ const createFormSchema = z.object({
 
 export const updateFormSchema = z.object({
   name: z.string().optional(),
-  images: z.array(z.instanceof(File)).min(1, {
-    message: 'Design image is required',
-  }),
+  images: z.array(z.instanceof(File)).optional(),
 });
 
 export type FormValues = z.infer<typeof createFormSchema>;

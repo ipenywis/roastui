@@ -26,18 +26,29 @@ import imageService from '@/services/imageService';
 
 async function processRoastedDesign(params: {
   name: string | null;
-  image: File;
+  image?: File;
   userId: string;
   existingDesign?: RoastedDesigns;
   id?: string;
 }) {
   const { name, image, userId, existingDesign, id } = params;
 
-  if (image.size > MAX_IMAGE_UPLOAD_SIZE) {
+  if (image && image.size > MAX_IMAGE_UPLOAD_SIZE) {
     throw new Error('Image size exceeds 5MB');
   }
 
-  const compressedImage = await compressImage(image);
+  const imageFile =
+    image ??
+    (await imageService.getImageFileFromUrl(
+      existingDesign?.originalImageUrl ?? '',
+    ));
+  const isNewImage = image !== undefined;
+
+  if (!imageFile) {
+    throw new Error('Error retrieving image, please try again!');
+  }
+
+  const compressedImage = await compressImage(imageFile);
   const base64Image = await getImageBase64(compressedImage);
 
   const asyncStream = new AsyncStream<StreamableRoastedDesign>();
@@ -66,10 +77,40 @@ async function processRoastedDesign(params: {
       throw new Error('RoastedDesign is not valid');
     }
 
-    const originalImageUrl = await imageService.uploadImage(
-      userId,
-      compressedImage,
-    );
+    let originalImageUrl: string | null = null;
+
+    if (isNewImage && existingDesign && existingDesign.originalImageUrl) {
+      const isImgSameAsPreviousImg = await imageService.isSameImage(
+        existingDesign?.originalImageUrl,
+        compressedImage,
+      );
+
+      if (isImgSameAsPreviousImg) {
+        originalImageUrl = existingDesign.originalImageUrl;
+      } else {
+        originalImageUrl = await imageService.uploadImage(
+          userId,
+          compressedImage,
+        );
+        //Delete previous image
+        await imageService.deleteImage(existingDesign.originalImageUrl);
+      }
+    } else if (
+      !isNewImage &&
+      existingDesign &&
+      existingDesign.originalImageUrl
+    ) {
+      originalImageUrl = existingDesign.originalImageUrl;
+    } else {
+      originalImageUrl = await imageService.uploadImage(
+        userId,
+        compressedImage,
+      );
+    }
+
+    if (!originalImageUrl) {
+      throw new Error('Error upload image, please try again!');
+    }
 
     const data = {
       name: name?.toString() || existingDesign?.name || '',
@@ -91,6 +132,7 @@ async function processRoastedDesign(params: {
       }),
     };
 
+    //We are on update
     if (id) {
       return prisma.roastedDesigns.update({
         where: { id },
@@ -98,6 +140,7 @@ async function processRoastedDesign(params: {
       });
     }
 
+    //We are on create
     return prisma.roastedDesigns.create({ data });
   };
 
@@ -164,9 +207,16 @@ export const PUT = auth(async (request) => {
     const image = formData.get('image');
     const id = formData.get('id');
 
-    if (!id || !image || !(image instanceof File)) {
+    // if (!id || !image || !(image instanceof File)) {
+    //   return NextResponse.json(
+    //     { error: 'Valid id and image are required' },
+    //     { status: 400 },
+    //   );
+    // }
+
+    if (!id) {
       return NextResponse.json(
-        { error: 'Valid id and image are required' },
+        { error: 'Valid id is required' },
         { status: 400 },
       );
     }
@@ -184,7 +234,7 @@ export const PUT = auth(async (request) => {
 
     const roastedDesignStream = await processRoastedDesign({
       name: name?.toString() || null,
-      image,
+      image: image && image instanceof File ? image : undefined,
       userId: auth.user.id,
       existingDesign,
       id: id.toString(),
@@ -202,3 +252,6 @@ export const PUT = auth(async (request) => {
     );
   }
 });
+
+// cdn.roastui.design/cm33eoeci0000uvyw920xjvjr/2025-01-11T09:06:13.028Z-image.webp
+// https://cdn.roastui.design/cm33eoeci0000uvyw920xjvjr/2025-01-11T10:13:42.276Z-image.webp

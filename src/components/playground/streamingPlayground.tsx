@@ -7,12 +7,13 @@ import { parsePartialJson } from '@ai-sdk/ui-utils';
 import { DesignImprovements } from '@/types/designImprovements';
 import { StreamingLoading } from './streamingLoading';
 import { StreamingDesignTitle } from './designTitle';
-import { FormValues } from '../newDesignForm';
+import { CreateFormValues, FormValues } from '../newDesignForm';
 import { DesignForm } from './designForm';
 import { useRoastDesign } from '@/hooks/useRoastDesign';
 import { PlaygroundError } from './playgroundError';
 import { RoastedDesigns } from '@prisma/client';
 import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
+import { useRouter } from 'next/navigation';
 
 interface StreamingPlaygroundProps {
   initialRoastedDesign?: RoastedDesigns;
@@ -24,6 +25,8 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
     StreamableRoastedDesign | RoastedDesigns | null
   >(initialRoastedDesign ?? null);
 
+  const router = useRouter();
+
   const [isUpdateMode, setIsUpdateMode] = useState(
     initialRoastedDesign ? true : false,
   );
@@ -33,6 +36,14 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
 
   const setCurrentRoastedDesign = useDesignPreviewStore(
     (state) => state.setCurrentRoastedDesign,
+  );
+
+  const replaceCurrentUrl = useCallback(
+    (roastedDesignId: RoastedDesigns['id']) => {
+      //Replace without triggering a new navigation (and new page rendering)
+      router.replace(`/playground/${roastedDesignId}`);
+    },
+    [router],
   );
 
   const {
@@ -56,6 +67,7 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
       if (object.id) {
         setRoastResponse(object);
         setCurrentRoastedDesign(object);
+        replaceCurrentUrl(object.id);
       }
     },
     onUpdateFinish: (object) => {
@@ -132,22 +144,23 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
   const handleRoastAgain = useCallback(() => {
     clearGenericError();
     clearCachedImprovements();
-    if (roastResponse?.id && lastCreatedDesignFormValues) {
-      setIsUpdateMode(true);
-      roastUpdateDesignWithValues(
-        roastResponse?.id,
-        lastCreatedDesignFormValues,
-      );
-    } else if (roastResponse?.id) {
+    // if (roastResponse?.id && lastCreatedDesignFormValues) {
+    //   setIsUpdateMode(true);
+    //   roastUpdateDesignWithValues(
+    //     roastResponse?.id,
+    //     lastCreatedDesignFormValues,
+    //   );
+    // }
+
+    if (roastResponse?.id) {
       setIsUpdateMode(true);
       clearUpdatedRoastedDesign();
       setCurrentRoastedDesign(null);
       roastUpdateDesign(roastResponse);
+    } else if (!roastResponse?.id && lastCreatedDesignFormValues) {
+      clearCreatedRoastedDesign();
+      roastNewDesign(lastCreatedDesignFormValues as CreateFormValues);
     }
-    // else if (!roastResponse?.id && lastCreatedDesignFormValues) {
-    //   clearCreatedRoastedDesign();
-    //   roastNewDesign(lastCreatedDesignFormValues);
-    // }
   }, [
     roastResponse,
     roastUpdateDesign,

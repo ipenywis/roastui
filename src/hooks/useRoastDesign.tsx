@@ -124,17 +124,25 @@ export function useRoastDesign({
     isHeartbeat,
   });
 
+  /**
+   * @param reuploadImage - If true, the image will be fetched from the original image url and reuploaded
+   */
   const handleRoastUpdateDesign = useCallback(
-    async (roastedDesign: RoastedDesigns | StreamableRoastedDesign) => {
+    async (
+      roastedDesign: RoastedDesigns | StreamableRoastedDesign,
+      reuploadImage: boolean = false,
+    ) => {
       const formData = new FormData();
       if (roastedDesign.name) formData.append('name', roastedDesign.name);
 
-      const imageFile = await getImageFileFromUrl(
-        roastedDesign.originalImageUrl!,
-      );
+      if (reuploadImage) {
+        const imageFile = await getImageFileFromUrl(
+          roastedDesign.originalImageUrl!,
+        );
+        formData.append('image', imageFile);
+      }
 
       formData.append('id', roastedDesign.id!);
-      formData.append('image', imageFile);
       return submitUpdate(formData);
     },
     [submitUpdate],
@@ -145,7 +153,8 @@ export function useRoastDesign({
       const formData = new FormData();
       formData.append('id', id);
       if (values.name) formData.append('name', values.name);
-      formData.append('image', values.images[0]);
+      if (values.images && values.images[0])
+        formData.append('image', values.images[0]);
 
       setLastCreatedDesignFormValues(values);
       return submitUpdate(formData);

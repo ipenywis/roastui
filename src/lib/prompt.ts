@@ -250,7 +250,7 @@ export default function LoginForm() {
 With these principles, you're now ready to transform UI/UX designs into exceptional code! 🚀
 `;
 
-const PROMPT_SYSTEM_NEW_DESIGN4 = `# 🚀 Hello, Master of TailwindCSS and Frontend Design! 🎨  
+const PROMPT_SYSTEM_NEW_DESIGN4_OLD = `# 🚀 Hello, Master of TailwindCSS and Frontend Design! 🎨  
 
 You’ve mastered the art of frontend design and TailwindCSS using React! Your mission is to transform compelling images with some UI/UX flaws and bad practices into stunning designs in React and HTML using the versatility of TailwindCSS and CSS. Your designs should match the original image in terms of layout and only improve upon the provided instructions from the user. You can use icons from \`lucide-react\` library in the React code only if they are in the library and you see them in the original image, the user instructions or to make the design look better.
 
@@ -392,7 +392,7 @@ export default function LoginForm() {
 With these principles, you're now ready to transform UI/UX designs into exceptional code! 🚀
 `;
 
-const PROMPT_SYSTEM_NEW_DESIGN4_ONLY_JSX = `# 🚀 Hello, Master of TailwindCSS and Frontend Design! 🎨  
+const PROMPT_SYSTEM_NEW_DESIGN5 = `# 🚀 Hello, Master of TailwindCSS and Frontend Design! 🎨  
 
 You’ve mastered the art of frontend design and TailwindCSS using React! Your mission is to transform compelling images with some UI/UX flaws and bad practices into stunning designs in React and HTML using the versatility of TailwindCSS and CSS. Your designs should match the original image in terms of layout and only improve upon the provided instructions from the user. You can use icons from \`lucide-react\` library in the React code only if they are in the library and you see them in the original image, the user instructions or to make the design look better.
 
@@ -408,9 +408,9 @@ You’ve mastered the art of frontend design and TailwindCSS using React! Your m
 
 ## **Implementation Rules**  
 1. **React Component**  
-   - Output a valid React JSX code only. Do not include the whole component, only the jsx part because our environment does not running javascript.
+   - Output a valid React component with all the necessary imports.
    - Only implement elements within the \`<body>\` tag; do not include \`<html>\` or \`<head>\`.
-   - Use icons from \`lucide-react\` library. Only use icons that are in the library.
+   - Use and import icons from \`lucide-react\` library. Only use icons that are in the library.
 
 2. **Tag Improvements**  
    - Add \`data-element="element-name"\` attributes to improved elements for easy tracking.  
@@ -529,7 +529,6 @@ export default function LoginForm() {
 - Always follow the user-provided instructions precisely.  
 - Maintain a professional, modern design style with TailwindCSS.  
 - Focus on both functional and aesthetic improvements without altering the core layout or theme.
-- Use icons from \`lucide-react\` library. Only use icons that are in the library and skip the ones that are not in the library.
 
 With these principles, you're now ready to transform UI/UX designs into exceptional code! 🚀
 `;
@@ -562,7 +561,7 @@ export const IMPROVEMENTS_PROMPTS = {
 };
 
 export const NEW_DESIGN_PROMPTS = {
-  system: PROMPT_SYSTEM_NEW_DESIGN4_ONLY_JSX,
+  system: PROMPT_SYSTEM_NEW_DESIGN5,
   getUserPrompt: GET_PROMPT_USER_NEW_DESIGN,
   schema: z.object({
     html: z.string(),

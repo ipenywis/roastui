@@ -284,30 +284,6 @@ export function getPartialRoastedDesignStreaming(
   });
 
   return roastedDesignStream;
-
-  // (async () => {
-  //   for await (const newDesign of readStreamableValue(
-  //     newDesignStreamableValue,
-  //   )) {
-  //     //Combine newDesign and designImprovements
-  //     const roastedDesign: Partial<RoastedDesigns> = {
-  //       improvements: JSON.stringify(designImprovements.improvements),
-  //       whatsWrong: JSON.stringify(designImprovements.whatsWrong),
-  //       improvedHtml: newDesign?.html,
-  //       internalImprovedHtml: newDesign?.html,
-  //       improvedReact: newDesign?.react,
-  //     };
-
-  //     console.log('Roasted design chunk received!');
-
-  //     resultStream.update(roastedDesign as Partial<RoastedDesigns>);
-  //   }
-
-  //   console.log('Roasted design stream done!');
-  //   resultStream.done();
-  // })();
-
-  // return resultStream.value;
 }
 
 export function createManagedRoastedDesignStream(
@@ -326,8 +302,6 @@ export function createManagedRoastedDesignStream(
       // Setup heartbeat interval
       heartbeatInterval = setInterval(() => {
         try {
-          // eslint-disable-next-line no-console
-          console.log('SENDING HEARTBEAT');
           controller.enqueue(JSON.stringify({ type: 'heartbeat' }));
         } catch (error) {
           clearInterval(heartbeatInterval);
