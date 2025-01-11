@@ -3,19 +3,12 @@
 import { cva } from 'class-variance-authority';
 import { TabsContent } from '../ui/tabs';
 import IFrame from '../iframe';
+import { DesignPreviewLoading } from '../designPreviewLoading';
 
 const iframeContainer = cva('w-full h-full');
 
 interface ImprovedDesignTabProps {
   designId: string;
-}
-
-function LoadingPlaceholder() {
-  return (
-    <div className="flex items-center justify-center w-full h-full text-lg">
-      Loading Design...
-    </div>
-  );
 }
 
 function ErrorPlaceholder() {
@@ -43,7 +36,7 @@ export function ImprovedDesignTab(props: ImprovedDesignTabProps) {
         src={`/preview/${designId}`}
         className={iframeContainer()}
         loading="eager"
-        fallback={<LoadingPlaceholder />}
+        fallback={<DesignPreviewLoading text="Loading Design" />}
       />
     </TabsContent>
   );

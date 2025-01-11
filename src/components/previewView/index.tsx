@@ -4,23 +4,36 @@ import { RoastedDesigns } from '@prisma/client';
 import { UiHighlightsControls } from '../uiHighlights';
 import { PreviewFlow } from './previewFlow';
 import { DesignPreviewStoreProvider } from '@/lib/providers/designPreviewStoreProvider';
-import { PreviewViewStoreProvider } from '@/lib/providers/previewViewStoreProvider';
+import {
+  PreviewViewStoreProvider,
+  usePreviewViewStore,
+} from '@/lib/providers/previewViewStoreProvider';
 import '@xyflow/react/dist/style.css';
+import { DesingPreviewLoadingOverlay } from '../designPreviewLoading';
 
 interface DesignPreviewPlaygroundProps {
   roastedDesign: RoastedDesigns;
 }
 
-export function PreviewView(props: DesignPreviewPlaygroundProps) {
-  const { roastedDesign } = props;
+function View({ roastedDesign }: DesignPreviewPlaygroundProps) {
+  const renderingStatus = usePreviewViewStore((store) => store.renderingStatus);
 
+  return (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      {(renderingStatus === 'pending' || renderingStatus === 'idle') && (
+        <DesingPreviewLoadingOverlay text="Rendering Design" />
+      )}
+      <UiHighlightsControls roastedDesign={roastedDesign} />
+      <PreviewFlow roastedDesign={roastedDesign} />
+    </div>
+  );
+}
+
+export function PreviewView(props: DesignPreviewPlaygroundProps) {
   return (
     <DesignPreviewStoreProvider>
       <PreviewViewStoreProvider>
-        <div style={{ width: '100vw', height: '100vh' }}>
-          <UiHighlightsControls roastedDesign={roastedDesign} />
-          <PreviewFlow roastedDesign={roastedDesign} />
-        </div>
+        <View {...props} />
       </PreviewViewStoreProvider>
     </DesignPreviewStoreProvider>
   );
