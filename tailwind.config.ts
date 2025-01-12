@@ -70,10 +70,14 @@ const config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        border: {
+          to: { '--border-angle': '360deg' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        border: 'border 5s linear infinite',
       },
     },
   },

@@ -3,7 +3,8 @@ import { style } from '@vanilla-extract/css';
 export const hero = style({
   ':before': {
     width: '100%',
-    height: '100vh',
+    // height: '100vh',
+    minHeight: '100vh',
     position: 'absolute',
     zIndex: 10,
     content: '',

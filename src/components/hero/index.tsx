@@ -7,26 +7,29 @@ import { Navbar } from '../navbar';
 import { Underline } from '../underline';
 import { SquigglyLineSvg } from '../squigglyLineSvg';
 import { UnderlineSvg } from '../underlineSvg';
+import { HeroShow } from '../heroShow';
 
 const container = cva(
-  'relative flex flex-col w-full h-[90%] justify-center items-center'
+  'relative flex flex-col w-full min-h-screen items-center',
 );
 
-const innerContainer = cva('flex flex-col items-center z-40');
+const innerContainer = cva(
+  'flex flex-col h-[70vh] justify-center items-center z-40',
+);
 
 const h1Container = cva(
-  'flex flex-col text-[4rem] font-semibold text-center leading-[1.2] md:mt-[-7rem] -tracking-wider bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50'
+  'flex flex-col text-[4rem] font-semibold text-center leading-[1.2] md:mt-[-7rem] -tracking-wider bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50',
 );
 
 const description = cva(
-  'text-md font-normal text-gray-400 max-w-2xl text-center mt-6'
+  'text-md font-normal text-gray-400 max-w-2xl text-center mt-6',
 );
 
 const tryItNowButton = cva('mt-10');
 
 export function Hero() {
   return (
-    <div className={cn(hero, 'flex flex-col w-full h-screen')}>
+    <div className={cn(hero, 'flex flex-col w-full min-h-screen mb-[20rem]')}>
       <Navbar />
       <div className={cn(container())}>
         <SpotLight />
@@ -44,6 +47,9 @@ export function Hero() {
             design in seconds.
           </p>
           <Button className={tryItNowButton()}>Try it Now! ✨</Button>
+        </div>
+        <div className="h-[40vh] flex justify-center items-center">
+          <HeroShow />
         </div>
       </div>
     </div>

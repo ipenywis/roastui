@@ -1,7 +1,7 @@
 export function SpotLight() {
   return (
     <svg
-      className="pointer-events-none absolute z-[1] h-[169%] w-[138%] lg:w-[84%] opacity-1 -top-40 left-0 md:left-[-19rem] md:top-[-46rem] rotate-[18deg]"
+      className="pointer-events-none absolute z-[1] h-[169%] w-[138%] lg:w-[84%] opacity-1 -top-40 left-0 md:left-[-13rem] md:top-[-52rem] rotate-[10deg]"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 3787 2842"
       fill="none"

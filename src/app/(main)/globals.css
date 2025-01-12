@@ -79,4 +79,14 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  button:focus-visible {
+    outline: none !important;
+  }
+}
+
+@property --border-angle {
+    inherits: false;
+    initial-value: 0deg;
+    syntax: '<angle>';
 }

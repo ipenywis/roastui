@@ -1,4 +1,9 @@
-import { Background, Controls, ReactFlow } from '@xyflow/react';
+import {
+  Background,
+  BackgroundVariant,
+  Controls,
+  ReactFlow,
+} from '@xyflow/react';
 import { FlowNodeTypes, getAllEdges } from './nodes';
 import { ArrowNode } from './arrowNode';
 import { MainDesignNode } from './mainDesignNode';
@@ -82,7 +87,12 @@ export function PreviewFlow(props: PreviewFlowProps) {
       fitView
     >
       <Controls />
-      <Background />
+      {/* Figma's background color */}
+      <Background
+        variant={BackgroundVariant.Dots}
+        color="#fff00"
+        bgColor="#1E1E1E"
+      />
     </ReactFlow>
   );
 }

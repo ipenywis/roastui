@@ -10,7 +10,7 @@ const imageContainer = cva(
   'relative flex w-full h-[130px] rounded-lg overflow-hidden transition-all duration-200 hover:brightness-90 border border-gray-700',
 );
 const nameContainer = cva('text-base font-medium');
-const updatedAtContainer = cva('text-xs text-gray-400');
+const updatedAtContainer = cva('text-xs text-gray-500');
 interface DesignCardProps {
   id: string;
   thumbnailUrl: string;
@@ -32,10 +32,12 @@ export function DesignCard(props: DesignCardProps) {
         <div className={imageContainer()}>
           <Image src={thumbnailUrl} alt={name} fill className="object-cover" />
         </div>
-        <span className={nameContainer()}>{name}</span>
-        <span className={updatedAtContainer()}>
-          Edited {formattedUpdatedAt}
-        </span>
+        <div className="flex flex-col gap-0">
+          <span className={nameContainer()}>{name}</span>
+          <span className={updatedAtContainer()}>
+            Edited {formattedUpdatedAt}
+          </span>
+        </div>
       </div>
     </Link>
   );
