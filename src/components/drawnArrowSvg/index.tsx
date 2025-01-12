@@ -18,7 +18,7 @@ export function DrawnArrowSvg() {
       <path
         d="M90.7808 4.56091C92.1039 15.3867 93.6964 26.1783 95.0491 37"
         stroke="#BBBBBB"
-        stroke-width="3"
+        strokeWidth="3"
         stroke-linecap="round"
       />
       <path
