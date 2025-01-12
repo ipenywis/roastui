@@ -103,6 +103,7 @@ const appConfig = {
     coderOneYoutube: 'https://youtube.com/coderone',
     x: 'https://x.com/ipenywis',
     githubProfile: 'https://github.com/ipenywis',
+    githubProject: 'https://github.com/ipenywis/roastui',
   },
 };
 

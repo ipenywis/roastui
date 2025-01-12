@@ -1,8 +1,4 @@
 import { cva } from 'class-variance-authority';
-import { Youtube } from 'lucide-react';
-import Image from 'next/image';
-
-import YoutubeSvg from '@/images/youtube.svg';
 import { YoutubeIcon } from '../icons/youtubeIcon';
 import { GithubIcon } from '../icons/githubIcon';
 import { XIcon } from '../icons/xIcon';
@@ -29,7 +25,7 @@ export function Footer() {
           <Link href={app.socialLinks.coderOneYoutube} className={icon()}>
             <YoutubeIcon />
           </Link>
-          <Link href={app.socialLinks.githubProfile} className={icon()}>
+          <Link href={app.socialLinks.githubProject} className={icon()}>
             <GithubIcon />
           </Link>
           <Link href={app.socialLinks.x} className={icon()}>

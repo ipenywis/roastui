@@ -7,4 +7,8 @@ import { prisma } from './lib/prisma';
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google, GitHub],
   adapter: PrismaAdapter(prisma),
+  debug: false,
+  session: {
+    strategy: 'jwt',
+  },
 });
