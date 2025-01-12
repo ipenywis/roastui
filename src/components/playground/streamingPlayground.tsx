@@ -14,6 +14,7 @@ import { PlaygroundError } from './playgroundError';
 import { RoastedDesigns } from '@prisma/client';
 import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
 import { useRouter } from 'next/navigation';
+import { GoBackButton } from './goBackButton';
 
 interface StreamingPlaygroundProps {
   initialRoastedDesign?: RoastedDesigns;
@@ -176,6 +177,7 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
   return (
     <div className={container()}>
       <div className={innerContainer()}>
+        <GoBackButton isHidden={isLoading} />
         <div className="flex items-center flex-col gap-5">
           <StreamingDesignTitle
             name={streamableRoastedDesign?.name}
