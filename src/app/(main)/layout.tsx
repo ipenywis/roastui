@@ -20,7 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="flex w-full h-full min-h-full overflow-auto">
+    <html
+      lang="en"
+      className="flex w-full h-full min-h-full overflow-auto scroll-smooth"
+    >
       <head>
         <SandPackCSS />
       </head>

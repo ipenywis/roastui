@@ -10,7 +10,7 @@ import app from '@/config/app';
 import { cva } from 'class-variance-authority';
 
 const innerContainer = cva(
-  'w-full max-w-3xl px-10 py-8 bg-[#0e0e0e] rounded-lg'
+  'w-full max-w-3xl px-10 py-8 bg-[#0e0e0e] rounded-lg',
 );
 
 const answerContent = cva('text-gray-400 font-light text-base');
@@ -18,6 +18,7 @@ const answerContent = cva('text-gray-400 font-light text-base');
 export function Faq() {
   return (
     <ShowcaseSection
+      id="faq"
       title="Frequently Asked Questions"
       description={
         <>
