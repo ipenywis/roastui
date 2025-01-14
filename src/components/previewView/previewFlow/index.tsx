@@ -29,6 +29,11 @@ const nodeTypes = {
   [FlowNodeTypes.YAxisDebugNode]: YAxisDebugNode,
 };
 
+const BACKGROUND_COLORS = {
+  black: '#0f0f0f',
+  figmaGray: '#1E1E1E',
+};
+
 interface PreviewFlowProps {
   roastedDesign: RoastedDesigns;
 }
@@ -70,7 +75,7 @@ export function PreviewFlow(props: PreviewFlowProps) {
         );
         const newCoordinates = getCoordinatesFromElements(elements);
         setArrowsCoordinates(newCoordinates);
-      }, 200);
+      }, 400);
     }
   }, [roastedDesign.uiHighlights, isPreviewFullScreenMode, renderingStatus]);
 
@@ -91,7 +96,7 @@ export function PreviewFlow(props: PreviewFlowProps) {
       <Background
         variant={BackgroundVariant.Dots}
         color="#fff00"
-        bgColor="#1E1E1E"
+        bgColor={BACKGROUND_COLORS.figmaGray}
       />
     </ReactFlow>
   );

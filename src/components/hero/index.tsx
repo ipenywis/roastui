@@ -8,6 +8,7 @@ import { Underline } from '../underline';
 import { SquigglyLineSvg } from '../squigglyLineSvg';
 import { UnderlineSvg } from '../underlineSvg';
 import { HeroShow } from '../heroShow';
+import Link from 'next/link';
 
 const container = cva(
   'relative flex flex-col w-full min-h-screen items-center',
@@ -46,9 +47,11 @@ export function Hero() {
             improvement suggestions, and receive a newly generated, optimized
             design in seconds.
           </p>
-          <Button className={tryItNowButton()}>Try it Now! ✨</Button>
+          <Button className={tryItNowButton()} asChild>
+            <Link href="/subscribe">Try it Now! ✨</Link>
+          </Button>
         </div>
-        <div className="h-[40vh] flex justify-center items-center">
+        <div className="h-[40vh] flex justify-center items-center z-50">
           <HeroShow />
         </div>
       </div>

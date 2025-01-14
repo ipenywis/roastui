@@ -77,7 +77,7 @@ const config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        border: 'border 5s linear infinite',
+        border: 'border 8s linear infinite',
       },
     },
   },

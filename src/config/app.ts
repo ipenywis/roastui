@@ -22,7 +22,7 @@ const appConfig = {
     {
       question: 'What types of designs can I upload to the platform?',
       answer:
-        'You can upload any UI/UX design images, including website designs, mobile app interfaces, software dashboards, and more.',
+        'You can upload any UI/UX design images, including website designs, mobile app interfaces, software dashboards, and more. We recommend uploading high-quality specific images for the best results',
     },
     {
       question: 'What file formats are supported for design uploads?',
@@ -87,6 +87,10 @@ const appConfig = {
     x: 'https://x.com/ipenywis',
     githubProfile: 'https://github.com/ipenywis',
     githubProject: 'https://github.com/ipenywis/roastui',
+  },
+  contact: {
+    supportEmail: 'support@roastui.design',
+    generalInquiryEmail: 'hello@roastui.design',
   },
 };
 
