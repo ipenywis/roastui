@@ -9,11 +9,11 @@ export default async function DesignPlayground() {
   const user = await prisma.user.findUnique({
     where: { id: session?.user?.id },
     include: {
-      subscriptionId: true,
+      subscription: true,
     },
   });
 
-  const isActive = user?.subscriptionId?.isActive;
+  const isActive = user?.subscription?.isActive;
 
   if (!isActive) return redirect('/subscribe');
 

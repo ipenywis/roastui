@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { SessionProvider } from 'next-auth/react';
 import { SandPackCSS } from '@/components/sandPackStyles';
 import { SWRProvider } from '@/lib/providers/swrProvider';
+import { ReactQueryProvider } from '@/lib/providers/reactQueryProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -35,7 +36,9 @@ export default function RootLayout({
       >
         <ThemeProvider defaultTheme="dark">
           <SWRProvider>
-            <SessionProvider>{children}</SessionProvider>
+            <ReactQueryProvider>
+              <SessionProvider>{children}</SessionProvider>
+            </ReactQueryProvider>
           </SWRProvider>
         </ThemeProvider>
       </body>

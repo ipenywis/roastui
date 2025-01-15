@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
         await prisma.user.update({
           where: { id: userId },
           data: {
-            subscriptionId: {
+            subscription: {
               connect: {
                 id: subscription.id,
               },
@@ -71,16 +71,16 @@ export async function POST(request: NextRequest) {
         const user = await prisma.user.findUnique({
           where: { email: customer.email },
           include: {
-            subscriptionId: true,
+            subscription: true,
           },
         });
 
-        if (!user || !user.subscriptionId) {
+        if (!user || !user.subscription) {
           return new Response('User not found', { status: 500 });
         }
 
         await prisma.subscription.delete({
-          where: { id: user.subscriptionId.id },
+          where: { id: user.subscription.id },
         });
 
         return NextResponse.json({ message: 'Subscription deleted' });
@@ -91,6 +91,8 @@ export async function POST(request: NextRequest) {
         );
     }
   } catch (err) {
+    //eslint-disable-next-line no-console
+    console.log('Stripe Webhook error', err);
     return new Response('Webhook error', { status: 400 });
   }
 }

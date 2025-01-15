@@ -1,9 +1,9 @@
-import { DeepPartial } from 'ai';
 import { FormValues, NewDesignForm } from '../newDesignForm';
-import { StreamableRoastedDesign } from '@/types/roastedDesign';
 import { Button } from '../ui/button';
 import { RxReload } from 'react-icons/rx';
 import { useCallback, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useUser } from '@/lib/queryHooks/user/queries';
 
 interface DesignFormProps {
   onSubmit: (values: FormValues) => void;
@@ -24,6 +24,10 @@ export function DesignForm({
 }: DesignFormProps) {
   const [isShowForm, setIsShowForm] = useState(initialIsShowForm);
 
+  const { data: userData } = useUser();
+
+  const isSubscriptionActive = userData?.user?.subscription?.isActive ?? false;
+
   const handleToggleShowForm = useCallback(() => {
     setIsShowForm((prev) => !prev);
   }, [setIsShowForm]);
@@ -36,7 +40,7 @@ export function DesignForm({
 
   return (
     <div className="flex justify-center flex-col gap-10 w-full">
-      {isStreamingComplete && (
+      {isStreamingComplete && isSubscriptionActive && (
         <div className="flex justify-center gap-2">
           <Button
             variant="default"
