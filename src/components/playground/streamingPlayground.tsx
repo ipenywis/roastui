@@ -169,9 +169,10 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
     setIsUpdateMode,
     clearCachedImprovements,
     clearGenericError,
-    roastUpdateDesignWithValues,
     lastCreatedDesignFormValues,
     setCurrentRoastedDesign,
+    roastNewDesign,
+    clearCreatedRoastedDesign,
   ]);
 
   return (
