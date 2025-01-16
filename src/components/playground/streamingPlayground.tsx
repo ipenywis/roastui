@@ -42,7 +42,7 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
   const replaceCurrentUrl = useCallback(
     (roastedDesignId: RoastedDesigns['id']) => {
       //Replace without triggering a new navigation (and new page rendering)
-      router.replace(`/playground/${roastedDesignId}`);
+      router.replace(`/playground/${roastedDesignId}`, { scroll: false });
     },
     [router],
   );
@@ -195,14 +195,16 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
           initialIsShowForm={!isUpdateMode}
         />
         <PlaygroundError error={genericError || updateError || creationError} />
-        {streamableRoastedDesign?.improvedHtml && (
-          <DesignPreview
-            HTML={streamableRoastedDesign.improvedHtml}
-            react={streamableRoastedDesign.improvedReact}
-            designId={streamableRoastedDesign.id}
-            originalImageUrl={streamableRoastedDesign.originalImageUrl}
-          />
-        )}
+        {/* {(streamableRoastedDesign?.improvedHtml || */}
+        {/* // streamableRoastedDesign?.improvedReact) && ( */}
+        <DesignPreview
+          HTML={streamableRoastedDesign?.improvedHtml}
+          react={streamableRoastedDesign?.improvedReact}
+          designId={streamableRoastedDesign?.id}
+          originalImageUrl={streamableRoastedDesign?.originalImageUrl}
+          isUpdateMode={isUpdateMode}
+        />
+        {/* )} */}
         <div className="space-y-6">
           <DesignImprovementsPreviewStreaming
             whatsWrong={parsedWhatIsWrong}

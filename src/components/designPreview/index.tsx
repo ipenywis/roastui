@@ -36,6 +36,7 @@ interface DesignPreviewProps {
   react?: string;
   originalImageUrl?: string;
   uiHighlights?: UiHighlights;
+  isUpdateMode?: boolean;
 }
 
 export function DesignPreview({
@@ -43,9 +44,10 @@ export function DesignPreview({
   react,
   originalImageUrl,
   designId,
+  isUpdateMode,
 }: DesignPreviewProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [activeTab, setActiveTab] = useState<string>('improvedDesign');
+  const [activeTab, setActiveTab] = useState<string>('improvedHtml');
 
   const { isPreviewFullScreenMode, handleToggleFullScreenMode } =
     usePreviewFullScreenMode();
@@ -56,8 +58,8 @@ export function DesignPreview({
 
   useEffect(() => {
     if (designId) setActiveTab('improvedDesign');
-    else if (HTML) setActiveTab('improvedHtml');
-  }, [designId, HTML, originalImageUrl]);
+    // else if (HTML) setActiveTab('improvedHtml');
+  }, [designId]);
 
   if (!HTML) return null;
 
