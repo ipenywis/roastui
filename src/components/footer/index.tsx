@@ -5,7 +5,9 @@ import { XIcon } from '../icons/xIcon';
 import Link from 'next/link';
 import app from '@/config/app';
 
-const container = cva('flex px-10 py-2 w-full border-t border-t-gray-800 h-16');
+const container = cva(
+  'flex px-10 py-2 w-full border-t border-t-gray-800 min-h-16',
+);
 
 const innerContainer = cva('flex items-center w-full justify-between');
 

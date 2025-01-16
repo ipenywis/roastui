@@ -1,3 +1,4 @@
+import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
 
 export default function SubscribeLayout({
@@ -9,6 +10,7 @@ export default function SubscribeLayout({
     <main className="flex flex-col size-full">
       <Navbar />
       {children}
+      <Footer />
     </main>
   );
 }

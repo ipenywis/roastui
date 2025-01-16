@@ -9,10 +9,11 @@ import { Button } from '@/components/ui/button';
 import { ShowcaseSection } from '../showcaseSection';
 import { CheckIcon } from '../icons/checkIcon';
 import { useSession } from 'next-auth/react';
-import { redirect, usePathname } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import paymentService from '@/services/paymentService';
 import { useRouter } from 'next/navigation';
 import { Subscription } from '@prisma/client';
+import { useUser } from '@/lib/queryHooks/user/queries';
 
 export interface PricingTierFrequency {
   id: string;
@@ -64,7 +65,7 @@ export const tiers: PricingTier[] = [
     discountPrice: { '1': '', '2': '' },
     description: `Get a sense of RoastUI and become a better designer`,
     features: [
-      `50 designs per month`,
+      `Unlimited designs`,
       `UI Design Playground`,
       `UI Design flaws`,
       `UI Design improvements`,
@@ -110,10 +111,16 @@ export function Pricing(props: PricingProps) {
 
   const router = useRouter();
 
+  const { data: userData } = useUser();
+  const isSubscriptionActive = userData?.user?.subscription?.isActive ?? false;
+
   if (mode === 'standalone' && session.status === 'unauthenticated')
     return redirect('/login');
 
   if (mode === 'standalone' && subscription?.isActive)
+    return redirect('/dashboard');
+
+  if (mode === 'standalone' && isSubscriptionActive)
     return redirect('/dashboard');
 
   const buttonText = (tier: PricingTier) => {

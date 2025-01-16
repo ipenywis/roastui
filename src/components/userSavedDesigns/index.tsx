@@ -6,7 +6,9 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 
-export const container = cva('flex flex-col gap-10 w-full max-w-[920px]');
+export const container = cva(
+  'flex min-h-full flex-col gap-10 w-full max-w-[920px]',
+);
 
 const headerText = cva('text-xl font-bold');
 
@@ -26,6 +28,8 @@ export async function UserSavedDesigns() {
     return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
   });
 
+  const noDesigns = sortedDesigns.length === 0;
+
   return (
     <div className={container()}>
       <div className={header()}>
@@ -37,17 +41,28 @@ export async function UserSavedDesigns() {
           </Button>
         </Link>
       </div>
-      <div className={gridContainer()}>
-        {sortedDesigns.map((design) => (
-          <DesignCard
-            key={design.id}
-            id={design.id}
-            thumbnailUrl={design.originalImageUrl}
-            name={design.name}
-            updatedAt={design.updatedAt}
-          />
-        ))}
-      </div>
+      {noDesigns && (
+        <div className="flex h-full flex-col items-center justify-center w-full">
+          <div className="flex flex-col items-center justify-center w-full">
+            <span className="text-base text-gray-400">
+              You have no designs created yet
+            </span>
+          </div>
+        </div>
+      )}
+      {noDesigns && (
+        <div className={gridContainer()}>
+          {sortedDesigns.map((design) => (
+            <DesignCard
+              key={design.id}
+              id={design.id}
+              thumbnailUrl={design.originalImageUrl}
+              name={design.name}
+              updatedAt={design.updatedAt}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
