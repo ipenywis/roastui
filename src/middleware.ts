@@ -1,3 +1,1 @@
-// export { auth as middleware } from '@/auth';
-
-export const middleware = () => {};
+export { auth as middleware } from '@/auth';
