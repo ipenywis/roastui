@@ -6,7 +6,9 @@ export default function PreviewLayout({
   return (
     <html>
       <head>
-        <script src="https://cdn.tailwindcss.com" async></script>
+        {/* Tailwind CSS is required for the design preview and this page is loaded inside an iframe */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script src="https://cdn.tailwindcss.com"></script>
       </head>
       <body className="bg-white">{children}</body>
     </html>
