@@ -13,4 +13,7 @@ export const anthropicModel = createAnthropic({
 //OpenRouter model
 export const roastModel = openRouterModel(
   'anthropic/claude-3.5-sonnet-20240620:beta',
+  // 'minimax/minimax-01',
+  // 'openai/gpt-4o-2024-11-20',
+  // 'deepseek/deepseek-chat',
 );

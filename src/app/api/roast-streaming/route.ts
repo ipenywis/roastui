@@ -247,7 +247,7 @@ export const PUT = auth(async (request) => {
     // eslint-disable-next-line no-console
     console.error('Processing error:', error);
     return NextResponse.json(
-      { error: 'Failed to process upload' },
+      { error: 'Failed to roast design, please try again!' },
       { status: 500 },
     );
   }

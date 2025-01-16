@@ -50,7 +50,7 @@ export async function UserSavedDesigns() {
           </div>
         </div>
       )}
-      {noDesigns && (
+      {!noDesigns && (
         <div className={gridContainer()}>
           {sortedDesigns.map((design) => (
             <DesignCard
