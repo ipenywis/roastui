@@ -41,18 +41,18 @@ export interface PricingTier {
 
 export const frequencies: PricingTierFrequency[] = [
   {
-    id: '1',
-    value: '1',
-    label: 'Monthly',
-    priceSuffix: '/month',
-    plan: 'monthly',
-  },
-  {
     id: '2',
     value: '2',
     label: 'Annually',
     priceSuffix: '/month',
     plan: 'yearly',
+  },
+  {
+    id: '1',
+    value: '1',
+    label: 'Monthly',
+    priceSuffix: '/month',
+    plan: 'monthly',
   },
 ];
 
@@ -164,7 +164,7 @@ export function Pricing(props: PricingProps) {
         <div className="w-full flex flex-col items-center">
           <div className="mx-auto max-w-7xl px-6 lg:px-8  flex flex-col items-center">
             {frequencies.length > 1 ? (
-              <div className="mt-4 mb-8 flex justify-center">
+              <div className="mt-2 mb-8 flex justify-center">
                 <RadioGroup
                   defaultValue={frequency.value}
                   onValueChange={(value: string) => {

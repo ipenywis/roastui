@@ -27,7 +27,9 @@ const tryItNowButton = cva('mt-10');
 
 export function Hero() {
   return (
-    <div className={cn(hero, 'flex flex-col w-full min-h-screen mb-[20rem]')}>
+    <div
+      className={cn(hero, 'flex flex-col w-full min-h-screen lg:mb-[20rem]')}
+    >
       <Navbar />
       <div className={cn(container())}>
         <SpotLight />

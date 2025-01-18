@@ -10,16 +10,17 @@ import app from '@/config/app';
 import { cva } from 'class-variance-authority';
 
 const innerContainer = cva(
-  'w-full max-w-3xl px-10 py-8 bg-[#0e0e0e] rounded-lg',
+  'w-full max-w-3xl px-4 py-4 lg:px-10 lg:py-8 bg-[#0e0e0e] rounded-lg',
 );
 
-const answerContent = cva('text-gray-400 font-light text-base');
+const answerContent = cva('text-gray-400 font-light text-sm lg:text-base');
 
 export function Faq() {
   return (
     <ShowcaseSection
       id="faq"
       title="Frequently Asked Questions"
+      className="mt-36 lg:mt-0 mb-24"
       description={
         <>
           Have another question? Contact me on{' '}
@@ -50,7 +51,7 @@ export function Faq() {
               key={idx}
               className="w-full border-b-0"
             >
-              <AccordionTrigger className="text-base">
+              <AccordionTrigger className="text-sm lg:text-base text-start">
                 {question.question}
               </AccordionTrigger>
               <AccordionContent className={answerContent()}>
