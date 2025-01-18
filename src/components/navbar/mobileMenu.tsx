@@ -18,7 +18,7 @@ import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const collapsibleContainer = cva(
-  'text-start px-5 bg-gray-900 text-lg font-semibold border-b border-t w-full py-3 border-gray-800',
+  'text-start px-5 text-lg font-semibold border-b border-t w-full py-3 border-gray-800',
 );
 
 const menuItemTitle = cva('text-start text-lg font-semibold w-full');
@@ -85,7 +85,7 @@ export function MobileMenu() {
         <RiMenuLine className="size-6" />
       </SheetTrigger>
       <SheetContent
-        className="z-50 px-0 pt-16 bg-black"
+        className="z-50 px-0 pt-16 bg-primary-foreground"
         side="right"
         onCloseAutoFocus={preventAutoFocusOnClose}
         autoFocus={false}

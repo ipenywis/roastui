@@ -1,5 +1,9 @@
 import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
+import {
+  PageMainContainer,
+  PageMainContainerInner,
+} from '@/components/pageMainContainer';
 
 export default function DashboardLayout({
   children,
@@ -7,10 +11,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="flex flex-col w-full min-h-full h-full">
-      <Navbar />
-      {children}
+    <PageMainContainer className="flex flex-col w-full min-h-full h-full">
+      <PageMainContainerInner>
+        <Navbar />
+        {children}
+      </PageMainContainerInner>
       <Footer />
-    </main>
+    </PageMainContainer>
   );
 }

@@ -7,14 +7,16 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 
 export const container = cva(
-  'flex min-h-full flex-col gap-10 w-full max-w-[920px]',
+  'flex min-h-full h-full flex-col gap-10 w-full max-w-[920px]',
 );
 
 const headerText = cva('text-xl font-bold');
 
-const header = cva('flex items-center gap-3 justify-between');
+const header = cva('flex items-center gap-3 justify-around lg:justify-between');
 
-const gridContainer = cva('grid grid-cols-4 gap-x-4 gap-y-12');
+const gridContainer = cva(
+  'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-10 lg:gap-x-4 gap-y-12 mx-auto',
+);
 
 export async function UserSavedDesigns() {
   const session = await auth();
