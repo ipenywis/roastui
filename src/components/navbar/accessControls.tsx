@@ -3,13 +3,15 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { auth } from '@/auth';
 import { UserMenu } from './userMenu';
+import { useSession } from 'next-auth/react';
 
 const buttonsContainer = cva(
-  'flex gap-x-3 items-center focus-visible:outline-none outline-none focus-within:outline-none'
+  'flex gap-x-3 items-center focus-visible:outline-none outline-none focus-within:outline-none',
 );
 
-export async function AccessControls() {
-  const session = await auth();
+export function AccessControls() {
+  // const session = await auth();
+  const { data: session } = useSession();
 
   return (
     <div className={buttonsContainer()}>

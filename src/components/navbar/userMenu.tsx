@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { auth, signOut } from '@/auth';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,14 +7,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { handleLogout } from '@/lib/actions/auth';
+import { useSession } from 'next-auth/react';
 
-export async function UserMenu() {
-  const session = await auth();
-
-  const handleLogout = async () => {
-    'use server';
-    await signOut();
-  };
+export function UserMenu() {
+  // const session = await auth();
+  const { data: session } = useSession();
 
   return (
     <DropdownMenu modal={false}>

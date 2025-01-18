@@ -11,4 +11,14 @@ export const hero = style({
     backgroundImage: 'url(/dot-pattern.svg)',
     opacity: 0.5,
   },
+  '@media': {
+    'screen and (max-width: 1024px)': {
+      ':before': {
+        minHeight: '100vh',
+        width: '100%',
+        overflow: 'hidden',
+        opacity: 0.6,
+      },
+    },
+  },
 });

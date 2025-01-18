@@ -9,21 +9,18 @@ import { SquigglyLineSvg } from '../squigglyLineSvg';
 import { UnderlineSvg } from '../underlineSvg';
 import { HeroShow } from '../heroShow';
 import Link from 'next/link';
+import { Header } from './header';
 
 const container = cva(
   'relative flex flex-col w-full min-h-screen items-center',
 );
 
 const innerContainer = cva(
-  'flex flex-col h-[70vh] justify-center items-center z-40',
-);
-
-const h1Container = cva(
-  'flex flex-col text-[4rem] font-semibold text-center leading-[1.2] md:mt-[-7rem] -tracking-wider bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50',
+  'flex flex-col h-[60vh] lg:h-[70vh] justify-center items-center z-40',
 );
 
 const description = cva(
-  'text-md font-normal text-gray-400 max-w-2xl text-center mt-6',
+  'text-sm lg:text-md font-normal text-gray-400 max-w-2xl text-center mt-6',
 );
 
 const tryItNowButton = cva('mt-10');
@@ -35,13 +32,7 @@ export function Hero() {
       <div className={cn(container())}>
         <SpotLight />
         <div className={innerContainer()}>
-          <h1 className={h1Container()}>
-            <span>Find how you can improve</span>
-            <span>
-              your <Underline lineNode={<SquigglyLineSvg />}>UI/UX</Underline>{' '}
-              with <Underline lineNode={<UnderlineSvg />}>AI</Underline>
-            </span>
-          </h1>
+          <Header />
           <p className={description()}>
             Transform your UI/UX designs with our AI: detect flaws, get tailored
             improvement suggestions, and receive a newly generated, optimized
@@ -51,7 +42,7 @@ export function Hero() {
             <Link href="/subscribe">Try it Now! ✨</Link>
           </Button>
         </div>
-        <div className="h-[40vh] flex justify-center items-center z-50">
+        <div className="h-[20vh] lg:h-[40vh] flex justify-center items-center z-50">
           <HeroShow />
         </div>
       </div>
