@@ -29,7 +29,7 @@ export default function SignupPage() {
 
   return (
     <div className="w-full h-3/4 flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold">No More Design Flaws</h1>
+      <h1 className="text-4xl font-bold text-center">No More Design Flaws</h1>
       <Card className="w-[350px] mt-20">
         <CardHeader>
           <CardTitle>Signup</CardTitle>
