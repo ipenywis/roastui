@@ -17,7 +17,7 @@ export const revalidate = 86400;
 export default function Home() {
   return (
     <PageMainContainer>
-      <PageMainContainerInner>
+      <PageMainContainerInner className="h-auto">
         <Hero />
         <div className="flex flex-col items-center w-full">
           <GoodVsBadUI />

@@ -17,7 +17,7 @@ const container = cva(
     variants: {
       fullScreen: {
         true: 'w-full h-full !mt-0 p-0',
-        false: 'w-[1000px] h-[800px]',
+        false: 'w-full h-[800px] lg:w-[1000px] lg:h-[800px]',
       },
     },
     defaultVariants: {

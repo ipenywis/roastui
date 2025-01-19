@@ -20,7 +20,7 @@ function View({ roastedDesign }: DesignPreviewPlaygroundProps) {
   const renderingStatus = usePreviewViewStore((store) => store.renderingStatus);
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div style={{ width: '100vw', height: '100vh', backgroundColor: 'black' }}>
       {(renderingStatus === 'pending' || renderingStatus === 'idle') && (
         <DesingPreviewLoadingOverlay text="Rendering Design" />
       )}

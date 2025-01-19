@@ -1,7 +1,6 @@
 import { cva } from 'class-variance-authority';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { auth } from '@/auth';
 import { UserMenu } from './userMenu';
 import { useSession } from 'next-auth/react';
 
@@ -10,22 +9,22 @@ const buttonsContainer = cva(
 );
 
 export function AccessControls() {
-  // const session = await auth();
-  const { data: session } = useSession();
+  const { status } = useSession();
 
   return (
     <div className={buttonsContainer()}>
-      {!session && (
-        <>
-          <Link href="/login">
-            <Button variant="ghost">Login</Button>
-          </Link>
-          <Link href="/signup">
-            <Button variant="default">Signup</Button>
-          </Link>
-        </>
-      )}
-      {session && <UserMenu />}
+      {status === 'unauthenticated' ||
+        (status === 'loading' && (
+          <>
+            <Link href="/login">
+              <Button variant="ghost">Login</Button>
+            </Link>
+            <Link href="/signup">
+              <Button variant="default">Signup</Button>
+            </Link>
+          </>
+        ))}
+      {status === 'authenticated' && <UserMenu />}
     </div>
   );
 }

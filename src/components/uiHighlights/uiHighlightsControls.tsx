@@ -11,12 +11,13 @@ import { useCallback } from 'react';
 import { useToJpeg } from '@hugocxl/react-to-image';
 import { saveFileWithDialog } from '@/lib/image-client';
 import { RoastedDesigns } from '@prisma/client';
+import { ControlsMenu } from './controlsMenu';
 
 const checkboxItem = cva(
   'flex items-center gap-2 cursor-pointer select-none py-3 h-full',
 );
 
-const checkboxLabel = cva('text-sm font-medium');
+const checkboxLabel = cva('text-xs lg:text-sm font-medium');
 
 interface UiHighlightsControlsProps {
   roastedDesign: RoastedDesigns;
@@ -68,9 +69,10 @@ export function UiHighlightsControls(props: UiHighlightsControlsProps) {
   }, [convertToImage]);
 
   return (
-    <div className="absolute bottom-5 right-4 z-20 h-10">
-      <div className="bg-black text-white rounded-lg px-5 shadow-md flex items-center gap-3 h-full">
-        <div className={checkboxItem()}>
+    <div className="absolute bottom-5 right-4 z-[9999] h-10">
+      <ControlsMenu roastedDesign={roastedDesign} />
+      {/* <div className="bg-black text-white rounded-lg px-5 shadow-md flex items-center gap-3 h-full"> */}
+      {/* <div className={checkboxItem()}>
           <Checkbox
             id="highlight-arrow"
             checked={isImprovementsHighlightActive}
@@ -101,8 +103,8 @@ export function UiHighlightsControls(props: UiHighlightsControlsProps) {
             <LuImageDown className="size-4" />
             Export image
           </Button>
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
     </div>
   );
 }

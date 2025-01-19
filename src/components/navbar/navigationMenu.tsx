@@ -1,7 +1,6 @@
 'use client';
 
 import appConfig from '@/config/app';
-import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { cva } from 'class-variance-authority';
 import Link from 'next/link';
 import { AccessControls } from './accessControls';
@@ -13,12 +12,6 @@ const item = cva(
 );
 
 export function NavigationMenu() {
-  const isMobile = !useBreakpoint('lg');
-
-  if (isMobile) {
-    return null;
-  }
-
   return (
     <>
       <ul className={container()}>
