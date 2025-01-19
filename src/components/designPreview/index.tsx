@@ -7,8 +7,7 @@ import { ImprovedDesignTab } from './improvedDesignTab';
 import { OriginalDesignTab } from './originalDesignTab';
 import { ImprovedHtmlSandpackTab } from './improvedHtmlSandpackTab';
 import { UiHighlights } from '@/types/newDesign';
-import useLocalStorageState from 'use-local-storage-state';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePreviewFullScreenMode } from '@/hooks/usePreviewFullScreenMode';
 
 const container = cva(
@@ -44,7 +43,6 @@ export function DesignPreview({
   react,
   originalImageUrl,
   designId,
-  isUpdateMode,
 }: DesignPreviewProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [activeTab, setActiveTab] = useState<string>('improvedHtml');

@@ -197,7 +197,7 @@ export function injectEsbuildScript(
       return false; // Let other error handlers run
     };
 
-    window.onunhandledrejection = function (event) {
+    window.onunhandledrejection = function () {
       onScriptError?.();
     };
 

@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { ShowcaseSection } from '../showcaseSection';
 import {
   Accordion,

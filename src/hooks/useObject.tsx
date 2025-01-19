@@ -122,7 +122,6 @@ export function useObject<
   fetch,
   onError,
   onFinish,
-  headers,
   isHeartbeat,
 }: Experimental_UseObjectOptions<
   RESULT,

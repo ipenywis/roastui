@@ -7,13 +7,11 @@ import {
 } from 'react';
 import { Panel } from '@xyflow/react';
 
-import NodeInspector from './nodeInspector';
-import ChangeLogger from './changeLogger';
 import ViewportLogger from './viewportLogger';
 
 export default function DevTools() {
-  const [nodeInspectorActive, setNodeInspectorActive] = useState(true);
-  const [changeLoggerActive, setChangeLoggerActive] = useState(true);
+  // const [nodeInspectorActive, setNodeInspectorActive] = useState(true);
+  // const [changeLoggerActive, setChangeLoggerActive] = useState(true);
   const [viewportLoggerActive, setViewportLoggerActive] = useState(true);
 
   return (
@@ -41,8 +39,8 @@ export default function DevTools() {
           Viewport Logger
         </DevToolButton>
       </Panel>
-      {changeLoggerActive && <ChangeLogger />}
-      {nodeInspectorActive && <NodeInspector />}
+      {/* {changeLoggerActive && <ChangeLogger />} */}
+      {/* {nodeInspectorActive && <NodeInspector />} */}
       {viewportLoggerActive && <ViewportLogger />}
     </div>
   );

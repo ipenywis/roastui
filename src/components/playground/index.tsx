@@ -5,7 +5,6 @@ import { StreamingPlayground } from './streamingPlayground';
 import { useEffect } from 'react';
 import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
 import { loadEsbuild } from '@/lib/bundler';
-import { ControlsMenu } from '../uiHighlights/controlsMenu';
 
 interface PlaygroundProps {
   initialRoastedDesign?: RoastedDesigns;

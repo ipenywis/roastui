@@ -8,7 +8,6 @@ import { RoastedDesigns } from '@prisma/client';
 import { AsyncStream } from './asyncStream';
 import { StreamableRoastedDesign } from '@/types/roastedDesign';
 import { parsePartialJson } from '@ai-sdk/ui-utils';
-import { waitFor } from './time';
 
 export async function getDesignImprovements(
   imageBase64: string,

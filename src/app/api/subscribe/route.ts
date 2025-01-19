@@ -1,8 +1,7 @@
 import { auth } from '@/auth';
 import { getCheckoutUrl } from '@/lib/payment';
-import stripe from '@/lib/stripe';
 import { Checkout } from '@/types/checkout';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export const POST = auth(async (request) => {
   const { auth } = request;

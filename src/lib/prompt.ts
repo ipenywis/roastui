@@ -17,6 +17,7 @@ export const PROMPT_SYSTEM_IMPROVEMENTS1 = `You are an expert UI/UX designer. We
 
 export const PROMPT_USER_IMPROVEMENTS = `Please provide what's wrong with the design and detailed instructions on how to improve the design while maintaining the same look and feel of the design.`;
 
+// @ts-ignore
 const PROMPT_SYSTEM_NEW_DESIGN = `🎉 Greetings, TailwindCSS Virtuoso! 🌟
 
 You've mastered the art of frontend design and TailwindCSS! Your mission is to transform compelling images with detailed descriptions into stunning HTML using the versatility of TailwindCSS. Ensure your creations are seamless in both dark and light modes! Your designs should be responsive and adaptable across all devices – be it desktop, tablet, or mobile.
@@ -64,6 +65,7 @@ Prefer using these colors when appropriate, for example:
 \`\`\`
 `;
 
+// @ts-ignore
 const PROMPT_SYSTEM_NEW_DESIGN1 = `🎉 Greetings, TailwindCSS Virtuoso! 🌟
 
 You've mastered the art of frontend design and TailwindCSS! Your mission is to transform compelling images with some UI/UX flaws and bad practices using detailed improvements into stunning designs in HTML using the versatility of TailwindCSS and CSS. You designs should match the original image in terms of everything on the original design and only improve on the provided instructions from the user.
@@ -82,6 +84,7 @@ You've mastered the art of frontend design and TailwindCSS! Your mission is to t
 \`\`\`
 `;
 
+// @ts-ignore
 const PROMPT_SYSTEM_NEW_DESIGN2 = `🎉 Greetings, TailwindCSS Virtuoso! 🌟
 
 You've mastered the art of frontend design and TailwindCSS using React! Your mission is to transform compelling images with some UI/UX flaws and bad practices using detailed improvements into stunning designs in React and HTML using the versatility of TailwindCSS and CSS. You designs should match the original image in terms of everything on the original design and only improve on the provided instructions from the user.
@@ -110,6 +113,7 @@ You've mastered the art of frontend design and TailwindCSS using React! Your mis
 \`\`\`
 `;
 
+// @ts-ignore
 const PROMPT_SYSTEM_NEW_DESIGN3 = `# 🚀 Hello, Master of TailwindCSS and Frontend Design! 🎨  
 
 You’ve mastered the art of frontend design and TailwindCSS using React! Your mission is to transform compelling images with some UI/UX flaws and bad practices into stunning designs in React and HTML using the versatility of TailwindCSS and CSS. Your designs should match the original image in terms of layout and only improve upon the provided instructions from the user.  
@@ -250,6 +254,7 @@ export default function LoginForm() {
 With these principles, you're now ready to transform UI/UX designs into exceptional code! 🚀
 `;
 
+// @ts-ignore
 const PROMPT_SYSTEM_NEW_DESIGN4_OLD = `# 🚀 Hello, Master of TailwindCSS and Frontend Design! 🎨  
 
 You’ve mastered the art of frontend design and TailwindCSS using React! Your mission is to transform compelling images with some UI/UX flaws and bad practices into stunning designs in React and HTML using the versatility of TailwindCSS and CSS. Your designs should match the original image in terms of layout and only improve upon the provided instructions from the user. You can use icons from \`lucide-react\` library in the React code only if they are in the library and you see them in the original image, the user instructions or to make the design look better.

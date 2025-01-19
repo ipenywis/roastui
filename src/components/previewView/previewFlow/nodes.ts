@@ -55,7 +55,7 @@ function getMainDesignNode(roastedDesign: RoastedDesigns) {
   } satisfies Node;
 }
 
-function getAxisDebugNodes() {
+export function getAxisDebugNodes() {
   return [
     {
       id: 'axis-debug',

@@ -1,7 +1,6 @@
 import { RiToolsFill } from 'react-icons/ri';
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,

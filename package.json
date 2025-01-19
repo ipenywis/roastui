@@ -9,7 +9,8 @@
     "lint": "next lint",
     "prepare": "husky",
     "test": "jest",
-    "forwardStripeEvents": "stripe listen --forward-to localhost:3000/api/webhooks/checkout"
+    "forwardStripeEvents": "stripe listen --forward-to localhost:3000/api/webhooks/checkout",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^0.0.56",
@@ -96,7 +97,8 @@
     "use-local-storage-state": "^19.5.0",
     "usehooks-ts": "^3.1.0",
     "zod": "^3.23.8",
-    "zustand": "^5.0.1"
+    "zustand": "^5.0.1",
+    "tailwindcss": "^3.4.15"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.9",
@@ -122,7 +124,6 @@
     "postcss": "^8",
     "prettier": "^3.4.2",
     "tailwind-config-viewer": "^2.0.4",
-    "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
 }

@@ -1,6 +1,6 @@
 const calculateArrowDimensions = (
   start: { x: number; y: number },
-  end: { x: number; y: number }
+  end: { x: number; y: number },
 ) => {
   // Calculate the dimensions needed for the SVG
   const minX = Math.min(start.x, end.x);
@@ -50,8 +50,7 @@ export function PointingArrow({
   color = '#FF5733',
   strokeWidth = 2,
 }: PointingArrowProps) {
-  const { minX, minY, width, height, arrowHead1, arrowHead2 } =
-    calculateArrowDimensions(start, end);
+  const { minX, minY, width, height } = calculateArrowDimensions(start, end);
 
   return (
     <div

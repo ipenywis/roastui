@@ -2,7 +2,6 @@ import { FormValues, NewDesignForm } from '../newDesignForm';
 import { Button } from '../ui/button';
 import { RxReload } from 'react-icons/rx';
 import { useCallback, useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
 import { useUser } from '@/lib/queryHooks/user/queries';
 
 interface DesignFormProps {

@@ -1,7 +1,6 @@
 import { cva } from 'class-variance-authority';
 import { Logo } from '../logo';
 import Link from 'next/link';
-import { NavigationMenu } from './navigationMenu';
 import { Menu } from './menu';
 
 const container = cva(

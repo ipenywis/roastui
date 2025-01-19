@@ -1,5 +1,4 @@
 import { S3Client } from '@aws-sdk/client-s3';
-import crypto from 'crypto';
 
 const ACCOUNT_ID = process.env.R2_ACCOUNT_ID;
 const ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;

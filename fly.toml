@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for roast-ui on 2024-11-02T14:55:55+01:00
+# fly.toml app configuration file generated for roast-ui on 2025-01-19T14:45:14+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -11,6 +11,10 @@ primary_region = 'mad'
 [[mounts]]
   source = 'litefs_roastui'
   destination = '/var/lib/litefs'
+  initial_size = '1GB'
+  auto_extend_size_threshold = 70
+  auto_extend_size_increment = "1GB"
+  auto_extend_size_limit = "10GB"
 
 [http_service]
   internal_port = 8080

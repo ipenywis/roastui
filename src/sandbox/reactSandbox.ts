@@ -1,7 +1,6 @@
 import { Worker } from 'worker_threads';
 import { createFsFromVolume, Volume } from 'memfs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 interface SandboxOptions {
   moduleCache?: string;
@@ -27,9 +26,6 @@ export class ReactSandbox {
   private workerPath: string;
 
   constructor(options: SandboxOptions = {}) {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-
     this.volume = new Volume();
     this.fs = createFsFromVolume(this.volume);
     this.moduleCache =

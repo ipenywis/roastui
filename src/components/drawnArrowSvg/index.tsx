@@ -1,5 +1,3 @@
-import { VariantProps, cva } from 'class-variance-authority';
-
 export function DrawnArrowSvg() {
   return (
     <svg viewBox="0 0 119 39" fill="none" xmlns="http://www.w3.org/2000/svg">
