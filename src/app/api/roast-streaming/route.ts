@@ -51,9 +51,6 @@ async function processRoastedDesign(params: {
   const compressedImage = await compressImage(imageFile);
   const base64Image = await getImageBase64(compressedImage);
 
-  //eslint-disable-next-line no-console
-  console.log('Roast streaming started processing');
-
   const asyncStream = new AsyncStream<StreamableRoastedDesign>();
 
   getDesignImprovementsStreaming(
@@ -62,18 +59,11 @@ async function processRoastedDesign(params: {
     asyncStream,
   );
 
-  //eslint-disable-next-line no-console
-  console.log('Design improvements streaming started');
   getNewDesignStreaming(base64Image, asyncStream);
-  //eslint-disable-next-line no-console
-  console.log('New design streaming started');
 
   const handleComplete = async (
     streamableRoastedDesign: StreamableRoastedDesign,
   ): Promise<RoastedDesigns> => {
-    //eslint-disable-next-line no-console
-    console.log('Roast streaming completed');
-
     if (
       !streamableRoastedDesign ||
       !isValidAndNotEmptyString(
@@ -87,9 +77,6 @@ async function processRoastedDesign(params: {
     ) {
       throw new Error('RoastedDesign is not valid');
     }
-
-    //eslint-disable-next-line no-console
-    console.log('RoastedDesign is valid');
 
     let originalImageUrl: string | null = null;
 
@@ -122,15 +109,9 @@ async function processRoastedDesign(params: {
       );
     }
 
-    //eslint-disable-next-line no-console
-    console.log('Original image url: ', originalImageUrl);
-
     if (!originalImageUrl) {
       throw new Error('Error upload image, please try again!');
     }
-
-    //eslint-disable-next-line no-console
-    console.log('Original image url is valid');
 
     const data = {
       name: name?.toString() || existingDesign?.name || '',
@@ -154,8 +135,6 @@ async function processRoastedDesign(params: {
 
     //We are on update
     if (id) {
-      //eslint-disable-next-line no-console
-      console.log('Updating roasted design');
       return prisma.roastedDesigns.update({
         where: { id },
         data,
@@ -163,8 +142,6 @@ async function processRoastedDesign(params: {
     }
 
     //We are on create
-    //eslint-disable-next-line no-console
-    console.log('Creating roasted design');
     return prisma.roastedDesigns.create({ data });
   };
 

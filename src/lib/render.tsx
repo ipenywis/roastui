@@ -144,6 +144,7 @@ export function injectEsbuildScript(
     script.setAttribute('type', 'module');
 
     //Pass this down to the window object so that it can be used by the esbuild script execution scope
+    //window is a reference of the iframe's window object
     (window as any).showErrorBoundary = () => {
       if (onScriptError) {
         onScriptError();
@@ -155,7 +156,6 @@ export function injectEsbuildScript(
     script.innerHTML = `
     // Set up global error handlers first
     window.onerror = function(message) {
-      console.log('onerror', message);
       if (window && window.showErrorBoundary) {
         window.showErrorBoundary();
       }
@@ -163,7 +163,6 @@ export function injectEsbuildScript(
     };
 
     window.onunhandledrejection = function() {
-      console.log('onunhandledrejection');
       if (window && window.showErrorBoundary) {
         window.showErrorBoundary();
       }

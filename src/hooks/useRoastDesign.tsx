@@ -93,7 +93,7 @@ export function useRoastDesign({
     api: '/api/roast-streaming',
     schema: StreamableRoastedDesignsSchema,
     initialValue: initialRoastedDesign,
-    debugDelay: [300, 700],
+    //debugDelay: [300, 700], ///< only for debuggin
     fetch: async (_, init?: RequestInit) => {
       const body = init?.body as FormData;
       const response = await roastService.roastUIFormData(body);
@@ -118,7 +118,7 @@ export function useRoastDesign({
     api: '/api/roast-streaming',
     schema: StreamableRoastedDesignsSchema,
     initialValue: initialRoastedDesign,
-    debugDelay: [300, 700],
+    // debugDelay: [300, 700], ///< Only for debugging
     fetch: async (_, init?: RequestInit) => {
       const body = init?.body as FormData;
       const response = await roastService.updateRoastUI(body);

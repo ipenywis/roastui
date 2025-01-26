@@ -1,9 +1,9 @@
 import { Typography } from '@/components/ui/typography';
 import { Typewriter } from '../ui/typewriter';
 import { RiLoader3Line } from 'react-icons/ri';
-import { useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
-export function StreamingLoading() {
+export const StreamingLoading = memo(function StreamingLoading() {
   const [isShowLoading, setIsShowLoading] = useState(false);
 
   const handleTypewriterComplete = useCallback(() => {
@@ -25,4 +25,4 @@ export function StreamingLoading() {
       {isShowLoading && <RiLoader3Line className="size-4 animate-spin" />}
     </div>
   );
-}
+});

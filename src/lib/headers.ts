@@ -7,6 +7,6 @@ export function getStreamingHeaders() {
     'Content-Type': 'text/plain; charset=utf-8',
     'Transfer-Encoding': 'chunked',
     'Content-Encoding': 'identity', // Disable compression
-    // 'X-Accel-Buffering': 'no', // Disable buffering
+    'X-Accel-Buffering': 'no', // Disable buffering
   };
 }

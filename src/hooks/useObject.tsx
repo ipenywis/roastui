@@ -7,12 +7,12 @@ import {
   asSchema,
   DeepPartial,
   isDeepEqualData,
-  parsePartialJson,
   Schema,
 } from '@ai-sdk/ui-utils';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import useSWR from 'swr';
 import z from 'zod';
+import { parse as parsePartial } from 'partial-json';
 
 // use function to allow for mocking in tests:
 const getOriginalFetch = (
@@ -137,6 +137,51 @@ export type Experimental_UseObjectHelpers<RESULT, INPUT> = {
   clear: () => void;
 };
 
+const processChunk = <RESULT, HEARTBEAT>(
+  chunk: string,
+  isHeartbeat?: (object: DeepPartial<HEARTBEAT>) => boolean,
+): DeepPartial<RESULT> | undefined => {
+  let endIndex = chunk.length;
+
+  while (endIndex > 0) {
+    // Find the last closing brace
+    const lastClosingBrace = chunk.lastIndexOf('}', endIndex - 1);
+    if (lastClosingBrace === -1) break;
+
+    // Find the matching opening brace by counting braces
+    let openBraces = 0;
+    let startIndex = lastClosingBrace;
+
+    while (startIndex >= 0) {
+      if (chunk[startIndex] === '}') openBraces++;
+      if (chunk[startIndex] === '{') openBraces--;
+      if (openBraces === 0) break;
+      startIndex--;
+    }
+
+    // If we found a matching pair of braces
+    if (startIndex >= 0) {
+      try {
+        const potentialObject = chunk.slice(startIndex, lastClosingBrace + 1);
+        const value = parsePartial(potentialObject);
+
+        if (isHeartbeat && isHeartbeat(value as DeepPartial<HEARTBEAT>)) {
+          return undefined;
+        }
+
+        return value as DeepPartial<RESULT>;
+      } catch (parseError) {
+        // If parsing fails, continue with the next closing brace
+        endIndex = startIndex;
+      }
+    } else {
+      // If no matching opening brace was found, try the next closing brace
+      endIndex = lastClosingBrace;
+    }
+  }
+  return undefined;
+};
+
 export function useObject<
   RESULT,
   INPUT extends BodyInit = any,
@@ -226,48 +271,20 @@ export function useObject<
 
       await response.body.pipeThrough(new TextDecoderStream()).pipeTo(
         new WritableStream<string>({
-          write(chunk) {
-            // Find the last complete JSON object in the chunk
-            let lastCompleteObject: any = undefined;
-            let startIndex = 0;
+          async write(chunk) {
+            const currentObject = processChunk<RESULT, HEARTBEAT>(
+              chunk,
+              isHeartbeat,
+            );
 
-            while (startIndex < chunk.length) {
-              const { value, state } = parsePartialJson(
-                chunk.slice(startIndex),
-              );
-
-              if (state === 'successful-parse' || state === 'repaired-parse') {
-                lastCompleteObject = value;
-                startIndex += JSON.stringify(value).length;
-              } else {
-                startIndex++;
-              }
-            }
-
-            // Process only the last complete object found
-            if (lastCompleteObject !== undefined) {
-              if (
-                isHeartbeat &&
-                isHeartbeat(lastCompleteObject as DeepPartial<HEARTBEAT>)
-              ) {
-                return;
-              }
-
-              const currentObject = lastCompleteObject as DeepPartial<RESULT>;
-              if (
-                !isDeepEqualData(latestObject, currentObject) &&
-                currentObject.chunkVersion > lastChunkVersion
-              ) {
-                latestObject = currentObject;
-                lastChunkVersion =
-                  currentObject.chunkVersion ?? lastChunkVersion;
-
-                if (currentObject.chunkVersion) {
-                  delete currentObject.chunkVersion;
-                }
-
-                mutate(currentObject);
-              }
+            if (
+              currentObject &&
+              !isDeepEqualData(latestObject, currentObject) &&
+              currentObject.chunkVersion > lastChunkVersion
+            ) {
+              latestObject = currentObject;
+              lastChunkVersion = currentObject.chunkVersion ?? lastChunkVersion;
+              mutate(currentObject);
             }
           },
 

@@ -1,7 +1,7 @@
 import { StreamableRoastedDesign } from '@/types/roastedDesign';
 import { container, innerContainer } from './common';
 import { DesignPreview } from '../designPreview';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState, memo } from 'react';
 import { DesignImprovementsPreviewStreaming } from '../designImprovementsPreviewStreaming';
 import { parsePartialJson } from '@ai-sdk/ui-utils';
 import { DesignImprovements } from '@/types/designImprovements';
@@ -19,6 +19,48 @@ import { GoBackButton } from './goBackButton';
 interface StreamingPlaygroundProps {
   initialRoastedDesign?: RoastedDesigns;
 }
+
+const StreamingContent = memo(function StreamingContent({
+  streamableRoastedDesign,
+  isLoading,
+  parsedWhatIsWrong,
+  parsedImprovements,
+  isUpdateMode,
+}: {
+  streamableRoastedDesign:
+    | RoastedDesigns
+    | {
+        id?: string;
+        name?: string;
+        improvedHtml?: string;
+        improvedReact?: string;
+        originalImageUrl?: string;
+      }
+    | null;
+  isLoading: boolean;
+  parsedWhatIsWrong: DesignImprovements['whatsWrong'];
+  parsedImprovements: DesignImprovements['improvements'];
+  isUpdateMode: boolean;
+}) {
+  return (
+    <>
+      <DesignPreview
+        HTML={streamableRoastedDesign?.improvedHtml}
+        react={streamableRoastedDesign?.improvedReact}
+        designId={streamableRoastedDesign?.id}
+        originalImageUrl={streamableRoastedDesign?.originalImageUrl}
+        isUpdateMode={isUpdateMode}
+      />
+      <div className="space-y-6">
+        <DesignImprovementsPreviewStreaming
+          whatsWrong={parsedWhatIsWrong}
+          improvements={parsedImprovements}
+          disableTypewriter={!isLoading}
+        />
+      </div>
+    </>
+  );
+});
 
 export function StreamingPlayground(props: StreamingPlaygroundProps) {
   const { initialRoastedDesign } = props;
@@ -175,13 +217,6 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
     clearCreatedRoastedDesign,
   ]);
 
-  //eslint-disable-next-line no-console
-  console.log(
-    'Streamable roasted design: ',
-    new Date().toISOString(),
-    streamableRoastedDesign,
-  );
-
   return (
     <div className={container()}>
       <div className={innerContainer()}>
@@ -202,23 +237,13 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
           initialIsShowForm={!isUpdateMode}
         />
         <PlaygroundError error={genericError || updateError || creationError} />
-        {/* {(streamableRoastedDesign?.improvedHtml || */}
-        {/* // streamableRoastedDesign?.improvedReact) && ( */}
-        <DesignPreview
-          HTML={streamableRoastedDesign?.improvedHtml}
-          react={streamableRoastedDesign?.improvedReact}
-          designId={streamableRoastedDesign?.id}
-          originalImageUrl={streamableRoastedDesign?.originalImageUrl}
+        <StreamingContent
+          streamableRoastedDesign={streamableRoastedDesign}
+          isLoading={isLoading}
+          parsedWhatIsWrong={parsedWhatIsWrong}
+          parsedImprovements={parsedImprovements}
           isUpdateMode={isUpdateMode}
         />
-        {/* )} */}
-        <div className="space-y-6">
-          <DesignImprovementsPreviewStreaming
-            whatsWrong={parsedWhatIsWrong}
-            improvements={parsedImprovements}
-            disableTypewriter={!isLoading}
-          />
-        </div>
       </div>
     </div>
   );

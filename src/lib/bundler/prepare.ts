@@ -46,8 +46,6 @@ export function prepareReactCode(
 
       ${code}
 
-      console.log('ReactDOM: ', createRoot);
-
       createRoot(document.getElementById('${rootElementId}')).render(
         React.createElement('${mainComponent.name}'),
       );
