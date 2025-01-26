@@ -60,6 +60,7 @@ export function DesignImprovementsPreviewStreaming({
               {whatsWrong && whatsWrong.length > 0 && (
                 <TypewriterSequence disableTypewriter={disableTypewriter}>
                   {whatsWrong
+                    .filter((item) => item.category && item.description)
                     .map((item) => `${item.category}: ${item.description}`)
                     .map((item) => (
                       <Typewriter
@@ -101,6 +102,7 @@ export function DesignImprovementsPreviewStreaming({
               {improvements && improvements.length > 0 && (
                 <TypewriterSequence disableTypewriter={disableTypewriter}>
                   {improvements
+                    .filter((item) => item.category && item.description)
                     ?.map((item) => `${item.category}: ${item.description}`)
                     .map((item) => (
                       <Typewriter

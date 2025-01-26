@@ -130,22 +130,34 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
   const parsedWhatIsWrong = useMemo(() => {
     if (!streamableRoastedDesign?.whatsWrong) return cachedWhatIsWrong.current;
 
-    const { value } = parsePartialJson(streamableRoastedDesign.whatsWrong);
-    cachedWhatIsWrong.current = value
-      ? (value as DesignImprovements['whatsWrong'])
-      : [];
-    return value ? (value as DesignImprovements['whatsWrong']) : [];
+    const { value, state } = parsePartialJson(
+      streamableRoastedDesign.whatsWrong,
+    );
+    const parsedValue =
+      value && (state === 'repaired-parse' || state === 'successful-parse')
+        ? (value as DesignImprovements['whatsWrong'])
+        : [];
+
+    cachedWhatIsWrong.current = parsedValue;
+    return parsedValue;
   }, [streamableRoastedDesign?.whatsWrong]);
 
   const parsedImprovements = useMemo(() => {
     if (!streamableRoastedDesign?.improvements)
       return cachedImprovements.current;
 
-    const { value } = parsePartialJson(streamableRoastedDesign.improvements);
-    cachedImprovements.current = value
-      ? (value as DesignImprovements['improvements'])
-      : [];
-    return value ? (value as DesignImprovements['improvements']) : [];
+    const { value, state } = parsePartialJson(
+      streamableRoastedDesign.improvements,
+    );
+
+    const parsedValue =
+      value && (state === 'repaired-parse' || state === 'successful-parse')
+        ? (value as DesignImprovements['improvements'])
+        : [];
+
+    cachedImprovements.current = parsedValue;
+
+    return parsedValue;
   }, [streamableRoastedDesign?.improvements]);
 
   const clearCachedImprovements = useCallback(() => {
