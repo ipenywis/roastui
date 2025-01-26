@@ -308,7 +308,7 @@ export function createManagedRoastedDesignStream(
         } catch (error) {
           clearInterval(heartbeatInterval);
         }
-      }, 1000);
+      }, 3000);
     },
     async transform(chunk: string, controller) {
       try {
