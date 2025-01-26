@@ -53,13 +53,10 @@ async function processRoastedDesign(params: {
 
   const asyncStream = new AsyncStream<StreamableRoastedDesign>();
 
-  getDesignImprovementsStreaming(
-    name?.toString() || existingDesign?.name || '',
-    base64Image,
-    asyncStream,
-  );
+  const designName = name?.toString() || existingDesign?.name || '';
 
-  getNewDesignStreaming(base64Image, asyncStream);
+  getDesignImprovementsStreaming(designName, base64Image, asyncStream);
+  getNewDesignStreaming(designName, base64Image, asyncStream);
 
   const handleComplete = async (
     streamableRoastedDesign: StreamableRoastedDesign,

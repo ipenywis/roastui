@@ -122,6 +122,7 @@ export async function getNewDesign(
 }
 
 export function getNewDesignStreaming(
+  designName: string,
   base64Image: string,
   asyncStream: AsyncStream<StreamableRoastedDesign>,
 ) {
@@ -209,6 +210,7 @@ export function getNewDesignStreaming(
       // Write to a new stream
       for await (const chunk of result.partialObjectStream) {
         const streamableRoastedDesign: StreamableRoastedDesign = {
+          name: designName,
           improvements: JSON.stringify(improvements),
           whatsWrong: JSON.stringify(whatsWrong),
           improvedHtml: chunk.html,

@@ -9,7 +9,6 @@ import { DeepPartial } from 'ai';
 import { useCallback, useState } from 'react';
 import { RoastedDesigns } from '@prisma/client';
 import { getImageFileFromUrl } from '@/lib/image-client';
-// import { useObjectBuffer } from './useObjectBuffer';
 
 type heartbeatType = {
   type: 'heartbeat';
@@ -63,11 +62,9 @@ export function useRoastDesign({
   const checkForGenericError = useCallback(
     (object: StreamableRoastedDesign | RoastedDesigns) => {
       //eslint-disable-next-line no-console
-      console.log(
-        'check for generic error: ',
-        new Date().toISOString(),
+      console.log('error roasting cut mid-way: ', new Date().toISOString(), {
         object,
-      );
+      });
       if (
         !object.id ||
         (Object.hasOwn(object, 'chunkStatus') &&
@@ -75,9 +72,11 @@ export function useRoastDesign({
       ) {
         setGenericError(
           new Error(
-            'Streaming roasted design cut mid-way, please check your internet connection and try again!',
+            'Streaming roasted design cut mid-way, please reload the page and try again!',
           ),
         );
+        //TODO: Enable auto page reload
+        // window.location.reload();
       }
     },
     [],
@@ -93,7 +92,7 @@ export function useRoastDesign({
     api: '/api/roast-streaming',
     schema: StreamableRoastedDesignsSchema,
     initialValue: initialRoastedDesign,
-    //debugDelay: [300, 700], ///< only for debuggin
+    // debugDelay: [700, 1200], ///< only for debugging
     fetch: async (_, init?: RequestInit) => {
       const body = init?.body as FormData;
       const response = await roastService.roastUIFormData(body);
@@ -118,7 +117,7 @@ export function useRoastDesign({
     api: '/api/roast-streaming',
     schema: StreamableRoastedDesignsSchema,
     initialValue: initialRoastedDesign,
-    // debugDelay: [300, 700], ///< Only for debugging
+    // debugDelay: [700, 1200], ///< Only for debugging
     fetch: async (_, init?: RequestInit) => {
       const body = init?.body as FormData;
       const response = await roastService.updateRoastUI(body);

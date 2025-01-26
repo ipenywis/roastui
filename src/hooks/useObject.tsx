@@ -23,19 +23,52 @@ const getOriginalFetch = (
   return async (input: RequestInfo | URL, init?: RequestInit) => {
     const response = await originalFetch(input, init);
 
-    if (!response.body || !debugDelay) return response;
+    if (!response.body) return response;
 
-    const [min, max] = debugDelay;
-    const delayStream = new TransformStream({
+    let transformedBody = response.body;
+
+    // Split chunks randomly (for testing partial objects)
+    // @ts-ignore
+    const splitStream = new TransformStream({
       async transform(chunk, controller) {
-        await new Promise((resolve) =>
-          setTimeout(resolve, Math.random() * (max - min) + min),
-        );
-        controller.enqueue(chunk);
+        const text = new TextDecoder().decode(chunk);
+
+        const chunkSize = Math.floor(text.length / 5);
+        const part1 = text.slice(0, chunkSize);
+        const part2 = text.slice(chunkSize, chunkSize * 2);
+        const part3 = text.slice(chunkSize * 2, chunkSize * 3);
+        const part4 = text.slice(chunkSize * 3, chunkSize * 4);
+        const part5 = text.slice(chunkSize * 4);
+
+        controller.enqueue(new TextEncoder().encode(part1));
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        controller.enqueue(new TextEncoder().encode(part2));
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        controller.enqueue(new TextEncoder().encode(part3));
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        controller.enqueue(new TextEncoder().encode(part4));
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        controller.enqueue(new TextEncoder().encode(part5));
       },
     });
 
-    return new Response(response.body.pipeThrough(delayStream), response);
+    // transformedBody = transformedBody.pipeThrough(splitStream);
+
+    // Apply debug delay if specified
+    if (debugDelay) {
+      const [min, max] = debugDelay;
+      const delayStream = new TransformStream({
+        async transform(chunk, controller) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, Math.random() * (max - min) + min),
+          );
+          controller.enqueue(chunk);
+        },
+      });
+      transformedBody = transformedBody.pipeThrough(delayStream);
+    }
+
+    return new Response(transformedBody, response);
   };
 };
 
@@ -137,51 +170,6 @@ export type Experimental_UseObjectHelpers<RESULT, INPUT> = {
   clear: () => void;
 };
 
-const processChunk = <RESULT, HEARTBEAT>(
-  chunk: string,
-  isHeartbeat?: (object: DeepPartial<HEARTBEAT>) => boolean,
-): DeepPartial<RESULT> | undefined => {
-  let endIndex = chunk.length;
-
-  while (endIndex > 0) {
-    // Find the last closing brace
-    const lastClosingBrace = chunk.lastIndexOf('}', endIndex - 1);
-    if (lastClosingBrace === -1) break;
-
-    // Find the matching opening brace by counting braces
-    let openBraces = 0;
-    let startIndex = lastClosingBrace;
-
-    while (startIndex >= 0) {
-      if (chunk[startIndex] === '}') openBraces++;
-      if (chunk[startIndex] === '{') openBraces--;
-      if (openBraces === 0) break;
-      startIndex--;
-    }
-
-    // If we found a matching pair of braces
-    if (startIndex >= 0) {
-      try {
-        const potentialObject = chunk.slice(startIndex, lastClosingBrace + 1);
-        const value = parsePartial(potentialObject);
-
-        if (isHeartbeat && isHeartbeat(value as DeepPartial<HEARTBEAT>)) {
-          return undefined;
-        }
-
-        return value as DeepPartial<RESULT>;
-      } catch (parseError) {
-        // If parsing fails, continue with the next closing brace
-        endIndex = startIndex;
-      }
-    } else {
-      // If no matching opening brace was found, try the next closing brace
-      endIndex = lastClosingBrace;
-    }
-  }
-  return undefined;
-};
-
 export function useObject<
   RESULT,
   INPUT extends BodyInit = any,
@@ -189,7 +177,7 @@ export function useObject<
 >({
   api,
   id,
-  schema, // required, in the future we will use it for validation
+  schema,
   initialValue,
   fetch,
   onError,
@@ -204,6 +192,140 @@ export function useObject<
   const hookId = useId();
   const completionId = id ?? hookId;
   const isInitialDataSet = useRef(false);
+
+  // Buffer to store incomplete chunks
+  const incompleteChunkRef = useRef<string>('');
+
+  // @ts-ignore
+  const processChunkOld = useCallback(
+    <R, H>(
+      chunk: string,
+      isHeartbeat?: (object: DeepPartial<H>) => boolean,
+    ): DeepPartial<R> | undefined => {
+      // Append the new chunk to any incomplete chunk we have
+      const fullChunk = incompleteChunkRef.current + chunk;
+      let endIndex = fullChunk.length;
+      let lastValidObject: DeepPartial<R> | undefined = undefined;
+
+      while (endIndex > 0) {
+        // Find the last closing brace
+        const lastClosingBrace = fullChunk.lastIndexOf('}', endIndex - 1);
+        if (lastClosingBrace === -1) {
+          // No complete object found, store the entire chunk as incomplete
+          incompleteChunkRef.current = fullChunk.slice(0, endIndex);
+          break;
+        }
+
+        // Find the matching opening brace by counting braces
+        let openBraces = 0;
+        let startIndex = lastClosingBrace;
+
+        while (startIndex >= 0) {
+          if (fullChunk[startIndex] === '}') openBraces++;
+          if (fullChunk[startIndex] === '{') openBraces--;
+          if (openBraces === 0) break;
+          startIndex--;
+        }
+
+        // If we found a matching pair of braces
+        if (startIndex >= 0) {
+          try {
+            const potentialObject = fullChunk.slice(
+              startIndex,
+              lastClosingBrace + 1,
+            );
+            const value = parsePartial(potentialObject);
+
+            if (isHeartbeat && isHeartbeat(value as DeepPartial<H>)) {
+              endIndex = startIndex;
+              continue;
+            }
+
+            lastValidObject = value as DeepPartial<R>;
+            // Store any remaining incomplete chunk
+            incompleteChunkRef.current = fullChunk.slice(0, startIndex);
+            break;
+          } catch (parseError) {
+            // If parsing fails, try the next closing brace
+            endIndex = startIndex;
+          }
+        } else {
+          // If no matching opening brace was found, try the next closing brace
+          endIndex = lastClosingBrace;
+        }
+      }
+
+      return lastValidObject;
+    },
+    [],
+  );
+
+  const processChunk = useCallback(
+    <R, H>(
+      chunk: string,
+      isHeartbeat?: (object: DeepPartial<H>) => boolean,
+    ): DeepPartial<R> | undefined => {
+      // Combine with any previously incomplete chunk
+      const fullChunk = incompleteChunkRef.current + chunk;
+
+      // Try to find the last complete object by working backwards
+      let openBraces = 0;
+      let lastCompleteEnd = -1;
+      let lastCompleteStart = -1;
+
+      // First pass: find the last complete object
+      for (let i = fullChunk.length - 1; i >= 0; i--) {
+        if (fullChunk[i] === '}') {
+          if (openBraces === 0) {
+            lastCompleteEnd = i;
+          }
+          openBraces++;
+        } else if (fullChunk[i] === '{') {
+          openBraces--;
+          if (openBraces === 0 && lastCompleteEnd !== -1) {
+            lastCompleteStart = i;
+            break;
+          }
+        }
+      }
+
+      // If we found a complete object
+      if (lastCompleteStart !== -1 && lastCompleteEnd !== -1) {
+        try {
+          const potentialObject = fullChunk.slice(
+            lastCompleteStart,
+            lastCompleteEnd + 1,
+          );
+
+          const value = parsePartial(potentialObject);
+
+          if (isHeartbeat && isHeartbeat(value as DeepPartial<H>)) {
+            // Store anything after this heartbeat object
+            incompleteChunkRef.current = fullChunk.slice(lastCompleteEnd + 1);
+            return undefined;
+          }
+
+          // Store anything after this complete object for next time
+          incompleteChunkRef.current = fullChunk.slice(lastCompleteEnd + 1);
+          return value as DeepPartial<R>;
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.log('Parse error:', e);
+        }
+      }
+
+      // If we have unclosed braces at the end, this might be a partial object
+      if (openBraces > 0) {
+        incompleteChunkRef.current = fullChunk;
+        return undefined;
+      }
+
+      // If we get here and have no complete objects, store everything
+      incompleteChunkRef.current = fullChunk;
+      return undefined;
+    },
+    [],
+  );
 
   // Store the completion state in SWR, using the completionId as the key to share states.
   const { data, mutate } = useSWR<DeepPartial<RESULT> | undefined>(
@@ -245,6 +367,8 @@ export function useObject<
       mutate(undefined); // reset the data
       setIsLoading(true);
       setError(undefined);
+      // Reset the incomplete chunk buffer when starting a new request
+      incompleteChunkRef.current = '';
 
       const abortController = new AbortController();
       abortControllerRef.current = abortController;
@@ -272,10 +396,16 @@ export function useObject<
       await response.body.pipeThrough(new TextDecoderStream()).pipeTo(
         new WritableStream<string>({
           async write(chunk) {
+            //eslint-disable-next-line no-console
+            console.log('chunk', { chunk });
+
             const currentObject = processChunk<RESULT, HEARTBEAT>(
               chunk,
               isHeartbeat,
             );
+
+            //eslint-disable-next-line no-console
+            console.log('currentObject', { currentObject });
 
             if (
               currentObject &&
@@ -289,6 +419,8 @@ export function useObject<
           },
 
           close() {
+            // Reset the incomplete chunk buffer when the stream closes
+            incompleteChunkRef.current = '';
             setIsLoading(false);
             abortControllerRef.current = null;
 
@@ -308,6 +440,9 @@ export function useObject<
         }),
       );
     } catch (error) {
+      // Reset the incomplete chunk buffer on error
+      incompleteChunkRef.current = '';
+
       if (isAbortError(error)) {
         return;
       }
