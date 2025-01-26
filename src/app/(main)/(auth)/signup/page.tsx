@@ -14,15 +14,24 @@ import { FaGithub } from 'react-icons/fa';
 
 export const revalidate = 86400;
 
-export default function SignupPage() {
+export default function SignupPage({
+  searchParams,
+}: {
+  searchParams: { plan: string; tier: string };
+}) {
+  const { plan, tier } = searchParams;
+
+  const redirectUrl =
+    tier && plan ? `/subscribe?tier=${tier}&plan=${plan}` : '/subscribe';
+
   async function signupWithGoogle() {
     'use server';
-    await signIn('google');
+    await signIn('google', { redirectTo: redirectUrl });
   }
 
   async function loginWithGithub() {
     'use server';
-    await signIn('github');
+    await signIn('github', { redirectTo: redirectUrl });
   }
 
   return (

@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1
 
 # Adjust NODE_VERSION as desired
-ARG NODE_VERSION=20.10.0
+ARG NODE_VERSION=20.18.2
 FROM node:${NODE_VERSION}-slim as base
 
 LABEL fly_launch_runtime="Next.js/Prisma"
@@ -50,7 +50,7 @@ RUN apt-get update -y && apt-get install -y ca-certificates fuse3 sqlite3
 # Copy built application
 COPY --from=build /app /app
 
-COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs
+COPY --from=flyio/litefs:0.5.11 /usr/local/bin/litefs /usr/local/bin/litefs
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000

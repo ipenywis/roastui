@@ -56,7 +56,7 @@ export function DesignPreview({
 
   useEffect(() => {
     if (designId) setActiveTab('improvedDesign');
-    // else if (HTML) setActiveTab('improvedHtml');
+    else setActiveTab('improvedHtml');
   }, [designId]);
 
   if (!HTML) return null;

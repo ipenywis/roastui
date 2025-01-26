@@ -7,7 +7,7 @@ const appConfig = {
     },
     {
       item: 'Pricing',
-      url: '#pricing',
+      url: '/#pricing',
     },
     {
       item: 'About',
@@ -15,7 +15,7 @@ const appConfig = {
     },
     {
       item: 'FAQ',
-      url: '#faq',
+      url: '/#faq',
     },
   ],
   faq: [

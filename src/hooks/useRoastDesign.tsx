@@ -9,6 +9,7 @@ import { DeepPartial } from 'ai';
 import { useCallback, useState } from 'react';
 import { RoastedDesigns } from '@prisma/client';
 import { getImageFileFromUrl } from '@/lib/image-client';
+// import { useObjectBuffer } from './useObjectBuffer';
 
 type heartbeatType = {
   type: 'heartbeat';
@@ -61,6 +62,12 @@ export function useRoastDesign({
 
   const checkForGenericError = useCallback(
     (object: StreamableRoastedDesign | RoastedDesigns) => {
+      //eslint-disable-next-line no-console
+      console.log(
+        'check for generic error: ',
+        new Date().toISOString(),
+        object,
+      );
       if (
         !object.id ||
         (Object.hasOwn(object, 'chunkStatus') &&
@@ -86,6 +93,7 @@ export function useRoastDesign({
     api: '/api/roast-streaming',
     schema: StreamableRoastedDesignsSchema,
     initialValue: initialRoastedDesign,
+    debugDelay: [300, 700],
     fetch: async (_, init?: RequestInit) => {
       const body = init?.body as FormData;
       const response = await roastService.roastUIFormData(body);
@@ -110,6 +118,7 @@ export function useRoastDesign({
     api: '/api/roast-streaming',
     schema: StreamableRoastedDesignsSchema,
     initialValue: initialRoastedDesign,
+    debugDelay: [300, 700],
     fetch: async (_, init?: RequestInit) => {
       const body = init?.body as FormData;
       const response = await roastService.updateRoastUI(body);

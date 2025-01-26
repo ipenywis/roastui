@@ -13,17 +13,16 @@ export function AccessControls() {
 
   return (
     <div className={buttonsContainer()}>
-      {status === 'unauthenticated' ||
-        (status === 'loading' && (
-          <>
-            <Link href="/login">
-              <Button variant="ghost">Login</Button>
-            </Link>
-            <Link href="/signup">
-              <Button variant="default">Signup</Button>
-            </Link>
-          </>
-        ))}
+      {(status === 'unauthenticated' || status === 'loading') && (
+        <>
+          <Link href="/login">
+            <Button variant="ghost">Login</Button>
+          </Link>
+          <Link href="/signup">
+            <Button variant="default">Signup</Button>
+          </Link>
+        </>
+      )}
       {status === 'authenticated' && <UserMenu />}
     </div>
   );

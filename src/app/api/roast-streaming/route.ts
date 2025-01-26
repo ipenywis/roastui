@@ -51,6 +51,9 @@ async function processRoastedDesign(params: {
   const compressedImage = await compressImage(imageFile);
   const base64Image = await getImageBase64(compressedImage);
 
+  //eslint-disable-next-line no-console
+  console.log('Roast streaming started processing');
+
   const asyncStream = new AsyncStream<StreamableRoastedDesign>();
 
   getDesignImprovementsStreaming(
@@ -58,11 +61,19 @@ async function processRoastedDesign(params: {
     base64Image,
     asyncStream,
   );
+
+  //eslint-disable-next-line no-console
+  console.log('Design improvements streaming started');
   getNewDesignStreaming(base64Image, asyncStream);
+  //eslint-disable-next-line no-console
+  console.log('New design streaming started');
 
   const handleComplete = async (
     streamableRoastedDesign: StreamableRoastedDesign,
   ): Promise<RoastedDesigns> => {
+    //eslint-disable-next-line no-console
+    console.log('Roast streaming completed');
+
     if (
       !streamableRoastedDesign ||
       !isValidAndNotEmptyString(
@@ -76,6 +87,9 @@ async function processRoastedDesign(params: {
     ) {
       throw new Error('RoastedDesign is not valid');
     }
+
+    //eslint-disable-next-line no-console
+    console.log('RoastedDesign is valid');
 
     let originalImageUrl: string | null = null;
 
@@ -108,9 +122,15 @@ async function processRoastedDesign(params: {
       );
     }
 
+    //eslint-disable-next-line no-console
+    console.log('Original image url: ', originalImageUrl);
+
     if (!originalImageUrl) {
       throw new Error('Error upload image, please try again!');
     }
+
+    //eslint-disable-next-line no-console
+    console.log('Original image url is valid');
 
     const data = {
       name: name?.toString() || existingDesign?.name || '',
@@ -134,6 +154,8 @@ async function processRoastedDesign(params: {
 
     //We are on update
     if (id) {
+      //eslint-disable-next-line no-console
+      console.log('Updating roasted design');
       return prisma.roastedDesigns.update({
         where: { id },
         data,
@@ -141,13 +163,15 @@ async function processRoastedDesign(params: {
     }
 
     //We are on create
+    //eslint-disable-next-line no-console
+    console.log('Creating roasted design');
     return prisma.roastedDesigns.create({ data });
   };
 
   const handleError = (error: Error) => {
     //TODO: Handle errors properly - Prob add logging
     // eslint-disable-next-line no-console
-    console.error('Error:', error);
+    console.error('Error Roast Streaming:', error);
   };
 
   return createManagedRoastedDesignStream(asyncStream, {
@@ -252,6 +276,3 @@ export const PUT = auth(async (request) => {
     );
   }
 });
-
-// cdn.roastui.design/cm33eoeci0000uvyw920xjvjr/2025-01-11T09:06:13.028Z-image.webp
-// https://cdn.roastui.design/cm33eoeci0000uvyw920xjvjr/2025-01-11T10:13:42.276Z-image.webp

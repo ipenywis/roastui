@@ -175,6 +175,13 @@ export function StreamingPlayground(props: StreamingPlaygroundProps) {
     clearCreatedRoastedDesign,
   ]);
 
+  //eslint-disable-next-line no-console
+  console.log(
+    'Streamable roasted design: ',
+    new Date().toISOString(),
+    streamableRoastedDesign,
+  );
+
   return (
     <div className={container()}>
       <div className={innerContainer()}>

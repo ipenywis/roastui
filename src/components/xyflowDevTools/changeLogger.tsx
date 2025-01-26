@@ -60,7 +60,7 @@ export default function ChangeLogger({ limit = 20 }: ChangeLoggerProps) {
     };
 
     store.setState({ onNodesChange: onNodesChangeLogger });
-  }, [onNodesChange, limit]);
+  }, [store, onNodesChange, limit]);
 
   return (
     <div className="react-flow__devtools-changelogger">

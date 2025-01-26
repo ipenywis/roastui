@@ -24,7 +24,7 @@ export function GoBackButton({ isHidden }: GoBackButtonProps) {
 
   const handleGoBack = useCallback(() => {
     router.push('/dashboard');
-  }, []);
+  }, [router]);
 
   return (
     <div className={container({ isHidden })}>

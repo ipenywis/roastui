@@ -4,6 +4,7 @@ export class AsyncStream<QUEUE_TYPE = string> {
   private resolveNext: ((value?: any) => void) | null = null; // Promise resolver for waiting producers
   private stream: ReadableStream<string> | null = null; // Stream instance
   private readers: Set<ReadableStream<string>> = new Set();
+  private isClosed = false;
 
   constructor() {
     this.initStream(); // Initialize the stream
@@ -36,6 +37,10 @@ export class AsyncStream<QUEUE_TYPE = string> {
   }
 
   enqueue(data: QUEUE_TYPE) {
+    if (this.isClosed) {
+      throw new Error('Cannot enqueue to closed stream');
+    }
+
     // Add data to the queue
     this.queue.push(data);
 
@@ -65,7 +70,26 @@ export class AsyncStream<QUEUE_TYPE = string> {
   }
 
   close() {
-    this.controller?.close();
+    this.isClosed = true;
+
+    // Resolve any waiting pull operation
+    if (this.resolveNext) {
+      this.resolveNext();
+      this.resolveNext = null;
+    }
+
+    // Close the controller
+    if (this.controller) {
+      this.controller.close();
+    }
+
+    // Close all readers
+    this.readers.forEach((reader) => {
+      if (!reader.locked) {
+        reader.cancel();
+      }
+    });
+    this.readers.clear();
   }
 
   cancel() {

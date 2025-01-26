@@ -65,8 +65,9 @@ export async function POST(request: NextRequest) {
           subscriptionDeleted.customer as string,
         )) as Stripe.Customer;
 
-        if (!customer?.email)
+        if (!customer?.email) {
           return new Response('Something went wrong!', { status: 500 });
+        }
 
         const user = await prisma.user.findUnique({
           where: { email: customer.email },

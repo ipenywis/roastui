@@ -295,6 +295,7 @@ export function createManagedRoastedDesignStream(
   },
 ): ReadableStream<string> {
   let heartbeatInterval: NodeJS.Timeout;
+  let chunkVersion = 0;
 
   const { readable, writable } = new TransformStream<string, string>({
     start(controller) {
@@ -305,7 +306,7 @@ export function createManagedRoastedDesignStream(
         } catch (error) {
           clearInterval(heartbeatInterval);
         }
-      }, 2000);
+      }, 1000);
     },
     async transform(chunk: string, controller) {
       try {
@@ -313,14 +314,20 @@ export function createManagedRoastedDesignStream(
 
         const currentParsedChunk = parsedChunk as StreamableRoastedDesign;
 
-        // Enqueue the current chunk
-        controller.enqueue(chunk);
+        // Add chunk version and enqueue
+        chunkVersion++;
+        controller.enqueue(
+          JSON.stringify({
+            ...currentParsedChunk,
+            chunkVersion,
+          }),
+        );
 
         if (
           currentParsedChunk?.chunkType === 'ROASTED_DESIGN' &&
           currentParsedChunk.chunkStatus === 'COMPLETED'
         ) {
-          controller.terminate();
+          asyncStream.close();
         }
 
         if (
@@ -342,8 +349,9 @@ export function createManagedRoastedDesignStream(
         options?.onError?.(error as Error);
       }
     },
-    flush() {
+    flush(controller) {
       clearInterval(heartbeatInterval);
+      controller.terminate();
     },
   });
 

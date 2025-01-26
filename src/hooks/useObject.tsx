@@ -15,7 +15,29 @@ import useSWR from 'swr';
 import z from 'zod';
 
 // use function to allow for mocking in tests:
-const getOriginalFetch = () => fetch;
+const getOriginalFetch = (
+  fetchFunction: FetchFunction | undefined,
+  debugDelay?: [number, number],
+) => {
+  const originalFetch = fetchFunction ?? fetch;
+  return async (input: RequestInfo | URL, init?: RequestInit) => {
+    const response = await originalFetch(input, init);
+
+    if (!response.body || !debugDelay) return response;
+
+    const [min, max] = debugDelay;
+    const delayStream = new TransformStream({
+      async transform(chunk, controller) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.random() * (max - min) + min),
+        );
+        controller.enqueue(chunk);
+      },
+    });
+
+    return new Response(response.body.pipeThrough(delayStream), response);
+  };
+};
 
 export type Experimental_UseObjectOptions<RESULT, HEARTBEAT> = {
   /**
@@ -76,6 +98,11 @@ Optional error object. This is e.g. a TypeValidationError when the final object 
    * Flag that indicates whether the current object is a heartbeat.
    */
   isHeartbeat?: (object: DeepPartial<HEARTBEAT>) => boolean;
+  /**
+   * Artificial delay range in milliseconds for simulating slow responses.
+   * Provide [min, max] values for random delay between chunks.
+   */
+  debugDelay?: [number, number];
 };
 
 export type Experimental_UseObjectHelpers<RESULT, INPUT> = {
@@ -123,6 +150,7 @@ export function useObject<
   onError,
   onFinish,
   isHeartbeat,
+  debugDelay,
 }: Experimental_UseObjectOptions<
   RESULT,
   HEARTBEAT
@@ -176,7 +204,7 @@ export function useObject<
       const abortController = new AbortController();
       abortControllerRef.current = abortController;
 
-      const actualFetch = fetch ?? getOriginalFetch();
+      const actualFetch = getOriginalFetch(fetch, debugDelay);
 
       const response = await actualFetch(api, {
         ...fetchOptions,
@@ -193,27 +221,53 @@ export function useObject<
         throw new Error('The response body is empty.');
       }
 
-      let accumulatedText = '';
       let latestObject: DeepPartial<RESULT> | undefined = undefined;
+      let lastChunkVersion = 0;
 
       await response.body.pipeThrough(new TextDecoderStream()).pipeTo(
         new WritableStream<string>({
           write(chunk) {
-            if (chunk.trim() === '' || chunk.trim() === '{}') return;
+            // Find the last complete JSON object in the chunk
+            let lastCompleteObject: any = undefined;
+            let startIndex = 0;
 
-            accumulatedText = chunk;
+            while (startIndex < chunk.length) {
+              const { value, state } = parsePartialJson(
+                chunk.slice(startIndex),
+              );
 
-            const { value } = parsePartialJson(accumulatedText);
+              if (state === 'successful-parse' || state === 'repaired-parse') {
+                lastCompleteObject = value;
+                startIndex += JSON.stringify(value).length;
+              } else {
+                startIndex++;
+              }
+            }
 
-            if (isHeartbeat && isHeartbeat(value as DeepPartial<HEARTBEAT>))
-              return;
+            // Process only the last complete object found
+            if (lastCompleteObject !== undefined) {
+              if (
+                isHeartbeat &&
+                isHeartbeat(lastCompleteObject as DeepPartial<HEARTBEAT>)
+              ) {
+                return;
+              }
 
-            const currentObject = value as DeepPartial<RESULT>;
+              const currentObject = lastCompleteObject as DeepPartial<RESULT>;
+              if (
+                !isDeepEqualData(latestObject, currentObject) &&
+                currentObject.chunkVersion > lastChunkVersion
+              ) {
+                latestObject = currentObject;
+                lastChunkVersion =
+                  currentObject.chunkVersion ?? lastChunkVersion;
 
-            if (!isDeepEqualData(latestObject, currentObject)) {
-              latestObject = currentObject;
+                if (currentObject.chunkVersion) {
+                  delete currentObject.chunkVersion;
+                }
 
-              mutate(currentObject);
+                mutate(currentObject);
+              }
             }
           },
 
