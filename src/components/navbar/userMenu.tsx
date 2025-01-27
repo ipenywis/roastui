@@ -7,12 +7,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { handleLogout } from '@/lib/actions/auth';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
+import { useCallback } from 'react';
 
 export function UserMenu() {
   // const session = await auth();
   const { data: session } = useSession();
+
+  const handleLogout = useCallback(async () => {
+    await signOut({ redirectTo: '/' });
+  }, []);
 
   return (
     <DropdownMenu modal={false}>
@@ -36,11 +40,9 @@ export function UserMenu() {
           <DropdownMenuItem>Billing</DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />
-        <form action={handleLogout}>
-          <button className="w-full cursor-pointer">
-            <DropdownMenuItem className="text-red-500">Logout</DropdownMenuItem>
-          </button>
-        </form>
+        <button className="w-full cursor-pointer" onClick={handleLogout}>
+          <DropdownMenuItem className="text-red-500">Logout</DropdownMenuItem>
+        </button>
       </DropdownMenuContent>
     </DropdownMenu>
   );

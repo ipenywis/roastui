@@ -11,9 +11,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <PageMainContainer className="flex flex-col w-full min-h-full h-full">
-      <PageMainContainerInner>
-        <Navbar />
+    <PageMainContainer className="flex flex-col w-full h-full">
+      <Navbar />
+      <PageMainContainerInner className="h-full">
         {children}
       </PageMainContainerInner>
       <Footer />
