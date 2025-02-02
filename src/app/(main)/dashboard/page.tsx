@@ -10,7 +10,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col items-center w-full h-full py-20">
+    <div className="flex flex-col items-center size-full py-20">
       <UserSavedDesigns />
     </div>
   );

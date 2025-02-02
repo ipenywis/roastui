@@ -11,7 +11,7 @@ const h1Container = cva(
 );
 
 export function Header() {
-  const isMobile = !useBreakpoint('lg');
+  const isMobile = !useBreakpoint('lg', true);
 
   return (
     <>

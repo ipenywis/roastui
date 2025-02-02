@@ -1,4 +1,3 @@
-import { RiAddLine } from 'react-icons/ri';
 import { Button } from '../ui/button';
 import { cva } from 'class-variance-authority';
 import { DesignCard } from '@/components/ui/designCard';
@@ -7,7 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 
 export const container = cva(
-  'flex min-h-full h-full flex-col gap-10 w-full max-w-[920px]',
+  'flex h-full flex-col gap-10 w-full max-w-[920px] mb-4',
 );
 
 const headerText = cva('text-xl font-bold');
@@ -35,11 +34,11 @@ export async function UserSavedDesigns() {
   return (
     <div className={container()}>
       <div className={header()}>
-        <span className={headerText()}>Your Designs</span>
+        <span className={headerText()}>Your roasted designs</span>
         <Link href="/playground">
-          <Button size="sm">
-            New
-            <RiAddLine className="ml-2" />
+          <Button>
+            New Roast
+            <span className="ml-1">🔥</span>
           </Button>
         </Link>
       </div>

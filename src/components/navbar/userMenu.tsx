@@ -8,15 +8,18 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { signOut, useSession } from 'next-auth/react';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { RiLoader3Fill } from 'react-icons/ri';
 
 export function UserMenu() {
-  // const session = await auth();
   const { data: session } = useSession();
+  const [isLoggingOut, setIsLogginOut] = useState(false);
 
   const handleLogout = useCallback(async () => {
+    setIsLogginOut(true);
     await signOut({ redirectTo: '/' });
-  }, []);
+    setIsLogginOut(false);
+  }, [setIsLogginOut]);
 
   return (
     <DropdownMenu modal={false}>
@@ -41,7 +44,10 @@ export function UserMenu() {
         </Link>
         <DropdownMenuSeparator />
         <button className="w-full cursor-pointer" onClick={handleLogout}>
-          <DropdownMenuItem className="text-red-500">Logout</DropdownMenuItem>
+          <DropdownMenuItem className="text-red-500">
+            Logout
+            {isLoggingOut && <RiLoader3Fill className="animate-spin size-4" />}
+          </DropdownMenuItem>
         </button>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 
 const container = cva('relative flex flex-col size-full overflow-x-hidden');
 
-const containerInner = cva('relative flex flex-col size-full px-4 lg:p-0');
+const containerInner = cva('flex flex-col w-full px-4 lg:p-0');
 
 export function PageMainContainer({
   children,

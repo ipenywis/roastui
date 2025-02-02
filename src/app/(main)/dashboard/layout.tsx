@@ -13,7 +13,7 @@ export default function DashboardLayout({
   return (
     <PageMainContainer className="flex flex-col w-full h-full">
       <Navbar />
-      <PageMainContainerInner className="h-full">
+      <PageMainContainerInner className="flex-1">
         {children}
       </PageMainContainerInner>
       <Footer />
