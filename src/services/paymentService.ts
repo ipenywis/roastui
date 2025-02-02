@@ -1,4 +1,3 @@
-import appConfig from '@/config/app';
 import { Checkout } from '@/types/checkout';
 
 const paymentService = {
@@ -9,11 +8,10 @@ const paymentService = {
     });
 
     if (!response.ok) {
+      //eslint-disable-next-line no-console
       console.error('Failed to create checkout session');
       throw new Error('Failed to create checkout session');
     }
-
-    console.log('Response: ', response);
 
     return response.json();
   },

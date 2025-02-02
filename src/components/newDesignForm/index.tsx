@@ -21,24 +21,36 @@ const container = cva('flex flex-col w-full max-w-screen-sm');
 
 const formContainer = cva('flex flex-col w-full items-center space-y-8');
 
-const formSchema = z.object({
+const createFormSchema = z.object({
   name: z.string().min(2, {
     message: 'Name must be at least 2 characters.',
   }),
-  images: z.array(z.instanceof(File)),
+  images: z.array(z.instanceof(File)).min(1, {
+    message: 'Design image is required',
+  }),
 });
 
-export type FormValues = z.infer<typeof formSchema>;
+export const updateFormSchema = z.object({
+  name: z.string().optional(),
+  images: z.array(z.instanceof(File)).optional(),
+});
+
+export type FormValues = z.infer<typeof createFormSchema>;
+export type CreateFormValues = z.infer<typeof createFormSchema>;
+export type UpdateFormValues = z.infer<typeof updateFormSchema>;
 
 interface NewDesignFormProps {
   onSubmit: (values: FormValues) => void;
+  mode?: 'create' | 'update';
 }
 
 export function NewDesignForm(props: NewDesignFormProps) {
-  const { onSubmit } = props;
+  const { onSubmit, mode = 'create' } = props;
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(
+      mode === 'create' ? createFormSchema : updateFormSchema,
+    ),
     defaultValues: {
       name: '',
       images: [],

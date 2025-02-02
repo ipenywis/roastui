@@ -15,6 +15,10 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+import 'react-photo-view/dist/react-photo-view.css';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
+import { CiMaximize1 } from 'react-icons/ci';
+
 interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Value of the uploader.
@@ -129,7 +133,7 @@ export function FileUploader(props: FileUploaderProps) {
       const newFiles = acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
-        })
+        }),
       );
 
       const updatedFiles = files ? [...files, ...newFiles] : newFiles;
@@ -161,7 +165,7 @@ export function FileUploader(props: FileUploaderProps) {
       }
     },
 
-    [files, maxFileCount, multiple, onUpload, setFiles]
+    [files, maxFileCount, multiple, onUpload, setFiles],
   );
 
   function onRemove(index: number) {
@@ -186,6 +190,28 @@ export function FileUploader(props: FileUploaderProps) {
 
   const isDisabled = disabled || (files?.length ?? 0) >= maxFileCount;
 
+  const onPaste = React.useCallback(
+    (event: React.ClipboardEvent<HTMLDivElement>) => {
+      const items = event.clipboardData?.items;
+
+      if (!items) return;
+
+      const files = Array.from(items)
+        .map((item) => item.getAsFile())
+        .filter((file): file is File => file !== null);
+
+      onDrop(files, []);
+    },
+    [onDrop],
+  );
+
+  React.useEffect(() => {
+    document.addEventListener('paste', onPaste as any);
+    return () => {
+      document.removeEventListener('paste', onPaste as any);
+    };
+  }, [onPaste]);
+
   return (
     <div className="relative flex flex-col gap-6 overflow-hidden">
       <Dropzone
@@ -204,7 +230,7 @@ export function FileUploader(props: FileUploaderProps) {
               'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               isDragActive && 'border-muted-foreground/50',
               isDisabled && 'pointer-events-none opacity-60',
-              className
+              className,
             )}
             {...dropzoneProps}
           >
@@ -316,14 +342,21 @@ interface FilePreviewProps {
 function FilePreview({ file }: FilePreviewProps) {
   if (file.type.startsWith('image/')) {
     return (
-      <Image
-        src={file.preview}
-        alt={file.name}
-        width={48}
-        height={48}
-        loading="lazy"
-        className="aspect-square shrink-0 rounded-md object-cover"
-      />
+      <PhotoProvider>
+        <PhotoView src={file.preview}>
+          <div className="group cursor-pointer hover:brightness-75 transition-all duration-200 relative">
+            <CiMaximize1 className="size-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-gray-900" />
+            <Image
+              src={file.preview}
+              alt={file.name}
+              width={64}
+              height={64}
+              loading="lazy"
+              className="aspect-square shrink-0 rounded-md object-cover"
+            />
+          </div>
+        </PhotoView>
+      </PhotoProvider>
     );
   }
 

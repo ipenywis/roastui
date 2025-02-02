@@ -24,7 +24,7 @@ export const LOOKUP_KEYS: { [key: string]: { [key: string]: string } } = {
 export async function getCheckoutUrl(
   userId: string,
   tier: string,
-  plan: string
+  plan: string,
 ): Promise<string | null> {
   if (!tier || !plan) {
     throw new Error('Missing tier or plan');
@@ -38,6 +38,7 @@ export async function getCheckoutUrl(
 
   const price = await stripe.prices.list({
     lookup_keys: [lookupKey],
+    active: true,
   });
 
   const session = await stripe.checkout.sessions.create({

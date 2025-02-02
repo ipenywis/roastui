@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
 
   try {
     event = stripe.webhooks.constructEvent(body, signature, endpointSecret);
-    console.log('Received webhook request', endpointSecret);
 
     switch (event.type) {
       case 'checkout.session.completed':
@@ -46,7 +45,7 @@ export async function POST(request: NextRequest) {
         await prisma.user.update({
           where: { id: userId },
           data: {
-            subscriptionId: {
+            subscription: {
               connect: {
                 id: subscription.id,
               },
@@ -54,6 +53,7 @@ export async function POST(request: NextRequest) {
           },
         });
 
+        //eslint-disable-next-line no-console
         console.log('Subscription created and user updated', subscription);
 
         return NextResponse.json({ message: 'Session checkout completed' });
@@ -62,35 +62,38 @@ export async function POST(request: NextRequest) {
         const subscriptionDeleted = event.data.object as Stripe.Subscription;
 
         const customer = (await stripe.customers.retrieve(
-          subscriptionDeleted.customer as string
+          subscriptionDeleted.customer as string,
         )) as Stripe.Customer;
 
-        if (!customer?.email)
+        if (!customer?.email) {
           return new Response('Something went wrong!', { status: 500 });
+        }
 
         const user = await prisma.user.findUnique({
           where: { email: customer.email },
           include: {
-            subscriptionId: true,
+            subscription: true,
           },
         });
 
-        if (!user || !user.subscriptionId) {
+        if (!user || !user.subscription) {
           return new Response('User not found', { status: 500 });
         }
 
         await prisma.subscription.delete({
-          where: { id: user.subscriptionId.id },
+          where: { id: user.subscription.id },
         });
 
         return NextResponse.json({ message: 'Subscription deleted' });
       default:
         return NextResponse.json(
           { message: 'Unknown event type' },
-          { status: 404 }
+          { status: 404 },
         );
     }
   } catch (err) {
+    //eslint-disable-next-line no-console
+    console.log('Stripe Webhook error', err);
     return new Response('Webhook error', { status: 400 });
   }
 }

@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  compress: true,
   images: {
     remotePatterns: [
       {
@@ -10,6 +11,12 @@ const nextConfig = {
       },
       {
         hostname: 'roast-ui.islemmaboud.com',
+      },
+      {
+        hostname: 'cdn.roastui.design',
+      },
+      {
+        hostname: 'roastui.design',
       },
     ],
   },

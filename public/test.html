@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form with Improvements</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="relative min-h-screen bg-white flex items-center justify-center p-4">
+        <!-- Original Login Form -->
+        <div class="w-full max-w-md bg-[#f0f7ff] rounded-3xl p-8 shadow-lg">
+            <h1 class="text-2xl font-medium text-gray-600 text-center mb-8">LOG IN</h1>
+            
+            <form class="space-y-6">
+                <div class="space-y-2">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        class="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors placeholder-gray-500"
+                        placeholder="Enter your email address"
+                    />
+                </div>
+                <div class="space-y-2">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        class="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors placeholder-gray-500"
+                        placeholder="Enter your password"
+                    />
+                </div>
+                <div class="space-y-4 pt-4">
+                    <button
+                        type="submit"
+                        class="w-full bg-blue-500 text-white font-medium py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+                    >
+                        LOGIN ME
+                    </button>
+                    <button
+                        type="button"
+                        class="w-full border-2 border-blue-500 text-blue-500 font-medium py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors mt-4"
+                    >
+                        SIGN UP
+                    </button>
+                    <button
+                        type="button"
+                        class="w-full border-2 border-blue-500 text-blue-500 font-medium py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors"
+                    >
+                        FORGOT PASSWORD?
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

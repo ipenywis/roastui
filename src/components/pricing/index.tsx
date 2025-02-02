@@ -9,10 +9,11 @@ import { Button } from '@/components/ui/button';
 import { ShowcaseSection } from '../showcaseSection';
 import { CheckIcon } from '../icons/checkIcon';
 import { useSession } from 'next-auth/react';
-import { redirect, usePathname } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import paymentService from '@/services/paymentService';
 import { useRouter } from 'next/navigation';
 import { Subscription } from '@prisma/client';
+import { useUser } from '@/lib/queryHooks/user/queries';
 
 export interface PricingTierFrequency {
   id: string;
@@ -40,18 +41,18 @@ export interface PricingTier {
 
 export const frequencies: PricingTierFrequency[] = [
   {
+    id: '2',
+    value: '2',
+    label: 'Annually',
+    priceSuffix: '/month',
+    plan: 'yearly',
+  },
+  {
     id: '1',
     value: '1',
     label: 'Monthly',
     priceSuffix: '/month',
     plan: 'monthly',
-  },
-  {
-    id: '2',
-    value: '2',
-    label: 'Annually',
-    priceSuffix: '/year',
-    plan: 'yearly',
   },
 ];
 
@@ -60,11 +61,11 @@ export const tiers: PricingTier[] = [
     name: 'Starter',
     id: '0',
     href: '/subscribe',
-    price: { '1': '$9.99', '2': '$100' },
+    price: { '1': '$14.99', '2': '$12.99' },
     discountPrice: { '1': '', '2': '' },
     description: `Get a sense of RoastUI and become a better designer`,
     features: [
-      `50 designs per month`,
+      `Unlimited designs`,
       `UI Design Playground`,
       `UI Design flaws`,
       `UI Design improvements`,
@@ -79,7 +80,7 @@ export const tiers: PricingTier[] = [
     name: 'Pro',
     id: '1',
     href: '/subscribe',
-    price: { '1': '$15.99', '2': '$130' },
+    price: { '1': '$25', '2': '$20' },
     discountPrice: { '1': '', '2': '' },
     description: `When you grow, need more power and flexibility.`,
     features: [
@@ -110,10 +111,16 @@ export function Pricing(props: PricingProps) {
 
   const router = useRouter();
 
+  const { data: userData } = useUser();
+  const isSubscriptionActive = userData?.user?.subscription?.isActive ?? false;
+
   if (mode === 'standalone' && session.status === 'unauthenticated')
     return redirect('/login');
 
   if (mode === 'standalone' && subscription?.isActive)
+    return redirect('/dashboard');
+
+  if (mode === 'standalone' && isSubscriptionActive)
     return redirect('/dashboard');
 
   const buttonText = (tier: PricingTier) => {
@@ -124,7 +131,7 @@ export function Pricing(props: PricingProps) {
 
   const getCheckoutUrl = async (
     e: React.MouseEvent<HTMLButtonElement>,
-    tier: PricingTier
+    tier: PricingTier,
   ) => {
     e.preventDefault();
 
@@ -135,7 +142,7 @@ export function Pricing(props: PricingProps) {
 
     const checkout = await paymentService.getCheckoutUrl(
       tier.tier,
-      frequency.plan
+      frequency.plan,
     );
 
     window.location.href = checkout.checkoutUrl;
@@ -143,6 +150,7 @@ export function Pricing(props: PricingProps) {
 
   return (
     <ShowcaseSection
+      id="pricing"
       title="Get Started Now"
       description="Save hours of moving buttons around and quickly find what’s wrong with your designs with RoastUI"
       className={className}
@@ -150,13 +158,13 @@ export function Pricing(props: PricingProps) {
       <div
         className={cn(
           'flex flex-col w-full items-center dark relative',
-          styles.fancyOverlay
+          styles.fancyOverlay,
         )}
       >
         <div className="w-full flex flex-col items-center">
           <div className="mx-auto max-w-7xl px-6 lg:px-8  flex flex-col items-center">
             {frequencies.length > 1 ? (
-              <div className="mt-4 mb-8 flex justify-center">
+              <div className="mt-2 mb-8 flex justify-center">
                 <RadioGroup
                   defaultValue={frequency.value}
                   onValueChange={(value: string) => {
@@ -174,7 +182,7 @@ export function Pricing(props: PricingProps) {
                         frequency.value === option.value
                           ? 'bg-sky-500/90 text-white dark:bg-sky-900/70 dark:text-white/70'
                           : 'bg-transparent text-gray-500 hover:bg-sky-500/10',
-                        'cursor-pointer rounded-full px-2.5 py-2 transition-all'
+                        'cursor-pointer rounded-full px-2.5 py-2 transition-all',
                       )}
                       key={option.value}
                       htmlFor={option.value}
@@ -198,7 +206,7 @@ export function Pricing(props: PricingProps) {
               className={cn(
                 'isolate mx-auto mt-4 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none',
                 tiers.length === 2 ? 'lg:grid-cols-2' : '',
-                tiers.length === 3 ? 'lg:grid-cols-3' : ''
+                tiers.length === 3 ? 'lg:grid-cols-3' : '',
               )}
             >
               {tiers.map((tier) => (
@@ -209,7 +217,7 @@ export function Pricing(props: PricingProps) {
                       ? '!bg-gray-900 ring-gray-900 dark:!bg-gray-100 dark:ring-gray-100'
                       : 'bg-white dark:bg-gray-900/80 ring-gray-300/70 dark:ring-gray-700',
                     'max-w-xs ring-1 rounded-3xl p-8 xl:p-10',
-                    tier.highlighted ? styles.fancyGlassContrast : ''
+                    tier.highlighted ? styles.fancyGlassContrast : '',
                   )}
                 >
                   <h3
@@ -218,7 +226,7 @@ export function Pricing(props: PricingProps) {
                       tier.featured
                         ? 'text-white dark:text-black'
                         : 'text-black dark:text-white',
-                      'text-2xl font-bold tracking-tight'
+                      'text-2xl font-bold tracking-tight',
                     )}
                   >
                     {tier.name}
@@ -228,7 +236,7 @@ export function Pricing(props: PricingProps) {
                       tier.featured
                         ? 'text-gray-300 dark:text-gray-500'
                         : 'text-gray-600 dark:text-gray-400',
-                      'mt-4 text-sm leading-6'
+                      'mt-4 text-sm leading-6',
                     )}
                   >
                     {tier.description}
@@ -244,7 +252,7 @@ export function Pricing(props: PricingProps) {
                           tier.discountPrice[frequency.value]
                           ? 'line-through'
                           : '',
-                        tier.comingSoon ? 'line-through' : ''
+                        tier.comingSoon ? 'line-through' : '',
                       )}
                     >
                       {typeof tier.price === 'string'
@@ -256,7 +264,7 @@ export function Pricing(props: PricingProps) {
                       className={cn(
                         tier.featured
                           ? 'text-white dark:text-black'
-                          : 'text-black dark:text-white'
+                          : 'text-black dark:text-white',
                       )}
                     >
                       {typeof tier.discountPrice === 'string'
@@ -270,7 +278,7 @@ export function Pricing(props: PricingProps) {
                           tier.featured
                             ? 'text-gray-300 dark:text-gray-500'
                             : 'dark:text-gray-400 text-gray-600',
-                          'text-sm font-semibold leading-6'
+                          'text-sm font-semibold leading-6',
                         )}
                       >
                         {frequency.priceSuffix}
@@ -284,7 +292,7 @@ export function Pricing(props: PricingProps) {
                       'flex mt-6 shadow-sm',
                       tier.soldOut || tier.comingSoon
                         ? 'pointer-events-none'
-                        : ''
+                        : '',
                     )}
                   >
                     <Button
@@ -297,7 +305,7 @@ export function Pricing(props: PricingProps) {
                           : 'bg-sky-300 hover:bg-sky-400 dark:bg-sky-600 dark:hover:bg-sky-700',
                         tier.featured || tier.soldOut
                           ? 'bg-white dark:bg-neutral-900 hover:bg-gray-200 dark:hover:bg-black'
-                          : 'hover:opacity-80 transition-opacity'
+                          : 'hover:opacity-80 transition-opacity',
                       )}
                       variant={tier.highlighted ? 'default' : 'outline'}
                       onClick={(e) => getCheckoutUrl(e, tier)}
@@ -311,7 +319,7 @@ export function Pricing(props: PricingProps) {
                       tier.featured
                         ? 'text-gray-300 dark:text-gray-500'
                         : 'text-gray-700 dark:text-gray-400',
-                      'mt-8 space-y-3 text-sm leading-6 xl:mt-10'
+                      'mt-8 space-y-3 text-sm leading-6 xl:mt-10',
                     )}
                   >
                     {tier.features.map((feature) => (
@@ -321,7 +329,7 @@ export function Pricing(props: PricingProps) {
                             tier.featured ? 'text-white dark:text-black' : '',
                             tier.highlighted ? 'text-sky-500' : 'text-gray-500',
 
-                            'h-6 w-5 flex-none'
+                            'h-6 w-5 flex-none',
                           )}
                           aria-hidden="true"
                         />

@@ -29,10 +29,9 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]  
-
   roastedDesigns RoastedDesigns[]
-
-  subscriptionId Subscription?
+  
+  subscription Subscription?
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -86,8 +85,12 @@ model RoastedDesigns {
   name            String
   originalImageUrl String
   improvedHtml     String
+  internalImprovedHtml String
+  improvedReact    String
+  internalImprovedReact String
   improvements     String    @default("[]")
   whatsWrong       String    @default("[]")
+  uiHighlights     String    @default("[]")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

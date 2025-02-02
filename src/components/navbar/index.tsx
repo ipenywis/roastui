@@ -1,10 +1,11 @@
 import { cva } from 'class-variance-authority';
 import { Logo } from '../logo';
-import { NavigationMenu } from '../navigationMenu';
-import { AccessControls } from './accessControls';
 import Link from 'next/link';
+import { Menu } from './menu';
 
-const container = cva('flex justify-around items-center px-8 py-6 z-40');
+const container = cva(
+  'flex justify-between lg:justify-around items-center px-4 lg:px-8 py-6 z-40',
+);
 
 export function Navbar() {
   return (
@@ -12,8 +13,8 @@ export function Navbar() {
       <Link href="/">
         <Logo />
       </Link>
-      <NavigationMenu />
-      <AccessControls />
+      <Menu />
+      {/* <NavigationMenu /> */}
     </div>
   );
 }

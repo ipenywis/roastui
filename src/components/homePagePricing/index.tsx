@@ -9,5 +9,11 @@ export async function HomePagePricing() {
     where: { userId: session?.user?.id },
   });
 
-  return <Pricing mode="integrated" subscription={subscription || undefined} />;
+  return (
+    <Pricing
+      className="mt-28 lg:mt-0"
+      mode="integrated"
+      subscription={subscription || undefined}
+    />
+  );
 }

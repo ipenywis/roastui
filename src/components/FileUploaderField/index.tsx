@@ -1,13 +1,11 @@
 'use client';
 
-import * as React from 'react';
-import { FieldValues, useForm, UseFormReturn } from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
 // import { toast } from 'sonner';
 
 // import { getErrorMessage } from '@/lib/handle-error';
 // import { useUploadFile } from '@/hooks/use-upload-file';
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -33,8 +31,6 @@ interface FileUploaderFieldProps {
 
 export function FileUploaderField(props: FileUploaderFieldProps) {
   const { form } = props;
-
-  const [loading, setLoading] = React.useState(false);
 
   return (
     <FormField

@@ -1,27 +1,28 @@
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { auth, signOut } from '@/auth';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { Button } from '../ui/button';
+import { signOut, useSession } from 'next-auth/react';
+import { useCallback, useState } from 'react';
+import { RiLoader3Fill } from 'react-icons/ri';
 
-export async function UserMenu() {
-  const session = await auth();
+export function UserMenu() {
+  const { data: session } = useSession();
+  const [isLoggingOut, setIsLogginOut] = useState(false);
 
-  const handleLogout = async () => {
-    'use server';
-    console.log('Logging out');
-    await signOut();
-  };
+  const handleLogout = useCallback(async () => {
+    setIsLogginOut(true);
+    await signOut({ redirectTo: '/' });
+    setIsLogginOut(false);
+  }, [setIsLogginOut]);
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger>
         <Avatar className="outline-none">
           <AvatarImage src={session?.user?.image || undefined} />
@@ -31,18 +32,23 @@ export async function UserMenu() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>
-          <Link href="/dashboard">Dashboard</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href="/billing">Billing</Link>
-        </DropdownMenuItem>
+        <Link href="/playground" prefetch>
+          <DropdownMenuItem>New Roast ⚡️</DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
-        <form action={handleLogout}>
-          <button className="w-full cursor-pointer">
-            <DropdownMenuItem className="text-red-500">Logout</DropdownMenuItem>
-          </button>
-        </form>
+        <Link href="/dashboard" prefetch>
+          <DropdownMenuItem>Dashboard</DropdownMenuItem>
+        </Link>
+        <Link href="/billing" prefetch>
+          <DropdownMenuItem>Billing</DropdownMenuItem>
+        </Link>
+        <DropdownMenuSeparator />
+        <button className="w-full cursor-pointer" onClick={handleLogout}>
+          <DropdownMenuItem className="text-red-500">
+            Logout
+            {isLoggingOut && <RiLoader3Fill className="animate-spin size-4" />}
+          </DropdownMenuItem>
+        </button>
       </DropdownMenuContent>
     </DropdownMenu>
   );

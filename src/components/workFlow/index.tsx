@@ -2,22 +2,21 @@ import { cva } from 'class-variance-authority';
 import Image from 'next/image';
 import BadUIDesignImg from '@/images/bad-ui-showcase.png';
 import { RoastUISystemSvg } from '../RoastUISystemSvg';
-import { DrawnArrowSvg } from '../drawnArrowSvg';
 import { DrawnArrowVerticalSvg } from '../drawnArrowVerticalSvg';
 
 const container = cva('flex flex-col items-center w-full max-w-screen-sm');
 
 const topContainer = cva('flex flex-col items-center');
-const middleContainer = cva('flex flex-col w-[550px]');
+const middleContainer = cva('flex flex-col w-full lg:w-[550px]');
 const bottomContainer = cva('flex gap-x-10');
 
 const outputItem = cva('flex flex-col w-full items-center');
 const outputLabel = cva(
-  'text-xl text-white font-semibold max-w-56 text-center flex flex-col items-center'
+  'text-sm lg:text-xl text-white font-semibold max-w-56 text-center flex flex-col items-center',
 );
 
 const outputNumber = cva(
-  'text-lg text-gray-400 absolute top-[50%-10px] right-[calc(50%-20px)]'
+  'text-lg text-gray-400 absolute top-[50%-10px] right-[calc(50%-20px)]',
 );
 
 const arrow = cva('flex relative w-5', {
@@ -32,7 +31,7 @@ const arrow = cva('flex relative w-5', {
   },
 });
 
-const badUIDesignImage = cva('w-96');
+const badUIDesignImage = cva('w-72 lg:w-96');
 
 const label = cva('text-md text-gray-400 mt-4');
 

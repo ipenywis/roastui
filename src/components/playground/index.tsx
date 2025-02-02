@@ -1,47 +1,34 @@
 'use client';
 
-import { DesignImprovementsPreview } from '@/components/designImprovementsPreview';
-import { DesignPreview } from '@/components/designPreview';
-import { FormValues, NewDesignForm } from '@/components/newDesignForm';
-import roastService from '@/services/roastService';
-import { RoastResponse } from '@/types/roastResponse';
 import { RoastedDesigns } from '@prisma/client';
-import { cva } from 'class-variance-authority';
-import { useState } from 'react';
+import { StreamingPlayground } from './streamingPlayground';
+import { useEffect } from 'react';
+import { useDesignPreviewStore } from '@/lib/providers/designPreviewStoreProvider';
+import { loadEsbuild } from '@/lib/bundler';
 
-const container = cva(
-  'size-full flex flex-col p-8 items-center relative pb-12'
-);
+interface PlaygroundProps {
+  initialRoastedDesign?: RoastedDesigns;
+}
 
-const innerContainer = cva(
-  'size-full flex flex-col gap-4 max-w-screen-lg items-center'
-);
+export default function Playground(props: PlaygroundProps) {
+  const { initialRoastedDesign } = props;
 
-const title = cva('text-3xl font-bold');
-
-export default function Playground() {
-  const [roastResponse, setRoastResponse] = useState<RoastedDesigns | null>(
-    null
+  const setCurrentRoastedDesign = useDesignPreviewStore(
+    (state) => state.setCurrentRoastedDesign,
   );
 
-  const onSubmit = async (values: FormValues) => {
-    const response = await roastService.roastUI(values.name, values.images[0]);
-    setRoastResponse(response);
-  };
+  useEffect(() => {
+    if (initialRoastedDesign) {
+      setCurrentRoastedDesign(initialRoastedDesign);
+    }
+  }, [initialRoastedDesign, setCurrentRoastedDesign]);
 
-  return (
-    <div className={container()}>
-      <div className={innerContainer()}>
-        <h1 className={title()}>Roast New Design</h1>
-        <NewDesignForm onSubmit={onSubmit} />
-        {roastResponse && (
-          <DesignImprovementsPreview
-            improvements={JSON.parse(roastResponse.improvements)}
-            whatsWrong={JSON.parse(roastResponse.whatsWrong)}
-          />
-        )}
-        <DesignPreview HTML={roastResponse?.improvedHtml} />
-      </div>
-    </div>
-  );
+  //Experimental loading esbuild.wasm before hand
+  useEffect(() => {
+    loadEsbuild();
+  }, []);
+
+  // return <ControlsMenu />;
+
+  return <StreamingPlayground initialRoastedDesign={initialRoastedDesign} />;
 }

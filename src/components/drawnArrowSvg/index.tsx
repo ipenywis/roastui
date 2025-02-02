@@ -1,5 +1,3 @@
-import { VariantProps, cva } from 'class-variance-authority';
-
 export function DrawnArrowSvg() {
   return (
     <svg viewBox="0 0 119 39" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -18,8 +16,8 @@ export function DrawnArrowSvg() {
       <path
         d="M90.7808 4.56091C92.1039 15.3867 93.6964 26.1783 95.0491 37"
         stroke="#BBBBBB"
-        stroke-width="3"
-        stroke-linecap="round"
+        strokeWidth="3"
+        strokeLinecap="round"
       />
       <path
         d="M92.488 11.3902C97.5844 15.6917 102.713 19.9481 107.854 24.1951"
