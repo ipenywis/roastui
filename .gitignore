@@ -44,3 +44,4 @@ next-env.d.ts
 .env.local
 *.db
 *.db-journal
+.env.fly.prod
