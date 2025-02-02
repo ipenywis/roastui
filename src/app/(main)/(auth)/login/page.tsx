@@ -1,4 +1,4 @@
-import * as React from 'react';
+'use client';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -10,7 +10,10 @@ import {
 } from '@/components/ui/card';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
-import { signIn } from '@/auth';
+// import { signIn } from '@/auth';
+import { signIn } from 'next-auth/react';
+import { useState } from 'react';
+import { RiLoader3Fill } from 'react-icons/ri';
 
 export default function LoginPage({
   searchParams,
@@ -19,19 +22,24 @@ export default function LoginPage({
 }) {
   const { plan, tier } = searchParams;
 
+  const [isLoggingWithGoogle, setIsLoggingWithGoogle] = useState(false);
+  const [isLogginWithGithub, setIsLoggingWithGithub] = useState(false);
+
   const redirectUrl =
     tier && plan ? `/subscribe?tier=${tier}&plan=${plan}` : '/subscribe';
 
   async function loginWithGoogle() {
-    'use server';
+    setIsLoggingWithGoogle(true);
     await signIn('google', {
       redirectTo: redirectUrl,
     });
+    setIsLoggingWithGoogle(false);
   }
 
   async function loginWithGithub() {
-    'use server';
+    setIsLoggingWithGithub(true);
     await signIn('github', { redirectTo: redirectUrl });
+    setIsLoggingWithGithub(false);
   }
 
   return (
@@ -43,16 +51,32 @@ export default function LoginPage({
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardFooter className="flex flex-col gap-5">
-          <form action={loginWithGoogle}>
-            <Button size="xl" className="w-full" type="submit">
-              <FcGoogle className="mr-2 text-xl" /> Continue with Google
-            </Button>
-          </form>
-          <form action={loginWithGithub}>
-            <Button size="xl" className="w-full" type="submit">
-              <FaGithub className="mr-2 text-xl" /> Continue with Github
-            </Button>
-          </form>
+          <Button
+            size="xl"
+            className="w-full"
+            type="submit"
+            onClick={loginWithGoogle}
+          >
+            <FcGoogle className="mr-2 text-xl" /> Continue with Google
+            <span className="ml-2 size-4">
+              {isLoggingWithGoogle && (
+                <RiLoader3Fill className="animate-spin size-4" />
+              )}
+            </span>
+          </Button>
+          <Button
+            size="xl"
+            className="w-full"
+            type="submit"
+            onClick={loginWithGithub}
+          >
+            <FaGithub className="mr-2 text-xl" /> Continue with Github
+            <span className="ml-2 size-4">
+              {isLogginWithGithub && (
+                <RiLoader3Fill className="animate-spin size-4" />
+              )}
+            </span>
+          </Button>
         </CardFooter>
       </Card>
     </div>
