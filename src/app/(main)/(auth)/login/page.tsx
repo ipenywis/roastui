@@ -33,13 +33,11 @@ export default function LoginPage({
     await signIn('google', {
       redirectTo: redirectUrl,
     });
-    setIsLoggingWithGoogle(false);
   }
 
   async function loginWithGithub() {
     setIsLoggingWithGithub(true);
     await signIn('github', { redirectTo: redirectUrl });
-    setIsLoggingWithGithub(false);
   }
 
   return (
@@ -58,7 +56,7 @@ export default function LoginPage({
             onClick={loginWithGoogle}
           >
             <FcGoogle className="mr-2 text-xl" /> Continue with Google
-            <span className="ml-2 size-4">
+            <span className="ml-1 size-4">
               {isLoggingWithGoogle && (
                 <RiLoader3Fill className="animate-spin size-4" />
               )}
@@ -71,7 +69,7 @@ export default function LoginPage({
             onClick={loginWithGithub}
           >
             <FaGithub className="mr-2 text-xl" /> Continue with Github
-            <span className="ml-2 size-4">
+            <span className="ml-1 size-4">
               {isLogginWithGithub && (
                 <RiLoader3Fill className="animate-spin size-4" />
               )}

@@ -1,4 +1,4 @@
-import * as React from 'react';
+'use client';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -9,10 +9,11 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { FcGoogle } from 'react-icons/fc';
-import { signIn } from '@/auth';
+import { signIn } from 'next-auth/react';
 import { FaGithub } from 'react-icons/fa';
 
-export const revalidate = 86400;
+import { useState } from 'react';
+import { RiLoader3Fill } from 'react-icons/ri';
 
 export default function SignupPage({
   searchParams,
@@ -21,16 +22,19 @@ export default function SignupPage({
 }) {
   const { plan, tier } = searchParams;
 
+  const [isLoggingWithGoogle, setIsLoggingWithGoogle] = useState(false);
+  const [isLogginWithGithub, setIsLoggingWithGithub] = useState(false);
+
   const redirectUrl =
     tier && plan ? `/subscribe?tier=${tier}&plan=${plan}` : '/subscribe';
 
   async function signupWithGoogle() {
-    'use server';
+    setIsLoggingWithGoogle(true);
     await signIn('google', { redirectTo: redirectUrl });
   }
 
   async function loginWithGithub() {
-    'use server';
+    setIsLoggingWithGithub(true);
     await signIn('github', { redirectTo: redirectUrl });
   }
 
@@ -46,11 +50,21 @@ export default function SignupPage({
           <form action={signupWithGoogle}>
             <Button size="xl" className="w-full">
               <FcGoogle className="mr-2 text-xl" /> Continue with Google
+              <span className="ml-1 size-4">
+                {isLoggingWithGoogle && (
+                  <RiLoader3Fill className="animate-spin size-4" />
+                )}
+              </span>
             </Button>
           </form>
           <form action={loginWithGithub}>
             <Button size="xl" className="w-full">
               <FaGithub className="mr-2 text-xl" /> Continue with Github
+              <span className="ml-1 size-4">
+                {isLogginWithGithub && (
+                  <RiLoader3Fill className="animate-spin size-4" />
+                )}
+              </span>
             </Button>
           </form>
         </CardFooter>
