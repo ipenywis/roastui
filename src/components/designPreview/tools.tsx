@@ -1,5 +1,8 @@
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cva } from 'class-variance-authority';
+import { BiSolidZap } from 'react-icons/bi';
+import { BsImageFill } from 'react-icons/bs';
+import { MdOutlineCode } from 'react-icons/md';
 
 const tabItem = cva(
   'flex items-center justify-center data-[state=active]:bg-black',
@@ -23,17 +26,17 @@ export function Tools({
             className={tabItem()}
             disabled={isImprovedDesignDisabled}
           >
-            Improved ⚡️
+            <BiSolidZap className="mr-1 size-4" /> Improved
           </TabsTrigger>
           <TabsTrigger
             value="originalDesign"
             className={tabItem()}
             disabled={isOriginalDesignDisabled}
           >
-            Original 📸
+            <BsImageFill className="mr-1 size-4" /> Original
           </TabsTrigger>
           <TabsTrigger value="improvedHtml" className={tabItem()}>
-            Code 💻
+            <MdOutlineCode className="mr-1 size-5" /> Code
           </TabsTrigger>
         </TabsList>
       </div>
