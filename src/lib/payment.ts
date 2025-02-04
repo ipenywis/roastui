@@ -57,6 +57,7 @@ export async function getCheckoutUrl(
       tier,
       plan,
     },
+    allow_promotion_codes: true,
   });
 
   return session.url;
