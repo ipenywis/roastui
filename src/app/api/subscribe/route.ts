@@ -12,8 +12,17 @@ export const POST = auth(async (request) => {
     return new Response('Unauthorized', { status: 401 });
   }
 
+  if (!auth.user.email) {
+    return new Response('Unexpected error', { status: 500 });
+  }
+
   try {
-    const checkoutUrl = await getCheckoutUrl(auth.user.id, tier, plan);
+    const checkoutUrl = await getCheckoutUrl(
+      auth.user.email,
+      auth.user.id,
+      tier,
+      plan,
+    );
 
     if (!checkoutUrl) {
       return new Response('Failed to create checkout session', { status: 500 });

@@ -22,6 +22,7 @@ export const LOOKUP_KEYS: { [key: string]: { [key: string]: string } } = {
 };
 
 export async function getCheckoutUrl(
+  userEmail: string,
   userId: string,
   tier: string,
   plan: string,
@@ -57,6 +58,12 @@ export async function getCheckoutUrl(
       tier,
       plan,
     },
+    invoice_creation: {
+      enabled: true,
+    },
+    allow_promotion_codes: true,
+    customer_creation: 'always',
+    customer_email: userEmail,
   });
 
   return session.url;
