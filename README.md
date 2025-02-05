@@ -6,16 +6,10 @@ The full project has been built in public on YouTube, you can watch the full vid
 
 ## Features
 
-- Completely built on Next.js.
-- Deployed on VPS on [fly.io](https://fly.io).
-- AI-powered UI/UX analysis and feedback
-- Support for multiple image formats
-- Real-time design critique
-- Detailed accessibility recommendations
-- Design pattern suggestions
-- Color scheme analysis
-- Layout optimization tips
-
+- Completely built with Next.js
+- Deployed on VPS on [fly.io](https://fly.io) across multiple regions
+- Compiles, runs and renders AI-generated code in the browser using [esbuild WASM](https://esbuild.github.io)
+- Uses SQLite with Fly.io LiteFS for distributed database
 
 ## Running The Project
 
@@ -57,6 +51,7 @@ For Object storage, we use Cloudflare R2, which is an AWS S3 compatible object s
 Once you have set up your environment variables, you can start the development server by running:
 
 ```bash
+# pnpm is preferred over other package managers
 $ pnpm dev
 ```
 
@@ -64,7 +59,8 @@ This will start the Next.js development server on `http://localhost:3000`. You c
 
 ## Contributing
 
-We welcome your contributions toward improving RoastUI! You can read the [CONTRIBUTING](./CONTRIBUTING.md) guide to know the best way to contribute to the RoastUI project.
+We welcome your contributions toward improving RoastUI! You can read the [CONTRIBUTING](./CONTRIBUTING.md) guide to know how to contribute to the project.
 
+## License
 
-
+This project is licensed under the Elastic License 2.0. See the [LICENSE](./LICENCE) file for details.

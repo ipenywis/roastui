@@ -1,25 +1,56 @@
 # Contributing to RoastUI
 
-## Installation & Setup
+Thank you for your interest in contributing to RoastUI! We're excited to welcome contributors who want to help make designing great looking and accessible UI/UX easier using AI.
 
-Please refer to the [README](./README.md), Running The Project section, for instructions on how to install and setup RoastUI.
+## Code of Conduct
 
-## Reporting Issues
+By participating in this project, you are expected to uphold our Code of Conduct, which is to treat all contributors with respect and maintain a harassment-free experience for everyone.
 
-If you find a bug or issue, please report it by opening an issue on the [GitHub repository](https://github.com/ipenywis/roastui/issues).
+## How to Contribute
 
-## Feature Requests
+### Reporting Bugs
 
-If you have an idea for a new feature, please open an issue on the [GitHub repository](https://github.com/ipenywis/roastui/issues).
+If you find a bug, please create an issue in our GitHub repository with the following information:
+- A clear, descriptive title
+- A detailed description of the bug
+- Steps to reproduce the behavior
+- Expected behavior
+- Screenshots (if applicable)
 
-## Pull Requests
+### Suggesting Enhancements
 
-If you want to contribute to RoastUI, please open a pull request on the [GitHub repository](https://github.com/ipenywis/roastui/pulls).
+We welcome suggestions for enhancements! When creating an enhancement suggestion, please include:
+- A clear, descriptive title
+- A detailed description of the proposed feature
+- Any potential implementation details you have in mind
+- Why this enhancement would be useful to RoastUI users
 
+### Pull Requests
 
-## Pull Request Guidelines
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Test your changes
+5. Commit your changes (`git commit -m 'Add some amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
-- Write clear and concise commit messages.
-- Write code that is easy to understand and maintain.
-- Make sure to test your changes before opening a pull request.
-- Make sure to update the documentation if necessary.
+#### Pull Request Guidelines
+
+- Follow the existing code style and conventions
+- Update documentation as needed
+- Add tests for new features
+- Keep pull requests focused - one feature or bug fix per PR
+- Link any relevant issues in the pull request description
+
+### Development Setup
+
+Please refer to this guide for [running the project locally](./README.md#running-the-project).
+
+## Questions?
+
+If you have any questions, feel free to create an issue with the "question" label or reach out to the maintainers.
+
+## License
+
+By contributing to RoastUI, you agree that your contributions will be licensed under the Elastic License 2.0 (ELv2). See the [LICENSE](./LICENCE) file for details.
