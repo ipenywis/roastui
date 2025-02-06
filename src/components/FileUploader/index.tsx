@@ -257,7 +257,8 @@ export function FileUploader(props: FileUploaderProps) {
                 </div>
                 <div className="flex flex-col gap-px">
                   <p className="font-medium text-muted-foreground">
-                    Drag {`'n'`} drop files here, or click to select files
+                    Drag {`'n'`} drop image here, paste or click to select an
+                    image
                   </p>
                   <p className="text-sm text-muted-foreground/70">
                     You can upload

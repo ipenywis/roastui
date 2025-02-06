@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { ShowcaseSection } from '../showcaseSection';
 import {
   Accordion,
@@ -14,12 +15,12 @@ const innerContainer = cva(
 
 const answerContent = cva('text-gray-400 font-light text-sm lg:text-base');
 
-export function Faq() {
+export function Faq({ className }: { className?: string }) {
   return (
     <ShowcaseSection
       id="faq"
       title="Frequently Asked Questions"
-      className="mt-36 lg:mt-0 mb-24"
+      className={cn('mt-36 lg:mt-0 mb-24', className)}
       description={
         <>
           Have another question? Contact me on{' '}

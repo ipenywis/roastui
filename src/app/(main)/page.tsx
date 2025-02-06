@@ -1,3 +1,4 @@
+import { auth } from '@/auth';
 import { ImproveUIDesign } from '@/components/ImproveUIDesign';
 import { Faq } from '@/components/faq';
 import { Footer } from '@/components/footer';
@@ -12,9 +13,7 @@ import { Suspense } from 'react';
 
 export const revalidate = 86400;
 
-// export const dynamic = 'force-static';
-
-export default function Home() {
+export default async function Home() {
   return (
     <PageMainContainer>
       <PageMainContainerInner className="h-auto">

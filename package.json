@@ -22,9 +22,6 @@
     "@babel/core": "^7.26.0",
     "@babel/generator": "^7.26.3",
     "@babel/parser": "^7.26.3",
-    "@babel/plugin-transform-dynamic-import": "^7.25.9",
-    "@babel/preset-typescript": "^7.26.0",
-    "@babel/standalone": "^7.26.4",
     "@babel/traverse": "^7.26.4",
     "@codesandbox/sandpack-react": "^2.19.9",
     "@hookform/resolvers": "^3.9.0",
@@ -93,12 +90,12 @@
     "swr": "^2.2.5",
     "tailwind-config": "^0.1.2",
     "tailwind-merge": "^2.3.0",
+    "tailwindcss": "^3.4.15",
     "tailwindcss-animate": "^1.0.7",
     "use-local-storage-state": "^19.5.0",
     "usehooks-ts": "^3.1.0",
     "zod": "^3.23.8",
-    "zustand": "^5.0.1",
-    "tailwindcss": "^3.4.15"
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.9",
@@ -125,5 +122,6 @@
     "prettier": "^3.4.2",
     "tailwind-config-viewer": "^2.0.4",
     "typescript": "^5"
-  }
+  },
+  "packageManager": "pnpm@10.2.0+sha256.72f1630812107c8723eb5be4517725f3e13f09cfd8f71571cf29f23ce318bdb7"
 }

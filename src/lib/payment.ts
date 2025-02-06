@@ -58,11 +58,7 @@ export async function getCheckoutUrl(
       tier,
       plan,
     },
-    invoice_creation: {
-      enabled: true,
-    },
     allow_promotion_codes: true,
-    customer_creation: 'always',
     customer_email: userEmail,
   });
 

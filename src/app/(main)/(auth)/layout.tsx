@@ -1,4 +1,4 @@
-import { Navbar } from '@/components/navbar';
+import { StandardNavbar } from '@/components/standardNavbar';
 
 export default function AuthLayout({
   children,
@@ -7,7 +7,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="size-full flex flex-col">
-      <Navbar />
+      <StandardNavbar />
       <div className="size-full flex flex-col">{children}</div>
     </div>
   );

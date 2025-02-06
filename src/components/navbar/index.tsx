@@ -10,11 +10,10 @@ const container = cva(
 export function Navbar() {
   return (
     <div className={container()}>
-      <Link href="/">
+      <Link href="/dashboard">
         <Logo />
       </Link>
       <Menu />
-      {/* <NavigationMenu /> */}
     </div>
   );
 }

@@ -21,6 +21,8 @@ export function HeroShow() {
           alt="HeroShow"
           width={heroShowImg.width}
           height={heroShowImg.height}
+          priority
+          loading="eager"
         />
       </div>
     </div>

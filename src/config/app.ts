@@ -15,7 +15,7 @@ const appConfig = {
     },
     {
       item: 'FAQ',
-      url: '/#faq',
+      url: '/faq',
     },
   ],
   faq: [
