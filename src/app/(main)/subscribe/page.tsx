@@ -10,7 +10,8 @@ export default async function Subscribe({
 }) {
   const session = await auth();
 
-  if (!session?.user || !session?.user?.id) return redirect('/login');
+  if (!session?.user || !session?.user?.id || !session?.user?.email)
+    return redirect('/login');
 
   if (!searchParams?.tier || !searchParams?.plan) return redirect('/pricing');
 
@@ -24,6 +25,7 @@ export default async function Subscribe({
     return redirect('/dashboard');
   } else {
     const checkoutUrl = await getCheckoutUrl(
+      session.user.email,
       session.user.id,
       searchParams.tier,
       searchParams.plan,
