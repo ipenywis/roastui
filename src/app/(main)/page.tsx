@@ -1,4 +1,3 @@
-import { auth } from '@/auth';
 import { ImproveUIDesign } from '@/components/ImproveUIDesign';
 import { Faq } from '@/components/faq';
 import { Footer } from '@/components/footer';
