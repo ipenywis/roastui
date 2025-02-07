@@ -3,10 +3,10 @@ import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { hero } from './style.css';
 import { SpotLight } from '../spotLight';
-import { StandardNavbar } from '../standardNavbar';
 import { HeroShow } from '../heroShow';
 import Link from 'next/link';
 import { Header } from './header';
+import { Navbar } from '../navbar';
 
 const container = cva(
   'relative flex flex-col w-full min-h-screen items-center',
@@ -27,7 +27,7 @@ export function Hero() {
     <div
       className={cn(hero, 'flex flex-col w-full min-h-screen lg:mb-[20rem]')}
     >
-      <StandardNavbar />
+      <Navbar />
       <div className={cn(container())}>
         <SpotLight />
         <div className={innerContainer()}>

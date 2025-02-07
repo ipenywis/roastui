@@ -10,11 +10,10 @@ import {
 } from '@/components/pageMainContainer';
 import { Suspense } from 'react';
 
-export const revalidate = 86400;
-
+export const revalidate = 7200;
 export const dynamic = 'force-static';
 
-export default async function Home() {
+export default function Home() {
   return (
     <PageMainContainer>
       <PageMainContainerInner className="h-auto">
