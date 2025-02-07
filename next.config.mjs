@@ -4,19 +4,15 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
+        hostname: '**.roastui.design',
+        protocol: 'https',
+        pathname: '/**',
+      },
+      {
         hostname: 'placehold.co',
       },
       {
         hostname: 'picsum.photos',
-      },
-      {
-        hostname: 'roast-ui.islemmaboud.com',
-      },
-      {
-        hostname: 'cdn.roastui.design',
-      },
-      {
-        hostname: 'roastui.design',
       },
     ],
   },
