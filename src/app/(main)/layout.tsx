@@ -43,6 +43,11 @@ export default function RootLayout({
           </SWRProvider>
         </ThemeProvider>
         <Script src="https://scripts.simpleanalyticscdn.com/latest.js" />
+        <Script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="KocR8CTGdeNASCa9LxoM8g"
+          async
+        />
       </body>
     </html>
   );
