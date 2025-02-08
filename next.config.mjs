@@ -1,5 +1,17 @@
+import createMDX from '@next/mdx';
+import { createVanillaExtractPlugin } from '@vanilla-extract/next-plugin';
+
+const withVanillaExtract = createVanillaExtractPlugin();
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   compress: true,
   images: {
     remotePatterns: [
@@ -18,7 +30,4 @@ const nextConfig = {
   },
 };
 
-import { createVanillaExtractPlugin } from '@vanilla-extract/next-plugin';
-const withVanillaExtract = createVanillaExtractPlugin();
-
-export default withVanillaExtract(nextConfig);
+export default withVanillaExtract(withMDX(nextConfig));

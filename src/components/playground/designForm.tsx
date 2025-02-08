@@ -3,6 +3,8 @@ import { Button } from '../ui/button';
 import { RxReload } from 'react-icons/rx';
 import { useCallback, useEffect, useState } from 'react';
 import { useUser } from '@/lib/queryHooks/user/queries';
+import Link from 'next/link';
+import { IoBookOutline } from 'react-icons/io5';
 
 interface DesignFormProps {
   onSubmit: (values: FormValues) => void;
@@ -57,13 +59,20 @@ export function DesignForm({
           </Button>
         </div>
       )}
-      <div className="flex justify-center gap-2 w-full">
+      <div className="flex flex-col items-center gap-4 w-full">
         {isShowForm && (
           <NewDesignForm
             onSubmit={onSubmit}
             mode={isUpdateMode ? 'update' : 'create'}
           />
         )}
+        <Link
+          href="/docs/roasting-guidelines"
+          className="text-muted-foreground text-xs transition-colors duration-150 hover:text-primary flex items-center gap-2 mt-0"
+        >
+          <IoBookOutline className="size-3" />
+          <span>View Roasting Guidelines</span>
+        </Link>
       </div>
     </div>
   );
