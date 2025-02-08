@@ -7,12 +7,13 @@ import { SessionProvider } from 'next-auth/react';
 import { SandPackCSS } from '@/components/sandPackStyles';
 import { SWRProvider } from '@/lib/providers/swrProvider';
 import { ReactQueryProvider } from '@/lib/providers/reactQueryProvider';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'RoastUI',
-  description: 'Roast your UI/UX design using AI',
+  description: 'Roast your UI/UX design using AI in seconds',
 };
 
 export default function RootLayout({
@@ -41,6 +42,7 @@ export default function RootLayout({
             </ReactQueryProvider>
           </SWRProvider>
         </ThemeProvider>
+        <Script src="https://scripts.simpleanalyticscdn.com/latest.js" />
       </body>
     </html>
   );
