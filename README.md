@@ -1,4 +1,5 @@
-# RoastUI
+![RoastUI Logo](public/Logo.svg)
+
 
 [RoastUI](https://roastui.design) is an innovative tool that offers AI-driven analysis for UI/UX designs. It's crafted to provide comprehensive insights, allowing you to refine your designs and quickly produce enhanced layouts.
 
