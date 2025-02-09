@@ -33,7 +33,7 @@ export function UserMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <Link href="/playground" prefetch>
-          <DropdownMenuItem>New Roast ⚡️</DropdownMenuItem>
+          <DropdownMenuItem>New Roast 🔥</DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />
         <Link href="/dashboard" prefetch>

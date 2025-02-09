@@ -152,7 +152,7 @@ export function Pricing(props: PricingProps) {
     <ShowcaseSection
       id="pricing"
       title="Get Started Now"
-      description="Save hours of moving buttons around and quickly find what’s wrong with your designs with RoastUI"
+      description="Save hours of moving buttons around and quickly find what's wrong with your designs with RoastUI"
       className={className}
     >
       <div
@@ -182,13 +182,17 @@ export function Pricing(props: PricingProps) {
                         frequency.value === option.value
                           ? 'bg-sky-500/90 text-white dark:bg-sky-900/70 dark:text-white/70'
                           : 'bg-transparent text-gray-500 hover:bg-sky-500/10',
-                        'cursor-pointer rounded-full px-2.5 py-2 transition-all',
+                        'cursor-pointer rounded-full px-2.5 py-2 transition-all relative',
                       )}
                       key={option.value}
                       htmlFor={option.value}
                     >
                       {option.label}
-
+                      {option.value === '2' && (
+                        <span className="absolute -top-2 -left-1.5 text-[10px] bg-green-500 text-white dark:text-white px-1.5 py-0.5 rounded-full font-medium text-center min-w-[30px] shadow-sm">
+                          -13%
+                        </span>
+                      )}
                       <RadioGroupItem
                         value={option.value}
                         id={option.value}
