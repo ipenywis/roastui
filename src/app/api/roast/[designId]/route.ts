@@ -1,11 +1,11 @@
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import imageService from '@/services/imageService';
-import { NextRequest } from 'next/server';
 
 export async function DELETE(
-  req: NextRequest,
+  // @ts-ignore
+  request: NextRequest,
   { params }: { params: { designId: string } },
 ) {
   const session = await auth();
