@@ -1,5 +1,8 @@
-![RoastUI Logo](public/Logo.svg)
-
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="public/Logo.svg">
+  <source media="(prefers-color-scheme: light)" srcset="public/Logo-light.svg">
+  <img alt="RoastUI Logo" src="public/Logo.svg">
+</picture>
 
 [RoastUI](https://roastui.design) is an innovative tool that offers AI-driven analysis for UI/UX designs. It's crafted to provide comprehensive insights, allowing you to refine your designs and quickly produce enhanced layouts.
 
