@@ -66,13 +66,15 @@ export function DesignForm({
             mode={isUpdateMode ? 'update' : 'create'}
           />
         )}
-        <Link
-          href="/docs/roasting-guidelines"
-          className="text-muted-foreground text-xs transition-colors duration-150 hover:text-primary flex items-center gap-2 mt-0"
-        >
-          <IoBookOutline className="size-3" />
-          <span>View Roasting Guidelines</span>
-        </Link>
+        {!isLoading && (
+          <Link
+            href="/docs/roasting-guidelines"
+            className="text-muted-foreground text-xs transition-colors duration-150 hover:text-primary flex items-center gap-2 mt-0"
+          >
+            <IoBookOutline className="size-3" />
+            <span>View Roasting Guidelines</span>
+          </Link>
+        )}
       </div>
     </div>
   );
