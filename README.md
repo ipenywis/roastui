@@ -11,9 +11,11 @@ The full project has been built in public on YouTube, you can watch the full vid
 ## Features
 
 - Completely built with Next.js
+- Vercel AI SDK for running AI models
+- Openrouter for unified access to all AI models
 - Deployed on VPS on [fly.io](https://fly.io) across multiple regions
 - Compiles, runs and renders AI-generated code in the browser using [esbuild WASM](https://esbuild.github.io)
-- Uses SQLite with Fly.io LiteFS for distributed database
+- Uses SQLite with Fly.io LiteFS for distributed database access
 
 ## Running The Project
 
